@@ -1,0 +1,39 @@
+<h1>Hang Tags</h1>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="input-group">
+            <input type="text" ng-model="htc.firstName" aria-label="First name" class="form-control" placeholder="First Name">
+            <input type="text" ng-model="htc.lastName" aria-label="Last name" class="form-control" placeholder="Last Name">
+        </div>
+    </div>
+</div>
+<div class="row pt-3">
+    <div class="col-sm-12">
+        <div class="input-group">
+            <select ng-model="htc.color" class="form-control">
+                <option value="">Select Color</option>
+                <option value="black" class="bg-black">Black</option>
+                <option value="blue" class="bg-blue">Blue</option>
+                <option value="green" class="bg-green">Green</option>
+                <option value="orange" class="bg-orange">Orange</option>
+                <option value="purple" class="bg-purple">Purple</option>
+                <option value="red" class="bg-red">Red</option>
+                <option value="white" class="bg-white">White</option>
+                <option value="yellow" class="bg-yellow">Yellow</option>
+            </select>
+            <input type="number" pattern="\d*" ng-model="htc.number" aria-label="Number" class="form-control" placeholder="Number">
+        </div>
+    </div>
+</div>
+<div class="row pb-3 pt-3">
+    <div class="col-sm-12">
+        <button class="btn btn-lg btn-primary btn-block" ng-click="htc.createHangTag()"><span ng-class="htc.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!htc.loading">Submit</span></button>
+    </div>
+    
+</div>
+<div class="row pb-3 pt-3">
+    <div class="col-sm-12">
+        <div class="alert alert-success col-sm-12 dissolve" ng-show="htc.success!==''">{{htc.success}}</div>
+        <div class="alert alert-danger col-sm-12 dissolve" ng-show="htc.error!==''">{{htc.error}}</div>
+    </div>
+</div>

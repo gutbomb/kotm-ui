@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html ng-app="kotm2020UiApp">
+    <head>
+        <!-- Google Tag Manager -->
+            <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-M9BDJ7');</script>
+        <!-- End Google Tag Manager -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta ng-if="$root.meta.description" name="description" content="{{$root.meta.description}}">
+        <meta ng-if="$root.metaTab.description" name="description" content="{{$root.metaTab.description}}">
+        <meta ng-if="$root.meta.keywords" name="keywords" content="{{$root.meta.keywords}}">
+        <meta ng-if="$root.metaTab.keywords" name="keywords" content="{{$root.metaTab.keywords}}">
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:type" content="website" />
+        <meta ng-if="$root.meta.title" property="og:title" content="Kids On The Move - {{$root.meta.title}}" />
+        <meta ng-if="$root.metaTab.title" property="og:title" content="Kids On The Move - {{$root.metaTab.title}}" />
+        <meta ng-if="!$root.meta.title && !$root.metaTab.title" property="og:title" content="Kids On The Move" />
+        <meta ng-if="$root.meta.description" property="og:description" content="{{$root.meta.description}}" />
+        <meta ng-if="$root.metaTab.description" property="og:description" content="{{$root.metaTab.description}}" />
+        <meta ng-if="$root.meta.url" property="og:url" content="https://kotm.org{{$root.meta.url}}" />
+        <meta ng-if="$root.metaTab.url" property="og:url" content="https://kotm.org{{$root.metaTab.url}}" />
+        <meta property="og:site_name" content="Kids On The Move" />
+        <meta ng-if="$root.meta.updated" property="article:modified_time" content="{{$root.meta.updated}}" />
+        <meta ng-if="$root.metaTab.updated" property="article:modified_time" content="{{$root.metaTab.updated}}" />
+        <meta name="twitter:label1" content="Posted by">
+        <meta ng-if="$root.meta.firstname && $root.meta.lastname" name="twitter:data1" content="{{$root.meta.firstname}} {{$root.meta.lastname}}">
+        <meta ng-if="$root.metaTab.firstname && $root.metaTab.lastname" name="twitter:data1" content="{{$root.metaTab.firstname}} {{$root.metaTab.lastname}}">
+        <title ng-if="$root.meta.title">Kids On The Move - {{$root.meta.title}}</title>
+        <title ng-if="$root.metaTab.title">Kids On The Move - {{$root.metaTab.title}}</title>
+        <title ng-if="!$root.meta.title && !$root.metaTab.title">Kids On The Move</title>
+        <link rel="preload" href="/fonts/kotmtext/Gotham-Book.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/kotmtext/Gotham-Medium.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/kotmtext/Gotham-Bold.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/kotmtext/Gotham-Black.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/kotmtext/MemphisLTStd-Medium.woff" as="font" type="font/woff" crossorigin>
+        <link rel="stylesheet" href="/fonts/kotm/css/fontello.css">
+        <link rel="stylesheet" href="/lib/css/bootstrap.css">
+        <link rel="stylesheet" href="/lib/css/fontawesome.css">
+        <link rel="stylesheet" href="/lib/css/fullcalendar.css">
+        <link rel="stylesheet" href="/lib/css/angular-moment-picker.css">
+        <link rel="stylesheet" href="/css/styles.css?v=20210504">
+        
+        <base href="/">
+    </head>
+    <body>
+        <!--Start of Tawk.to Script (0.3.3)-->
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{};
+            var Tawk_LoadStart=new Date();
+            (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/5c5c66246cb1ff3c14cb8bc1/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+        <!--End of Tawk.to Script (0.3.3)-->
+        <!-- Google Tag Manager (noscript) -->
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M9BDJ7"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        <div id="app">
+            <page-header></page-header>
+            <ng-view></ng-view>
+            <page-footer></page-footer>
+        </div>
+        <script src="/lib/js/jquery.js"></script>
+        <script src="/lib/js/moment.js"></script>
+        <script src="/lib/js/clipboard.js"></script>
+        <script src="/lib/js/angular.js"></script>
+        <script src="/lib/js/angular-route.js"></script>
+        <script src="/lib/js/angular-location-update.js"></script>
+        <script src="/lib/js/angular-sanitize.js"></script>
+        <script src="/lib/js/angular-moment.js"></script>
+        <script src="/lib/js/angular-moment-picker.js"></script>
+        <script src="/lib/js/angular-animate.js"></script>
+        <script src="/lib/js/angular-stripe.js"></script>
+        <script src="/lib/js/ng-ckeditor.js"></script>
+        <script src="/lib/js/ngclipboard.js"></script>
+        <script src="/lib/js/calendar.js"></script>
+        <script src="/lib/js/bootstrap.js"></script>
+        <script src="/js/app.js?v=20210504"></script>
+        <script src="/js/config.js"></script>
+    </body>
+</html>

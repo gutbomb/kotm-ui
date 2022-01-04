@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">Kids on the Move</a>
+    <button ng-if="$root.isLoggedIn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div ng-if="$root.isLoggedIn" class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/assessments/#!/main"><i class="fa fa-home"></i> Main</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/assessments/#!/appointments"><i class="fa fa-calendar"></i> Appointments</a>
+            </li>
+            <li class="nav-item dropdown">
+                <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-building"></i> Building Entries
+                </span>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/assessments/#!/hang-tags">Distribute Hangtags</a>
+                    <a class="dropdown-item" href="/assessments/#!/entries">Log Entries</a>
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0" ng-if="$root.isAdmin">
+            <li class="nav-item dropdown">
+                <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-wrench"></i> Admin
+                </span>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/assessments/#!/users">Manage Staff</a>
+                    <a class="dropdown-item" href="/assessments/#!/view-appointments">View Appointments</a>
+                    <a class="dropdown-item" href="/assessments/#!/view-entries">View Building Entries</a>
+                </div>
+            </li>
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0">
+            <li class="nav-item dropdown">
+                <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-user"></i> Account
+                </span>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/assessments/#!/change-password">Change Password</a>
+                    <a class="dropdown-item" href="#" ng-click="tnc.logout()">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+  </nav>

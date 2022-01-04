@@ -1,0 +1,265 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<div class="main-container form-page top-border admin-page" ng-class="'accent-' + cfc.form.color">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help" ng-if="cfc.staged && $root.user.role === 'editor'">Page submitted for approval {{cfc.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}}</span>
+        <span class="toolbar-help" ng-if="cfc.staged && $root.user.role === 'admin'">Page submitted for approval {{cfc.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}} by {{cfc.stagedFirstName}} {{cfc.stagedLastName}}</span>
+        <li ng-if="cfc.emailSubjectChanged || cfc.recipientsChanged || cfc.successMessageChanged || cfc.successTitleChanged || cfc.submitChanged || cfc.formChanged || cfc.colorChanged || cfc.descriptionChanged || cfc.urlChanged || cfc.titleChanged || cfc.metaDescriptionChanged || cfc.metaTitleChanged || cfc.metaKeywordsChanged" ng-click="cfc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="cfc.emailSubjectChanged || cfc.recipientsChanged || cfc.successMessageChanged || cfc.successTitleChanged || cfc.submitChanged || cfc.formChanged || cfc.colorChanged || cfc.descriptionChanged || cfc.urlChanged || cfc.titleChanged || cfc.metaDescriptionChanged || cfc.metaTitleChanged || cfc.metaKeywordsChanged" ng-click="cfc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="row flex-xl-nowrap form-body">
+        <main class="col-12 bd-content" role="main">
+            <form name="mainForm" class="form" ng-if="!cfc.success && !cfc.error">
+                <div class="form-header">
+                    <ul class="toolbar">
+                        <li ng-if="!cfc.colorOpen" ng-click="cfc.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+                        <li ng-if="cfc.colorOpen" ng-click="cfc.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-if="!cfc.titleOpen" ng-click="cfc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+                        <li ng-if="!cfc.titleOpen && cfc.titleChanged" ng-click="cfc.cancelEdit('title')"><i class="fas fa-undo"></i> Undo Title Changes</li>
+                        <li ng-if="!cfc.descriptionOpen" ng-click="cfc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                        <li ng-if="!cfc.descriptionOpen && cfc.descriptionChanged" ng-click="cfc.cancelEdit('description')"><i class="fas fa-undo"></i> Undo Description Changes</li>
+                        <li ng-if="cfc.titleOpen" ng-click="cfc.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                        <li ng-if="cfc.titleOpen" ng-click="cfc.cancelEdit('title')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-if="cfc.descriptionOpen" ng-click="cfc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                        <li ng-if="cfc.descriptionOpen" ng-click="cfc.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-click="cfc.addSection()"><i class="fas fa-plus"></i> Add Section</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="cfc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                        </div>
+                    </ul>
+                    <div ng-if="cfc.colorOpen" class="color-gallery">
+                        <div class="color-row bg-red" ng-click="cfc.selectColor('red')">Red</div>
+                        <div class="color-row bg-purple" ng-click="cfc.selectColor('purple')">Purple</div>
+                        <div class="color-row bg-green" ng-click="cfc.selectColor('green')">Green</div>
+                        <div class="color-row bg-orange" ng-click="cfc.selectColor('orange')">Orange</div>
+                        <div class="color-row bg-teal" ng-click="cfc.selectColor('teal')">Teal</div>
+                        <div class="color-row bg-blue" ng-click="cfc.selectColor('blue')">Blue</div>
+                        <div class="color-row bg-gray" ng-click="cfc.selectColor('gray')">Gray</div>
+                    </div>
+                    <h1 ng-if="!cfc.titleOpen">{{cfc.form.title}}</h1>
+                    <input ng-class="'accent-' + cfc.form.color" ng-if="cfc.titleOpen" type="text" ng-model="cfc.form.title">
+                </div>
+                <div class="form-body">
+                    <div ng-bind-html="cfc.form.description" ng-if="!cfc.descriptionOpen"></div>
+                    <ng-ckeditor ng-if="cfc.descriptionOpen" ng-config="cfc.ckeditorConfig" ng-model="cfc.form.description"></ng-ckeditor>
+                    <div class="edit-section" ng-repeat="section in cfc.form.sections | orderBy: 'order'" ng-if="!section.deleted">
+                        <hr>
+                        <div class="spacer" id="S{{section.id}}"></div>
+                        <ul class="toolbar section">
+                            <li ng-if="!section.titleOpen" ng-click="section.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Section Title</li>
+                            <li ng-if="!section.titleOpen && section.titleChanged" ng-click="cfc.cancelEdit('sectionTitle', section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                            <li ng-if="section.titleOpen" ng-click="cfc.saveEdit('sectionTitle', section.id)"><i class="fas fa-check"></i> Finish Editing Section Title</li>
+                            <li ng-if="section.titleOpen" ng-click="cfc.cancelEdit('sectionTitle', section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <li ng-click="cfc.deleteSectionWarning(section.id)"><i class="fas fa-trash"></i> Delete Section</li>
+                            <li ng-click="cfc.addField(section.id)"><i class="fas fa-plus"></i> Add Field</li>
+                            <li ng-if="section.order !== 0" ng-click="cfc.moveSection('up', section.order, section.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                            <li ng-if="section.order !== (cfc.form.sections.length - 1)" ng-click="cfc.moveSection('down', section.order, section.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                            
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="cfc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                            </div>
+                        </ul>
+                        <h2 ng-if="section.title && !section.titleOpen">{{section.title}}</h2>
+                        <h2 ng-if="!section.title && !section.titleOpen">(No Title - will display as blank on live form)</h2>
+                        <input type="text" ng-if="section.titleOpen" ng-model="section.title">
+                        <div class="edit-field" ng-repeat="field in section.fields | orderBy: 'order'" ng-if="!field.deleted">
+                            <div class="spacer" id="F{{field.id}}"></div>
+                            <ul class="toolbar">
+                                <li ng-if="!field.titleOpen" ng-click="field.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Field Title</li>
+                                <li ng-if="!field.titleOpen && field.titleChanged" ng-click="cfc.cancelEdit('fieldTitle', section.id, field.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                                <li ng-if="field.titleOpen" ng-click="cfc.saveEdit('fieldTitle', section.id, field.id)"><i class="fas fa-check"></i> Finish Editing Field Title</li>
+                                <li ng-if="field.titleOpen" ng-click="cfc.cancelEdit('fieldTitle', section.id, field.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-if="!field.typeOpen" ng-click="field.typeOpen = true"><i class="fas fa-keyboard"></i> Edit Field Type</li>
+                                <li ng-if="field.typeOpen" ng-click="cfc.saveEdit('fieldType', section.id, field.id)"><i class="fas fa-check"></i> Finish Editing Field Type</li>
+                                <li ng-if="field.typeOpen" ng-click="field.typeOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-click="cfc.deleteFieldWarning(section.id, field.id)"><i class="fas fa-trash"></i> Delete Field</li>
+                                <li ng-if="field.order !== 0" ng-click="cfc.moveField('up', field.order, section.id, field.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                                <li ng-if="field.order !== (section.fields.length - 1)" ng-click="cfc.moveField('down', field.order, section.id, field.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                                
+                                <div class="toolbar-help">
+                                    <div class="toolbar-help-notify" ng-if="cfc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                                </div>
+                            </ul>
+                            <div ng-if="field.typeOpen" class="color-gallery">
+                                <div class="color-row" ng-click="cfc.selectType('text', section.id, field.id)"><i class="far fa-keyboard"></i> Text Input</div>
+                                <div class="color-row" ng-click="cfc.selectType('textarea', section.id, field.id)"><i class="far fa-keyboard"></i> Large Text Input</div>
+                                <div class="color-row" ng-click="cfc.selectType('tel', section.id, field.id)"><i class="fas fa-phone-alt"></i> Phone Input</div>
+                                <div class="color-row" ng-click="cfc.selectType('email', section.id, field.id)"><i class="far fa-envelope"></i> Email Input</div>
+                                <div class="color-row" ng-click="cfc.selectType('radio', section.id, field.id)"><i class="far fa-check-circle"></i> Single Choice Checkbox</div>
+                                <div class="color-row" ng-click="cfc.selectType('checkbox', section.id, field.id)"><i class="far fa-check-square"></i> Multiple Choice Checkbox</div>
+                                <div class="color-row" ng-click="cfc.selectType('select', section.id, field.id)"><i class="far fa-caret-square-down"></i> Dropdown</div>
+                                <div class="color-row" ng-click="cfc.selectType('date', section.id, field.id)"><i class="far fa-calendar"></i> Datepicker</div>
+                                <div class="color-row" ng-click="cfc.selectType('file', section.id, field.id)"><i class="far fa-file"></i> File Upload</div>
+                            </div>
+                            <label ng-if="!field.titleOpen">{{field.title}}</label>
+                            <input type="text" ng-if="field.titleOpen" ng-model="field.title">
+                            <span class="edit-required">Required? <input type="checkbox" ng-model="field.required" ng-checked="field.required" ng-change="cfc.formChanged = true"></span>
+                            <ul class="toolbar item" ng-if="field.type === 'radio' || field.type === 'checkbox' || field.type === 'select'">
+                                <li ng-click="cfc.addItem(section.id, field.id)"><i class="fas fa-plus"></i> Add Option</li>
+                            </ul>
+                            <input type="text" ng-model="field.value" ng-if="field.type==='text'" ng-required="field.required" placeholder="text input">
+                            <input type="tel" ng-model="field.value" ng-if="field.type==='tel'" ng-required="field.required" placeholder="telephone number input">
+                            <input type="email" ng-model="field.value" ng-if="field.type==='email'" ng-required="field.required" placeholder="email input">
+                            <div class="edit-options" ng-if="field.type==='radio' || field.type==='checkbox' || field.type==='select'" ng-class="field.type==='select' ? 'edit-options-dropdown' : ''">
+                                <div ng-repeat="item in field.items | orderBy: 'order'" ng-class="field.type==='select' ? 'edit-options-dropdown-item' : ''" ng-if="!item.deleted">
+                                    <input ng-if="field.type==='radio'" type="radio" ng-model="field.value" ng-value="item" ng-required="field.required && !field.value">
+                                    <input ng-if="field.type==='checkbox'" type="checkbox" ng-model="item.value" ng-value="item.value">
+                                    <span ng-if="!item.titleOpen">{{item.title}}</span>
+                                    <input type="text" ng-if="item.titleOpen" ng-model="item.title">
+                                    <i ng-if="!item.titleOpen" class="fas fa-pencil-alt" ng-click="item.titleOpen = true"></i>
+                                    <i ng-if="item.titleOpen" class="fas fa-check" ng-click="cfc.saveEdit('itemTitle', section.id, field.id, item.id)"></i>
+                                    <i ng-if="item.titleOpen" class="fas fa-ban" ng-click="cfc.cancelEdit('itemTitle', section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen" class="fas fa-trash" ng-click="cfc.deleteItemWarning(section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen && item.order !== 0" class="fas fa-arrow-up" ng-click="cfc.moveItem('up', item.order, section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen && item.order !== (field.items.length - 1)" class="fas fa-arrow-down" ng-click="cfc.moveItem('down', item.order, section.id, field.id, item.id)"></i>
+                                </div>
+                            </div>
+                            <div moment-picker="field.value" max-view="day" format="MM/DD/YYYY" today="true" locale="en-US" ng-if="field.type==='date'">datepicker {{field.value | amDateFormat: 'MM/DD/YYYY'}}</div>
+                            <div ng-if="field.type==='file'"><input type="file" ng-model="field.value" form-upload ng-change="cfc.uploadFile(section.id, field.id)"> <i class="fas fa-spinner fa-spin" ng-if="cfc.uploading"></i></div>
+                            <div ng-if="field.type==='uploadFile'">{{field.value}} <i class="fas fa-trash" ng-click="cfc.removeFile(section.id, field.id)"></i></div>
+                            <textarea ng-if="field.type==='textarea'" ng-model="field.value"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <ul class="toolbar">
+                        <li ng-if="!cfc.submitOpen" ng-click="cfc.submitOpen = true"><i class="fas fa-pencil-alt"></i> Edit Submit Button</li>
+                        <li ng-if="!cfc.submitOpen && cfc.submitChanged" ng-click="cfc.cancelEdit('submit')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="cfc.submitOpen" ng-click="cfc.saveEdit('submit')"><i class="fas fa-check"></i> Finish Editing Submit Button</li>
+                        <li ng-if="cfc.submitOpen" ng-click="cfc.cancelEdit('submit')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="cfc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                        </div>
+                    </ul>
+                    <button ng-if="!cfc.submitOpen" class="btn" ng-click="cfc.submitForm()" ng-disabled="mainForm.$invalid"><span ng-if="!cfc.submitting">{{cfc.form.submit}}</span><span ng-if="cfc.submitting"><i class="fas fa-spinner fa-spin"></i></span></button>
+                    <div ng-if="cfc.submitOpen" class="btn"><input type="text" ng-model="cfc.form.submit"></div>
+                </div>
+            </form>
+
+            <div class="metaData">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!cfc.urlOpen" ng-click="cfc.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                    <li ng-if="!cfc.urlOpen && cfc.urlChanged" ng-click="cfc.cancelEdit('url')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cfc.urlOpen" ng-click="cfc.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                    <li ng-if="cfc.urlOpen" ng-click="cfc.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to the form title with dashes instead of spaces.</div>
+                        <div class="toolbar-help-notify" ng-if="cfc.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="error" ng-if="cfc.urlError">{{cfc.urlError}}</div>
+                <div class="editUrl">https://kotm.org/form/<span ng-if="!cfc.urlOpen">{{cfc.form.url}}</span><input ng-if="cfc.urlOpen" type="text" ng-model="cfc.form.url" ng-change="cfc.encodeUrl()"></div>
+
+                <ul class="toolbar">
+                    <li ng-if="!cfc.emailSubjectOpen" ng-click="cfc.emailSubjectOpen = true"><i class="fas fa-pencil-alt"></i> Edit Email Subject</li>
+                    <li ng-if="!cfc.emailSubjectOpen && cfc.emailSubjectChanged" ng-click="cfc.cancelEdit('emailSubject')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cfc.emailSubjectOpen" ng-click="cfc.saveEdit('emailSubject')"><i class="fas fa-check"></i> Finish Editing Email Subject</li>
+                    <li ng-if="cfc.emailSubjectOpen" ng-click="cfc.cancelEdit('emailSubject')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">The subject line for the email sent to KOTM when a form is submitted</div>
+                        <div class="toolbar-help-notify" ng-if="cfc.emailSubjectChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!cfc.emailSubjectOpen">{{cfc.form.emailSubject}}</span>
+                <input type="text" ng-model="cfc.form.emailSubject" ng-if="cfc.emailSubjectOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!cfc.recipientsOpen" ng-click="cfc.recipientsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Email Recipient(s)</li>
+                    <li ng-if="!cfc.recipientsOpen && cfc.recipientsChanged" ng-click="cfc.cancelEdit('recipients')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cfc.recipientsOpen" ng-click="cfc.saveEdit('recipients')"><i class="fas fa-check"></i> Finish Editing Email Recipient(s)</li>
+                    <li ng-if="cfc.recipientsOpen" ng-click="cfc.cancelEdit('recipients')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">Recipient(s) for the email sent to KOTM when a form is submitted.  Separated by semicolons (;)</div>
+                        <div class="toolbar-help-notify" ng-if="cfc.recipientsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!cfc.recipientsOpen">{{cfc.form.recipients}}</span>
+                <input type="text" ng-model="cfc.form.recipients" ng-if="cfc.recipientsOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!cfc.successTitleOpen" ng-click="cfc.successTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Success Title</li>
+                    <li ng-if="!cfc.successTitleOpen && cfc.successTitleChanged" ng-click="cfc.cancelEdit('successTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cfc.successTitleOpen" ng-click="cfc.saveEdit('successTitle')"><i class="fas fa-check"></i> Finish Editing Success Title</li>
+                    <li ng-if="cfc.successTitleOpen" ng-click="cfc.cancelEdit('successTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title for the success page</div>
+                        <div class="toolbar-help-notify" ng-if="cfc.successTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!cfc.successTitleOpen">{{cfc.form.success.title}}</span>
+                <input type="text" ng-model="cfc.form.success.title" ng-if="cfc.successTitleOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!cfc.successMessageOpen" ng-click="cfc.successMessageOpen = true"><i class="fas fa-pencil-alt"></i> Edit Success Message</li>
+                    <li ng-if="!cfc.successMessageOpen && cfc.successTitleChanged" ng-click="cfc.cancelEdit('successMessage')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cfc.successMessageOpen" ng-click="cfc.saveEdit('successMessage')"><i class="fas fa-check"></i> Finish Editing Success Message</li>
+                    <li ng-if="cfc.successMessageOpen" ng-click="cfc.cancelEdit('successMessage')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the message for the success page</div>
+                        <div class="toolbar-help-notify" ng-if="cfc.successMessageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!cfc.successMessageOpen" ng-bind-html="cfc.form.success.message"></div>
+                <ng-ckeditor ng-if="cfc.successMessageOpen" ng-config="cfc.ckeditorConfig" ng-model="cfc.form.success.message"></ng-ckeditor>
+            </div>
+
+            <div class="form" ng-if="cfc.success">
+                <div class="form-header">
+                    <h1>{{cfc.form.success.title}}</h1>
+                </div>
+                <div class="form-body">
+                    {{cfc.form.success.message}}
+                </div>
+            </div>
+            <div class="form" ng-if="cfc.error">
+                <div class="form-header">
+                    <h1>We're Sorry</h1>
+                </div>
+                <div class="form-body">
+                    {{cfc.errorMessage}}
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="cfc.deleteSectionPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the section: {{cfc.deletedSection.title}}? This will delete the section and all fields included in that section.</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="cfc.deleteSection()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="cfc.cancelDeleteSection()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="cfc.deleteFieldPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the field: {{cfc.deletedField.title}}?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="cfc.deleteField()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="cfc.cancelDeleteField()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="cfc.deleteItemPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the item {{cfc.deletedItem.title}}?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="cfc.deleteItem()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="cfc.cancelDeleteItem()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="cfc.responseErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh Oh!</div>
+            <div class="error-popup-box-body">{{cfc.responseError}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="cfc.responseErrorPopup = false">Ok, I'll Fix It</button>
+            </div>
+        </div>
+    </div>
+    
+</div>

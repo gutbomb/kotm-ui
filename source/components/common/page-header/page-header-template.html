@@ -1,0 +1,71 @@
+<nav class="main-nav">
+    <div class="main-nav-top">
+        <a class="main-nav-top-logo" href="/home"><img src="images/logo.png"></a>
+        <div class="main-nav-top-mobile" ng-click="$root.displayMobileMenu = !$root.displayMobileMenu">Menu <i class="fas fa-bars"></i></div>
+        <div class="main-nav-top-buttons">
+            <a href="/give" class="btn bg-green" role="button">Donate <i class="button-icon icon-donate"></i></a>
+            <a href="/volunteer-portal" class="btn bg-green" role="button">Volunteer <i class="button-icon icon-volunteer"></i></a>
+            <!-- <a ng-if="!$root.isLoggedIn" href="/login" class="btn bg-gray" role="button">User Login <i class="button-icon icon-user"></i></a>
+            <a ng-if="$root.isLoggedIn" href="/my-kotm" class="btn bg-gray" role="button">My KOTM <i class="button-icon icon-user"></i></a> -->
+        </div>
+    </div>
+    <div class="main-nav-bottom">
+        <div class="main-nav-bottom-links">
+            <div class="dropdown">
+                <a class="main-nav-bottom-links-item dropdown-toggle" href="/home" ng-class="$root.activeTab === 'home' ? 'active' : ''">Home</a>
+            </div>
+            <div class="dropdown" ng-repeat="menu in $root.menu | orderBy: 'menuOrder'">
+                <a class="main-nav-bottom-links-item dropdown-toggle" href="#" id="{{menu.internalTitle}}MenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-class="$root.activeTab === menu.internalTitle ? 'active' : ''">{{menu.title}}</a>
+                <div class="dropdown-menu" aria-labelledby="{{menu.internalTitle}}MenuLink">
+                    <a ng-repeat="item in menu.items | orderBy: 'itemOrder'" class="dropdown-item" ng-href="{{item.url}}">{{item.title}}</a>
+                </div>
+            </div>
+            <div class="dropdown" ng-if="($root.user.role === 'admin' || $root.user.role === 'editor') && $root.isLoggedIn">
+                <a class="main-nav-bottom-links-item dropdown-toggle" href="/admin" ng-class="$root.activeTab === 'admin' ? 'active' : ''">Admin</a>
+            </div>
+        </div>
+        <div class="main-nav-bottom-search">
+            <div class="main-nav-bottom-search-social">
+                <a href="https://www.facebook.com/Kidsonthemove" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/kotm_utah/" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="http://www.youtube.com/user/kotmutah" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="mailto:kids@kotm.org" class="main-nav-bottom-search-social-item"><i class="fas fa-envelope"></i></a>
+            </div>
+            <input type="text" placeholder="Search" ng-model="phc.searchString" ng-keyup="$event.keyCode == 13 && phc.search()">
+            <i class="main-nav-bottom-search-button icon-search" ng-click="phc.search()"></i>
+        </div>
+    </div>
+</nav>
+<nav class="main-nav-top-mobile-menu" ng-if="$root.displayMobileMenu">
+    <div class="main-nav-top-mobile-menu-item">
+        <a class="main-nav-top-mobile-menu-item-link" href="/home">Home</a>
+    </div>
+    <div class="main-nav-top-mobile-menu-item" ng-repeat="menu in $root.menu | orderBy: 'menuOrder'">
+        <div class="main-nav-top-mobile-menu-item-link" ng-click="menu.open = !menu.open" ng-class="menu.open ? 'open' :  ''">{{menu.title}} <i class="fas" ng-class="menu.open ? 'fa-chevron-down' :  'fa-chevron-right'"></i></div>
+        <div class="main-nav-top-mobile-menu-item-link-subitem" ng-if="menu.open">
+            <a ng-repeat="item in menu.items | orderBy: 'itemOrder'" class="main-nav-top-mobile-menu-item-link-subitem-link" ng-href="{{item.url}}">{{item.title}}</a>
+        </div>
+    </div>
+    <div class="main-nav-top-mobile-menu-item" ng-if="($root.user.role === 'admin' || $root.user.role === 'editor') && $root.isLoggedIn">
+        <a class="main-nav-top-mobile-menu-item-link" href="/admin">Admin</a>
+    </div>
+    <div class="main-nav-top-mobile-menu-bottom">
+        <div class="triangle"></div>
+        <div class="main-nav-top-mobile-menu-bottom-buttons">
+            <a href="/give" class="btn bg-green" role="button">Donate <i class="button-icon icon-donate"></i></a>
+            <a href="/volunteer-portal" class="btn bg-green" role="button">Volunteer <i class="button-icon icon-volunteer"></i></a>
+            <!-- <a ng-if="!$root.isLoggedIn" href="/login" class="btn bg-gray" role="button">User Login <i class="button-icon icon-user"></i></a>
+            <a ng-if="$root.isLoggedIn" href="/my-kotm" class="btn bg-gray" role="button">My KOTM <i class="button-icon icon-user"></i></a> -->
+        </div>
+        <div class="main-nav-top-mobile-menu-bottom-search">
+            <input type="text" placeholder="Search" ng-model="phc.searchString" ng-keyup="$event.keyCode == 13 && phc.search()">
+            <i class="main-nav-top-mobile-menu-bottom-search-button icon-search" ng-click="phc.search()"></i>
+            <div class="main-nav-bottom-search-social">
+                <a href="https://www.facebook.com/Kidsonthemove" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/kotm_utah/" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="http://www.youtube.com/user/kotmutah" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="mailto:kids@kotm.org" class="main-nav-bottom-search-social-item"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </div>
+</nav>

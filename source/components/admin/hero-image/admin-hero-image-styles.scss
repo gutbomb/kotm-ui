@@ -1,0 +1,27 @@
+.main-container.hero-page {
+    padding: 0;
+
+    .main-toolbar {
+        margin: 0 0 10px 0;
+    }
+
+    div.article-wrapper-image {
+        border: 1px solid $orange;
+        background-color: $accent;
+
+        img {
+            max-height: 150px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid $black;
+
+            &:hover {
+                border-color: $orange;
+            }
+        }
+    }
+
+    .edit-section {
+        padding: 0 60px;
+    }
+}

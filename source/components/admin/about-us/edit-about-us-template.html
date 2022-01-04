@@ -1,0 +1,220 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image hero-id="9"></hero-image>
+<div class="main-container about-us admin-page">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="eauc.historyChanged || eauc.descriptionChanged || eauc.headlineChanged || eauc.endDescriptionChanged || eauc.endHeadlineChanged || eauc.editedChanged || eauc.metaDescriptionChanged || eauc.metaTitleChanged || eauc.metaKeywordsChanged" ng-click="eauc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="eauc.historyChanged || eauc.descriptionChanged || eauc.headlineChanged || eauc.endDescriptionChanged || eauc.endHeadlineChanged || eauc.editedChanged || eauc.metaDescriptionChanged || eauc.metaTitleChanged || eauc.metaKeywordsChanged" ng-click="eauc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <ul class="toolbar">
+                <li ng-if="!eauc.headlineOpen" ng-click="eauc.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                <li ng-if="eauc.headlineOpen" ng-click="eauc.saveEdit('headline')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                <li ng-if="eauc.headlineOpen" ng-click="eauc.cancelEdit('headline')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="eauc.headlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutHeadline'">
+                <h1 ng-if="!eauc.headlineOpen" class="color-green">{{content.content}}</h1>
+                <textarea ng-if="eauc.headlineOpen" ng-model="content.content" class="edit-main-headline"></textarea>
+            </div>
+            <ul class="toolbar">
+                <li ng-if="!eauc.descriptionOpen" ng-click="eauc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                <li ng-if="eauc.descriptionOpen" ng-click="eauc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                <li ng-if="eauc.descriptionOpen" ng-click="eauc.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="eauc.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutDescription'">
+                <div ng-if="!eauc.descriptionOpen" class="board-description" ng-bind-html="content.content"></div>
+                <div class="ng-ckeditor-container"><ng-ckeditor ng-if="eauc.descriptionOpen" ng-config="eauc.ckeditorConfig" ng-model="content.content"></ng-ckeditor></div>
+            </div>
+            <h2>Our Programs</h2>
+            <div class="programs-row">
+                <div class="programs-row-item" ng-repeat="program in eauc.programs">
+                    <div class="img-wrap">
+                        <img ng-src="/images/{{program.aboutImage}}" class="program-about-image">
+                    </div>
+                    <span class="programs-row-item-title" ng-class="'bg-' + program.color">{{program.name}}</span>
+                    <div class="programs-row-item-content">
+                        <p>{{program.mediumDescription}}</p>
+                    </div>
+                    <div class="programs-row-item-button">
+                        <a ng-href="/programs/{{program.link}}" class="btn" ng-class="'bg-' + program.color">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <section class="history">
+                <h2>Our History</h2>
+                <ul class="toolbar history-toolbar">
+                    <li ng-click="eauc.addYear()"><i class="fas fa-plus-square"></i> Add New Year</li>
+                </ul>
+                <div class="history-item" ng-repeat="item in eauc.edited.years | orderBy:'year'">
+                    <div class="history-item-left">
+                        <ul class="toolbar" ng-if="$index % 2 === 1">
+                            <li ng-hide="item.headlineOpen || item.descriptionOpen || item.imageOpen" ng-if="!item.yearOpen" ng-click="eauc.openYear(item.id)"><i class="fas fa-pencil-alt"></i> Edit Year</li>
+                            <li ng-if="item.yearOpen" ng-click="eauc.saveEdit('year', item.id)"><i class="fas fa-check"></i> Finish Editing Year</li>
+                            <li ng-if="item.yearOpen" ng-click="eauc.cancelEdit('year', item.id)"><i class="fas fa-ban"></i> Cancel Editing Year</li>
+                            <li ng-hide="item.yearOpen || item.descriptionOpen || item.imageOpen" ng-if="!item.headlineOpen" ng-click="item.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+                            <li ng-if="item.headlineOpen" ng-click="eauc.saveEdit('headline', item.id)"><i class="fas fa-check"></i> Finish Editing Title</li>
+                            <li ng-if="item.headlineOpen" ng-click="eauc.cancelEdit('headline', item.id)"><i class="fas fa-ban"></i> Cancel Editing Title</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.imageOpen" ng-if="!item.descriptionOpen" ng-click="item.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                            <li ng-if="item.descriptionOpen" ng-click="eauc.saveEdit('description', item.id)"><i class="fas fa-check"></i> Finish Editing Text</li>
+                            <li ng-if="item.descriptionOpen" ng-click="eauc.cancelEdit('description', item.id)"><i class="fas fa-ban"></i> Cancel Editing Text</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.descriptionOpen" ng-if="!item.imageOpen" ng-click="eauc.openGallery(item.id)"><i class="fas fa-images"></i> Select Image</li>
+                            <li ng-if="item.imageOpen" ng-click="eauc.cancelEdit('image', item.id)"><i class="fas fa-ban"></i> Cancel Editing Image</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.descriptionOpen || item.imageOpen" ng-click="eauc.deleteItemWarning(item.id)"><i class="fas fa-trash"></i> Delete Item</li>
+                        </ul>
+                        <h3 ng-if="$index % 2 === 1 && !item.headlineOpen">{{item.headline}}</h3>
+                        <textarea ng-if="$index % 2 === 1 && item.headlineOpen" ng-model="item.headline" class="year-headline"></textarea>
+                        <div class="history-item-content" ng-bind-html="item.content" ng-if="$index % 2 === 1 && !item.descriptionOpen"></div>
+                        <div class="ng-ckeditor-container" ng-if="$index % 2 === 1 && item.descriptionOpen"><ng-ckeditor ng-config="eauc.ckeditorConfig" ng-model="item.content"></ng-ckeditor></div><span class="history-item-year" ng-if="$index % 2 === 0 && !item.yearOpen">{{item.year}}</span>
+                        <input type="text" class="history-item-year" ng-if="$index % 2 === 0 && item.yearOpen" ng-model="item.yearEdit">
+                        <div class="img-wrap" ng-if="$index % 2 === 0 && !item.imageOpen">
+                            <img ng-src="/images/{{item.image}}">
+                        </div>
+                        <div ng-if="$index % 2 === 0 && item.imageOpen" class="image-gallery">
+                            <div class="row image-gallery-controls">
+                                <div class="col-3 image-gallery-controls-prev"><span ng-if="eauc.galleryPage !== 0" ng-click="eauc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                                <div class="col-6 image-gallery-controls-page">Page: {{(eauc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                                <div class="col-3 image-gallery-controls-next"><span ng-hide="(eauc.galleryPage + 30) > filteredGallery.length" ng-click="eauc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                                <div class="col-12"><input type="text" ng-model="eauc.gallerySearchTerm" ng-change="eauc.gallerySearch()" placeholder="Search"></div>
+                            </div>
+                            <div class="row image-gallery-items">
+                                <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (eauc.images | filter:eauc.gallerySearchTerm)) | limitTo: 30:eauc.galleryPage">
+                                    <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="eauc.selectImage(image.filename, item.id)">
+                                    <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                                </div>
+                            </div>
+                            <div class="row image-gallery-upload">
+                                Upload new file: <input type="file" media-upload="eauc.uploadFile"><i ng-if="eauc.uploadFile" class="fas fa-upload" ng-click="eauc.uploadImage(item.id)"></i>
+                                <div class="file-error" ng-if="eauc.fileError">{{eauc.fileError}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <ul class="toolbar" ng-if="$index % 2 === 0">
+                            <li ng-hide="item.headlineOpen || item.descriptionOpen || item.imageOpen" ng-if="!item.yearOpen" ng-click="eauc.openYear(item.id)"><i class="fas fa-pencil-alt"></i> Edit Year</li>
+                            <li ng-if="item.yearOpen" ng-click="eauc.saveEdit('year', item.id)"><i class="fas fa-check"></i> Finish Editing Year</li>
+                            <li ng-if="item.yearOpen" ng-click="eauc.cancelEdit('year', item.id)"><i class="fas fa-ban"></i> Cancel Editing Year</li>
+                            <li ng-hide="item.yearOpen || item.descriptionOpen || item.imageOpen" ng-if="!item.headlineOpen" ng-click="item.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+                            <li ng-if="item.headlineOpen" ng-click="eauc.saveEdit('headline', item.id)"><i class="fas fa-check"></i> Finish Editing Title</li>
+                            <li ng-if="item.headlineOpen" ng-click="eauc.cancelEdit('headline', item.id)"><i class="fas fa-ban"></i> Cancel Editing Title</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.imageOpen" ng-if="!item.descriptionOpen" ng-click="item.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                            <li ng-if="item.descriptionOpen" ng-click="eauc.saveEdit('description', item.id)"><i class="fas fa-check"></i> Finish Editing Text</li>
+                            <li ng-if="item.descriptionOpen" ng-click="eauc.cancelEdit('description', item.id)"><i class="fas fa-ban"></i> Cancel Editing Text</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.descriptionOpen" ng-if="!item.imageOpen" ng-click="eauc.openGallery(item.id)"><i class="fas fa-images"></i> Select Image</li>
+                            <li ng-if="item.imageOpen" ng-click="eauc.cancelEdit('image', item.id)"><i class="fas fa-ban"></i> Cancel Editing Image</li>
+                            <li ng-hide="item.yearOpen || item.headlineOpen || item.descriptionOpen || item.imageOpen" ng-click="eauc.deleteItemWarning(item.id)"><i class="fas fa-trash"></i> Delete Item</li>
+                        </ul>
+                        <h3 ng-if="$index % 2 === 0 && !item.headlineOpen">{{item.headline}}</h3>
+                        <textarea ng-if="$index % 2 === 0 && item.headlineOpen" ng-model="item.headline" class="year-headline"></textarea>
+                        <div class="history-item-content" ng-bind-html="item.content" ng-if="$index % 2 === 0 && !item.descriptionOpen"></div>
+                        <div class="ng-ckeditor-container" ng-if="$index % 2 === 0 && item.descriptionOpen"><ng-ckeditor ng-config="eauc.ckeditorConfig" ng-model="item.content"></ng-ckeditor></div>
+                        <span class="history-item-year" ng-if="$index % 2 === 1 && !item.yearOpen">{{item.year}}</span>
+                        <input type="text" class="history-item-year" ng-if="$index % 2 === 1 && item.yearOpen" ng-model="item.yearEdit">
+                        <div class="img-wrap" ng-if="$index % 2 === 1 && !item.imageOpen">
+                            <img ng-src="/images/{{item.image}}">
+                        </div>
+                        <div ng-if="$index % 2 === 1 && item.imageOpen" class="image-gallery">
+                            <div class="row image-gallery-controls">
+                                <div class="col-2 image-gallery-controls-prev"><span ng-if="eauc.galleryPage !== 0" ng-click="eauc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                                <div class="col-8 image-gallery-controls-page">Page: {{(eauc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                                <div class="col-2 image-gallery-controls-next"><span ng-hide="(eauc.galleryPage + 30) > filteredGallery.length" ng-click="eauc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                                <div class="col-12"><input type="text" ng-model="eauc.gallerySearchTerm" ng-change="eauc.gallerySearch()" placeholder="Search"></div>
+                            </div>
+                            <div class="row image-gallery-items">
+                                <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (eauc.images | filter:eauc.gallerySearchTerm)) | limitTo: 30:eauc.galleryPage">
+                                    <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="eauc.selectImage(image.filename, item.id)">
+                                    <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                                </div>
+                            </div>
+                            <div class="row image-gallery-upload">
+                                Upload new file: <input type="file" media-upload="eauc.uploadFile"><i ng-if="eauc.uploadFile" class="fas fa-upload" ng-click="eauc.uploadImage(item.id)"></i>
+                                <div class="file-error" ng-if="eauc.fileError">{{eauc.fileError}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="history-endline"></div>
+                <div class="history-bottom">
+                    <div class="history-bottom-line"></div>
+                    <div class="history-bottom-headline">
+                        <ul class="toolbar">
+                            <li ng-if="!eauc.endHeadlineOpen" ng-click="eauc.endHeadlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                            <li ng-if="eauc.endHeadlineOpen" ng-click="eauc.saveEdit('endHeadline')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                            <li ng-if="eauc.endHeadlineOpen" ng-click="eauc.cancelEdit('endHeadline')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="eauc.endHeadlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                            </div>
+                        </ul>
+                        <div class="now-container">
+                            <h2>
+                                <span class="circle"></span>
+                                <span ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutHistoryEndHeadline' && !eauc.endHeadlineOpen">{{content.content}}</span>
+                                <textarea ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutHistoryEndHeadline' && eauc.endHeadlineOpen" ng-model="content.content" class="edit-headline"></textarea>
+                            </h2>
+                            <ul class="toolbar">
+                                <li ng-if="!eauc.endDescriptionOpen" ng-click="eauc.endDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                                <li ng-if="eauc.endDescriptionOpen" ng-click="eauc.saveEdit('endDescription')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                                <li ng-if="eauc.endDescriptionOpen" ng-click="eauc.cancelEdit('endDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <div class="toolbar-help">
+                                    <div class="toolbar-help-notify" ng-if="eauc.endDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                                </div>
+                            </ul>
+                            <span ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutHistoryEndText' && !eauc.endDescriptionOpen" ng-bind-html="content.content"></span>
+                            <div class="ng-ckeditor-container" ng-repeat="content in eauc.edited.content" ng-if="content.name==='aboutHistoryEndText' && eauc.endDescriptionOpen"><ng-ckeditor ng-config="eauc.ckeditorConfig" ng-model="content.content"></ng-ckeditor></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="metaData">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!eauc.metaDescriptionOpen" ng-click="eauc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                    <li ng-if="eauc.metaDescriptionOpen" ng-click="eauc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                    <li ng-if="eauc.metaDescriptionOpen" ng-click="eauc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="eauc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!eauc.metaDescriptionOpen">{{eauc.edited.meta.description}}</div>
+                <textarea ng-model="eauc.edited.meta.description" ng-if="eauc.metaDescriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!eauc.metaTitleOpen" ng-click="eauc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                    <li ng-if="eauc.metaTitleOpen" ng-click="eauc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                    <li ng-if="eauc.metaTitleOpen" ng-click="eauc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="eauc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Title: <span ng-if="!eauc.metaTitleOpen">{{eauc.edited.meta.title}}</span><input ng-if="eauc.metaTitleOpen" type="text" ng-model="eauc.edited.meta.title"></div>
+                <ul class="toolbar">
+                    <li ng-if="!eauc.metaKeywordsOpen" ng-click="eauc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                    <li ng-if="eauc.metaKeywordsOpen" ng-click="eauc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                    <li ng-if="eauc.metaKeywordsOpen" ng-click="eauc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                        <div class="toolbar-help-notify" ng-if="eauc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Keywords: <span ng-if="!eauc.metaKeywordsOpen">{{eauc.edited.meta.keywords}}</span><input ng-if="eauc.metaKeywordsOpen" type="text" ng-model="eauc.edited.meta.keywords"></div>
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="eauc.deleteItemPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Delete the Year: <strong>{{eauc.edited.years[eauc.deleteItemIndex].year}}</strong></span>?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="eauc.deleteItem()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="eauc.cancelDeleteItem()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

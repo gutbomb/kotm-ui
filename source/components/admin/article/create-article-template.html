@@ -1,0 +1,171 @@
+<hero-image class="program" hero-id="cac.article.heroId" ng-if="cac.article.heroId && cac.article.layout==='page'"></hero-image>
+<div class="main-container article-page admin-page" ng-class="['accent-' + cac.article.color, !cac.article.heroId && cac.article.layout==='page' ? 'top-border']">
+    <ul class="toolbar main-toolbar">
+        <li ng-if="cac.layoutChanged || cac.colorChanged || cac.heroIdChanged || cac.descriptionChanged || cac.urlChanged || cac.textChanged || cac.imageChanged || cac.titleChanged || cac.newsChanged || cac.metaDescriptionChanged || cac.metaTitleChanged || cac.metaKeywordsChanged" ng-click="cac.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="cac.layoutChanged || cac.colorChanged || cac.heroIdChanged || cac.descriptionChanged || cac.urlChanged || cac.textChanged || cac.imageChanged || cac.titleChanged || cac.newsChanged || cac.metaDescriptionChanged || cac.metaTitleChanged || cac.metaKeywordsChanged" ng-click="cac.submitArticle()"><i class="fas fa-check"></i> Publish New Article</li>
+    </ul>
+    <ul class="toolbar">
+        <li ng-if="!cac.heroIdOpen && cac.article.layout === 'page'" ng-click="cac.heroIdOpen = true"><i class="fas fa-images"></i> Select Image Carousel</li>
+        <li ng-if="cac.heroIdChanged && !cac.heroIdOpen" ng-click="cac.revertEdit('heroId')"><i class="fas fa-undo"></i> Undo Carousel Changes</li>
+        <li ng-if="cac.heroIdOpen" ng-click="cac.heroIdOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <li ng-if="!cac.layoutOpen" ng-click="cac.layoutOpen = true"><i class="fas fa-swatchbook"></i> Choose Page Layout</li>
+        <li ng-if="cac.layoutOpen" ng-click="cac.cancelEdit('layout')"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <li ng-if="!cac.colorOpen" ng-click="cac.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+        <li ng-if="cac.colorOpen" ng-click="cac.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <div class="toolbar-help">
+            <div class="toolbar-help-notify" ng-if="cac.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+        </div>
+    </ul>
+    <div ng-if="cac.heroIdOpen" class="hero-gallery">
+        <div class="row" ng-repeat="hero in cac.heroes">
+            <div class="col-md-3 hero-gallery-title"><span ng-click="cac.selectHero(hero.id)">{{hero.title}}</span></div>
+            <div class="col-md-9 hero-gallery-image">
+                <div class="hero-gallery-image-wrapper" ng-repeat="item in hero.items" ng-click="cac.selectHero(hero.id)">
+                    <img ng-src="/thumbs/{{item.image}}">
+                    <div class="hero-gallery-image-wrapper-headline">{{item.headline}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 hero-gallery-title"><span ng-click="cac.selectHero(false)">None</span></div>
+        </div>
+    </div>
+    <div ng-if="cac.layoutOpen" class="color-gallery">
+        <div class="color-row" ng-click="cac.selectLayout('page')">Page</div>
+        <div class="color-row" ng-click="cac.selectLayout('article')">Article</div>
+    </div>
+    <div ng-if="cac.colorOpen" class="color-gallery">
+        <div class="color-row bg-red" ng-click="cac.selectColor('red')">Red</div>
+        <div class="color-row bg-purple" ng-click="cac.selectColor('purple')">Purple</div>
+        <div class="color-row bg-green" ng-click="cac.selectColor('green')">Green</div>
+        <div class="color-row bg-orange" ng-click="cac.selectColor('orange')">Orange</div>
+        <div class="color-row bg-teal" ng-click="cac.selectColor('teal')">Teal</div>
+        <div class="color-row bg-blue" ng-click="cac.selectColor('blue')">Blue</div>
+        <div class="color-row bg-gray" ng-click="cac.selectColor('gray')">Gray</div>
+    </div>
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content article" role="main">
+            
+            <div class="article-bg" ng-if="cac.article.layout==='article'">
+                <div class="article-bg-left" ng-class="'bg-'+cac.article.color"></div>
+                <div class="article-bg-middle" ng-class="'bg-'+cac.article.color"></div>
+                <div class="article-bg-right" ng-class="'bg-'+cac.article.color"></div>
+            </div>
+            <div class="article-wrapper">
+                <span class="article-wrapper-date" ng-if="cac.article.layout==='article'">{{cac.article.posted | amDateFormat: 'LL'}}</span>
+                <ul class="toolbar" ng-if="cac.article.layout==='article'">
+                    <li ng-if="!cac.imageOpen" ng-click="cac.openGallery()"><i class="fas fa-images"></i> Select New Image</li>
+                    <li ng-if="cac.imageOpen" ng-click="cac.cancelEdit('image')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <li ng-if="cac.article.image && !cac.imageOpen" ng-click="cac.removeImage()"><i class="fas fa-trash"></i> Remove Image</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="cac.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <img ng-if="!cac.imageOpen && cac.article.layout==='article' && cac.article.image" class="article-wrapper-image" ng-src="/images/{{cac.article.image}}" ng-if="cac.article.image">
+                <div ng-if="cac.imageOpen" class="article-wrapper-image">
+                    <img class="gallery-image" ng-repeat="image in cac.images" ng-src="/thumbs/{{image.filename}}" ng-click="cac.selectImage(image.filename)">
+                </div>
+                <ul class="toolbar">
+                    <li ng-if="!cac.titleOpen" ng-click="cac.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                    <li ng-if="cac.titleOpen" ng-click="cac.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                    <li ng-if="cac.titleOpen" ng-click="cac.cancelEdit('title')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="cac.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <h1 ng-if="!cac.titleOpen" ng-class="cac.article.layout === 'article' ? 'article-wrapper-headline' : 'page-headline'">{{cac.article.title}}</h1>
+                <textarea ng-if="cac.titleOpen" ng-model="cac.article.title" ng-change="cac.updateUrl()" ng-class="[cac.article.layout === 'article' ? 'article-wrapper-headline' : 'headline',cac.article.layout === 'article' ? 'article-wrapper-headline' : 'color-' + cac.article.color]"></textarea>
+                
+                <div ng-class="cac.article.layout === 'article' ? 'article-wrapper-content' : ''">
+                    <span ng-if="cac.article.layout==='article'" class="article-wrapper-content-date">Posted {{cac.article.posted | amDateFormat: 'LL'}}</span>
+                    <ul class="toolbar">
+                        <li ng-if="!cac.textOpen" ng-click="cac.textOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                        <li ng-if="cac.textOpen" ng-click="cac.saveEdit('text')"><i class="fas fa-check"></i> Finish Editing Text</li>
+                        <li ng-if="cac.textOpen" ng-click="cac.cancelEdit('text')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="cac.textChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div ng-if="!cac.textOpen" class="article-wrapper-content-text" ng-bind-html="cac.article.text"></div>
+                    <ng-ckeditor ng-if="cac.textOpen" ng-config="cac.ckeditorConfig" ng-model="cac.article.text"></ng-ckeditor>
+                </div>
+            </div>
+            <div class="metaData">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!cac.descriptionOpen" ng-click="cac.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Article Description</li>
+                    <li ng-if="cac.descriptionOpen" ng-click="cac.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                    <li ng-if="cac.descriptionOpen" ng-click="cac.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton appears on the homepage and other places articles are listed.</div>
+                        <div class="toolbar-help-notify" ng-if="cac.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!cac.descriptionOpen">{{cac.article.description}}</div>
+                <textarea ng-model="cac.article.description" ng-if="cac.descriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!cac.urlOpen" ng-click="cac.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                    <li ng-if="cac.urlOpen" ng-click="cac.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                    <li ng-if="cac.urlOpen" ng-click="cac.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to the headline with dashes instead of spaces.</div>
+                        <div class="toolbar-help-notify" ng-if="cac.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="error" ng-if="cac.urlError">{{cac.urlError}}</div>
+                <div class="editUrl">https://kotm.org/article/<span ng-if="!cac.urlOpen">{{cac.article.url}}</span><input ng-if="cac.urlOpen" type="text" ng-model="cac.article.url" ng-change="cac.encodeUrl()"></div>
+                <ul class="toolbar">
+                    <li ng-if="!cac.newsOpen && cac.newsChanged" ng-click="cac.revertEdit('news')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cac.newsOpen" ng-click="cac.cancelEdit('news')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to off.</div>
+                        <div class="toolbar-help-notify" ng-if="cac.newsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl"><label><input type="checkbox" ng-model="cac.article.news" ng-true-value="1" ng-false-value="0" ng-change="cac.saveEdit('news')"> Display in News and Events section on homepage</label></div>
+                <ul class="toolbar">
+                    <li ng-if="!cac.metaDescriptionOpen" ng-click="cac.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                    <li ng-if="!cac.metaDescriptionOpen && cac.metaDescriptionChanged" ng-click="cac.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cac.metaDescriptionOpen" ng-click="cac.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                    <li ng-if="cac.metaDescriptionOpen" ng-click="cac.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="cac.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!cac.metaDescriptionOpen">{{cac.article.meta.description}}</div>
+                <textarea ng-model="cac.article.meta.description" ng-if="cac.metaDescriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!cac.metaTitleOpen" ng-click="cac.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                    <li ng-if="!cac.metaTitleOpen && cac.metaTitleChanged" ng-click="cac.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cac.metaTitleOpen" ng-click="cac.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                    <li ng-if="cac.metaTitleOpen" ng-click="cac.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="cac.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Title: <span ng-if="!cac.metaTitleOpen">{{cac.article.meta.title}}</span><input ng-if="cac.metaTitleOpen" type="text" ng-model="cac.article.meta.title"></div>
+                <ul class="toolbar">
+                    <li ng-if="!cac.metaKeywordsOpen" ng-click="cac.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                    <li ng-if="!cac.metaKeywordsOpen && cac.metaKeywordsChanged" ng-click="cac.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="cac.metaKeywordsOpen" ng-click="cac.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                    <li ng-if="cac.metaKeywordsOpen" ng-click="cac.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                        <div class="toolbar-help-notify" ng-if="cac.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Keywords: <span ng-if="!cac.metaKeywordsOpen">{{cac.article.meta.keywords}}</span><input ng-if="cac.metaKeywordsOpen" type="text" ng-model="cac.article.meta.keywords"></div>        
+                
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="cac.urlError && cac.displayErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh oh!</div>
+            <div class="error-popup-box-body">{{cac.urlError}}</div>
+            <div class="error-popup-box-footer"><button class="btn" ng-click="cac.displayErrorPopup = false">Ok, I'll fix it</button></div>
+        </div>
+    </div>
+</div>

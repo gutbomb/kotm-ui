@@ -1,0 +1,81 @@
+<div class="my-kotm-header">
+    <div class="my-kotm-header-title">My KOTM Account</div>
+    <ul class="my-kotm-header-icons">
+        <li>
+            <a href="#" class="fas fa-bell"></a>
+            <span class="notification-badge" ng-if="mkc.totalNotifications">{{mkc.totalNotifications}}</span>
+        </li>
+        <li><a href="#" class="far fa-question-circle"></a></li>
+        <li><a href="#" class="far fa-user-circle"></a></li>
+        <li><a href="#" class="fas fa-cog"></a></li>
+    </ul>
+</div>
+<div class="my-kotm-main">
+    <div class="my-kotm-main-sidebar">
+        <i class="far fa-user-circle my-kotm-main-sidebar-icon"></i>
+        <span class="my-kotm-main-sidebar-name">{{mkc.user.firstname}} {{mkc.user.lastname}}</span>
+        <span>{{mkc.user.email}}</span>
+        <span ng-if="mkc.user.phone1">{{mkc.user.phone1}}</span>
+        <div class="my-kotm-main-sidebar-notifications">
+            <span class="my-kotm-main-sidebar-notifications-item" ng-repeat="notification in mkc.notifications">
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='inbox' && notification.number>1">{{notification.number}} Unread Messages</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='inbox' && notification.number===1">{{notification.number}} Unread Message</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='billing' && notification.number>1">{{notification.number}} Bills Overdue</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='billing' && notification.number===1">{{notification.number}} Bill Overdue</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='schedule' && notification.number>1">{{notification.number}} Calendar Alerts</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='schedule' && notification.number===1">{{notification.number}} Calendar Alert</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='account' && notification.number>1">{{notification.number}} Account Alerts</a>
+                <a href="#" class="my-kotm-main-sidebar-notifications-item-text" ng-if="notification.name==='account' && notification.number===1">{{notification.number}} Account Alert</a>
+            </span>
+        </div>
+    </div>
+    <div class="my-kotm-main-body">
+        <div class="my-kotm-main-body-search">
+            <input type="text" placeholder="Search Your Account">
+            <i class="my-kotm-main-body-search-button icon-search"></i>
+        </div>
+        <div class="my-kotm-main-body-tiles">
+            <div class="my-kotm-main-body-tiles-item inboxtile">
+                <div class="my-kotm-main-body-tiles-item-icon">
+                    <i class="far fa-envelope"></i>
+                    <span class="notification-badge" ng-repeat="notification in mkc.notifications" ng-if="notification.name==='inbox' && notification.number!==0">{{notification.number}}</span>
+                </div>
+                <span class="my-kotm-main-body-tiles-item-title">My Inbox</span>
+                <div class="my-kotm-main-body-tiles-item-links">
+                    <a href="#">View Inbox</a> | <a href="#">Compose Message</a>
+                </div>
+            </div>
+            <div class="my-kotm-main-body-tiles-item billingtile">
+                <div class="my-kotm-main-body-tiles-item-icon">
+                    <i class="far fa-money-bill-alt"></i>
+                    <span class="notification-badge" ng-repeat="notification in mkc.notifications" ng-if="notification.name==='billing' && notification.number!==0">{{notification.number}}</span>
+                </div>
+                <span class="my-kotm-main-body-tiles-item-title">My Billing</span>
+                <div class="my-kotm-main-body-tiles-item-links">
+                    <a href="#">Go To Billing</a> | <a href="#">Make Payment</a>
+                </div>
+            </div>
+            <div class="my-kotm-main-body-tiles-item scheduletile">
+                <div class="my-kotm-main-body-tiles-item-icon">
+                    <i class="far fa-calendar-alt"></i>
+                    <span class="notification-badge" ng-repeat="notification in mkc.notifications" ng-if="notification.name==='schedule' && notification.number!==0">{{notification.number}}</span>
+                </div>
+                <span class="my-kotm-main-body-tiles-item-title">My Schedule</span>
+                <div class="my-kotm-main-body-tiles-item-links">
+                    <a href="#">View Schedule</a>
+                </div>
+            </div>
+            <div class="my-kotm-main-body-tiles-item accounttile">
+                <div class="my-kotm-main-body-tiles-item-icon">
+                    <i class="far fa-user-circle"></i>
+                    <span class="notification-badge" ng-repeat="notification in mkc.notifications" ng-if="notification.name==='account' && notification.number!==0">{{notification.number}}</span>
+                </div>
+                <span class="my-kotm-main-body-tiles-item-title">My Account</span>
+                <div class="my-kotm-main-body-tiles-item-links">
+                    <a href="#">View Settings</a> | <a href="#">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

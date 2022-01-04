@@ -1,0 +1,160 @@
+<div class="row">
+    <div class="col-sm-9">
+        <h1>Entries</h1>
+    </div>
+    <div class="col-sm-3">
+        <select class="form-control" ng-model="ec.language">
+            <option value="en">English</option>
+            <option value="es">Espa&ntilde;ol</option>
+        </select>
+    </div>
+</div>
+
+<div class="row pt-3">
+    <div class="col-sm-12">
+        <div class="input-group">
+            <select ng-model="ec.color" class="form-control" ng-change="ec.checkEntry()">
+                <option value="">Select Color</option>
+                <option value="black" class="bg-black">Black</option>
+                <option value="blue" class="bg-blue">Blue</option>
+                <option value="green" class="bg-green">Green</option>
+                <option value="orange" class="bg-orange">Orange</option>
+                <option value="purple" class="bg-purple">Purple</option>
+                <option value="red" class="bg-red">Red</option>
+                <option value="white" class="bg-white">White</option>
+                <option value="yellow" class="bg-yellow">Yellow</option>
+            </select>
+            <input type="number" pattern="\d*" ng-model="ec.number" aria-label="Number" class="form-control" placeholder="Number" ng-change="ec.checkEntry()">
+        </div>
+    </div>
+</div>
+<div class="row pt-3" ng-if="ec.message!==''">
+    <div class="alert alert-danger col-sm-12">This client was last denied entry on {{ec.message | amDateFormat:ec.dateFormat }}</div>
+</div>
+<div ng-if="ec.language === 'en'">
+    <div class="row pt-3">
+        <div class="col-sm-12">
+            <ol>
+                <li>
+                    <strong>Symptoms -</strong><br>Do you confirm that no one in your household is currently exhibiting one or more of the following symptoms:
+                    <ul>
+                        <li>Fever (greater than 100F or 37.8C)</li>
+                        <li>Cough</li>
+                        <li>Shortness of breath or difficulty breathing</li>
+                        <li>New or unexplained body aches</li>
+                        <li>Sore throat</li>
+                        <li>Unexplained loss of taste or smell</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Close Contact -</strong><br>Do you confirm that no one in your household has knowingly come into close contact (within 6 feet) with someone who has tested positive for COVID-19 in the past 14 days.
+                </li>
+                <li>
+                    <strong>Official Notification -</strong><br>Do you confirm that no one in your household has been notified by a public health official in the past 14 days regarding diagnosis or possible exposure to COVID-19.
+                </li>
+                <li>
+                    <strong>I will monitor for 48 hrs -</strong><br>I confirm that I will notify my KOTM provider immediately if anyone in my household exhibits any of the six symptoms above over the next 48 hours.
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="alert alert-warning col-sm-12">Please check the temperature of anyone entering the building.  If any of the results are above 100F or 37.8C please click <strong>NO</strong> below.</div>
+    </div>
+    <div class="row pb-3 pt-3">
+        <div class="alert alert-success col-sm-12 dissolve" ng-show="ec.success!==''">{{ec.success}}</div>
+        <div class="alert alert-danger col-sm-12 dissolve" ng-show="ec.error!==''">{{ec.error}}</div>
+    </div>
+    <div class="row pt-3 pb-3">
+        
+        <div class="col-sm-6">
+            <button class="btn btn-lg btn-block btn-danger mb-3" data-toggle="modal" data-target="#warning-modal" ng-click="ec.status=0"><span ng-class="ec.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ec.loading"><i class="fa fa-times-circle"></i> NO</span></button>
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-lg btn-block btn-success mb-3" ng-click="ec.submitStatus()"><span ng-class="ec.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ec.loading"><i class="fa fa-check-circle"></i> YES</span></button>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="warning-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>WORDING TELLING CLIENT THEY HAVE TO LEAVE GOES HERE.  Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ec.submitStatus()">Yes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-if="ec.language === 'es'">
+    <div class="row pt-3">
+        <div class="col-sm-12">
+            <ol>
+                <li>
+                    <strong>Síntomas -</strong><br> Confirma usted que nadie presenta uno o más de los siguientes síntomas actualmente:
+                    <ul>
+                        <li>Fiebre (más de 100 °F o 37.8 °C)</li>
+                        <li>Tos</li>
+                        <li>Falta de aire o dificultad para respirar</li>
+                        <li>Dolores nuevos o sin explicación</li>
+                        <li>Dolor de garganta</li>
+                        <li>Pérdida inexplicable del sabor o del olor</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Contacto cercano -</strong><br> Confirma usted que nadie ha estado en contacto cercano (dentro de 6 pies) con alguien que ha obtenido un resultado positivo por COVID-19 en los últimos 14 días.
+                </li>
+                <li>
+                    <strong>Aviso oficial -</strong><br> Confirma usted que nadie ha recibido una notificación de un oficial de salud pública en los últimos 14 días con respecto a un diagnóstico o a una posible exposición a la COVID-19.
+                </li>
+                <li>
+                    <strong>Voy a realizar un control por 48 horas -</strong><br> Confirma usted que notificaré a mi proveedor de KOTM de inmediato si alguna persona de mi hogar presenta alguno de los seis síntomas mencionados en las próximas 48 horas.
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row pt-3">
+        <div class="alert alert-warning col-sm-12">Please check the temperature of anyone entering the building.  If any of the results are above 100F or 37.8C please click <strong>NO</strong> below.</div>
+    </div>
+    <div class="row pb-3 pt-3">
+        <div class="alert alert-success col-sm-12 dissolve" ng-show="ec.success!==''">{{ec.success}}</div>
+        <div class="alert alert-danger col-sm-12 dissolve" ng-show="ec.error!==''">{{ec.error}}</div>
+    </div>
+    <div class="row pt-3">
+        
+        <div class="col-sm-6">
+            <button class="btn btn-lg btn-block btn-danger mb-3" data-toggle="modal" data-target="#warning-modal" ng-click="ec.status=0"><span ng-class="ec.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ec.loading"><i class="fa fa-times-circle"></i> no</span></button>
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-lg btn-block btn-success mb-3" ng-click="ec.submitStatus()"><span ng-class="ec.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ec.loading"><i class="fa fa-check-circle"></i> sí</span></button>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="warning-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">advertencia</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>WORDING TELLING CLIENT THEY HAVE TO LEAVE GOES HERE.  Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">no</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ec.submitStatus()">sí</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>

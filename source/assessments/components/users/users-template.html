@@ -1,0 +1,85 @@
+<h3>Add Staff</h3>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="input-group client">
+            <input type="text" ng-model="uc.firstName" aria-label="First name" class="form-control" placeholder="First Name" ng-change="uc.checkForm()">
+            <input type="text" ng-model="uc.lastName" aria-label="Last name" class="form-control" placeholder="Last Name" ng-change="uc.checkForm()">
+            <input type="email" ng-model="uc.email" aria-label="email" class="form-control" placeholder="Email" ng-change="uc.checkForm()">
+            <select ng-model="uc.program" ng-if="$root.user.userLevel === 'superadmin'" class="form-control">
+                <option value="">Select Program</option>
+                <option ng-repeat="program in uc.programs" ng-value="program.id">{{program.name}}</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row pt-3">
+    <div class="col-sm-10"></div>
+    <div class="col-sm-2">
+        <button class="btn btn-primary add-user" ng-click="uc.addUser()" ng-disabled="!uc.validForm || uc.loading"><span ng-class="ec.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ec.loading"><i class="fa fa-plus"></i> Add</span></button>
+    </div>
+</div>
+<div class="row pb-3 pt-3">
+    <div class="alert alert-success col-sm-12 dissolve" ng-show="uc.success!==''">{{uc.success}}</div>
+    <div class="alert alert-danger col-sm-12 dissolve" ng-show="uc.error!==''">{{uc.error}}</div>
+</div>
+<h3>Manage Staff</h3>
+<section class="appointments">
+    <div class="row table-header appheader">
+        <div class="col-sm-3">Name</div>
+        <div class="col-sm-2">Status</div>
+        <div class="col-sm-2">Created</div>
+        <div class="col-sm-3">Last Login</div>
+        <div class="col-sm-2"><span class="float-right">Manage</span></div>
+    </div>
+    <div class="row session" ng-repeat="user in uc.users" ng-class="user.enabled ? '' : 'disabled-user'">
+        <div class="col-sm-3">
+            <div ng-if="!user.edit">
+                <div><strong>{{user.firstName}} {{user.lastName}}</strong></div>
+                <div><a href="mailto:{{user.email}}">{{user.email}}</a></div>
+                <div>User Level: {{user.userLevel}}</div>
+                <div>Program: {{user.programName}}</div>
+            </div>
+            <div ng-if="user.edit" class="form-group edit-group mt-3">
+                <div class="input-group">
+                    <input type="text" id="editFirstName" class="form-control" ng-model="uc.editFirstName" placeholder="First Name">
+                    <input type="text" id="editLastName" class="form-control" ng-model="uc.editLastName" placeholder="Last Name">
+                </div>
+                <input type="email" id="editEmail" class="form-control" ng-model="uc.editEmail" placeholder="Email address">
+                <select class="form-control" ng-model="uc.editUserLevel">
+                    <option value="admin">Admin</option>
+                    <option value="superadmin">Super Admin</option>
+                    <option value="user">User</option>
+                </select>
+                <select class="form-control" ng-model="uc.editProgram" ng-if="$root.user.userLevel === 'superadmin'">
+                    <option ng-repeat="program in uc.programs" ng-value="program.id">{{program.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <span ng-if="user.statusDate" ng-click="uc.toggleHistory($index)" ng-class="user.statusHistory.length > 1 ? 'staff-status' : ''">
+                <span class="mobile-only">Status: </span>
+                <i ng-class="!user.status ? ['text-danger', 'fa', 'fa-times-circle'] : ['text-success', 'fa', 'fa-check-circle']"></i>
+                <span>{{user.statusDate | amDateFormat:'M/D/YYYY'}}</span>
+                <i ng-if="user.statusHistory.length > 1" class="fa" ng-class="!user.displayHistory ? 'fa-caret-down' : 'fa-caret-up'"></i>
+            </span>
+            <span ng-if="user.displayHistory && $index !== 0" ng-repeat="statusHistory in user.statusHistory" class="staff-history">
+                <span class="mobile-only">Status: </span>
+                <i ng-class="!statusHistory.status ? ['text-danger', 'fa', 'fa-times-circle'] : ['text-success', 'fa', 'fa-check-circle']"></i>
+                <span>{{statusHistory.date | amDateFormat:'M/D/YYYY'}}</span>
+            </span>
+        </div>
+        <div class="col-sm-2"><span class="mobile-only">Created: </span>{{user.created | amDateFormat:'M/D/YYYY'}}</div>
+        <div class="col-sm-3"><span class="mobile-only">Last Login: </span>{{user.lastLogin | amDateFormat:uc.dateFormat}}</div>
+        <div class="col-sm-2 float-right">
+            <span class="editbutton float-right">
+                <a class="fa fa-calendar" ng-if="!uc.users[$index].edit" ng-href="/assessments/#!/view-appointments/{{user.id}}" data-toggle="tooltip" data-placement="top" title="View Appointments" onclick="this.blur()"></a>
+                <i class="fa fa-key" ng-if="!uc.users[$index].edit" ng-click="uc.resetPassword($index)" data-toggle="tooltip" data-placement="top" title="Reset Password"></i>
+                <i class="fa fa-pencil" ng-if="!uc.users[$index].edit" ng-click="uc.startEdit($index)" data-toggle="tooltip" data-placement="top" title="Edit Staff"></i>
+                <i class="fa fa-lock text-danger" ng-if="!uc.users[$index].edit && uc.users[$index].enabled" ng-click="uc.changeUserLock($index)" data-toggle="tooltip" data-placement="top" title="Disable Staff"></i>
+                <i class="fa fa-unlock text-danger" ng-if="!uc.users[$index].edit && !uc.users[$index].enabled" ng-click="uc.changeUserLock($index)" data-toggle="tooltip" data-placement="top" title="Enable Staff"></i>
+                <i class="fa" ng-class="uc.loading ? ['fa-spinner', 'fa-spin'] : 'fa-save'" ng-if="uc.users[$index].edit" ng-click="uc.saveEdit($index)" data-toggle="tooltip" data-placement="top" title="Save Changes"></i>
+                <i class="fa fa-times" ng-if="uc.users[$index].edit" ng-click="uc.cancelEdit($index)" data-toggle="tooltip" data-placement="top" title="Cancel Changes"></i>
+            </span>
+        </div>
+    </div>
+</section>

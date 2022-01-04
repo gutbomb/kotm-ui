@@ -1,0 +1,185 @@
+.main-container.program-page.admin-page {
+    border-top: 0;
+    padding: 0;
+    .row {
+        margin: 0;
+    }
+
+    main {
+        padding: 0;
+
+        @media screen and (min-width: 1400px) {
+            padding: 0 calc(15% - 60px);
+        }
+    
+        @media screen and (min-width: 1921px) {
+            padding: 0 calc(20% -60px);
+        }
+
+        .btn {
+            input[type=text] {
+                background-color: transparent;
+                font-weight: bold;
+                color: $white;
+            }
+        }
+        .main-sections, .faq-section {
+            margin: 0;
+        }
+        
+        .toolbar {
+            &.tabs {
+                margin: 0;
+                width: 100%;
+                border-bottom: 1px solid $black;
+            }
+
+            &.section-toolbar {
+                margin-bottom: 10px;
+            }
+
+            i {
+                color: $white;
+                margin-right: 0;
+
+                &:hover {
+                    color: $verylightgray;
+                }
+            }
+        }
+
+        .locations-section {
+            padding: 0 60px;
+        }
+
+        h1 {
+            margin-right: 60px;
+            margin-left: 60px;
+        }
+
+        .article-image-left, .article-image-right {
+            .toolbar {
+                z-index: 10;
+                position: absolute;
+                margin-top: 0;
+            }
+        }
+
+        textarea.program-name {
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 80px;
+            margin-top: 20px;
+            height: 100px;
+            margin-right: 60px;
+            margin-left: 60px;
+
+            &.color-green {
+                color: $green;
+            }
+            
+            &.color-gray {
+                color: $gray;
+            }
+            
+            &.color-teal {
+                color: $teal;
+            }
+            
+            &.color-blue {
+                color: $blue;
+            }
+            
+            &.color-orange {
+                color: $orange;
+            }
+            
+            &.color-purple {
+                color: $purple;
+            }
+            
+            &.color-red {
+                color: $red;
+            }
+        }
+
+        textarea.section-title {
+            font-family: 'Memphis';
+            font-size: 30px;
+            margin-bottom: 20px;
+            line-height: 30px;
+            height: 40px;
+        }
+    }
+
+    .tab-bar {
+        top: 34px;
+
+        .tab {
+            input[type=text] {
+                width: auto;
+                background-color:transparent;
+                height: auto;
+                line-height: 10px;
+                text-transform: inherit;
+            }
+        }
+    }
+
+    .tab-border {
+        top: 93px;
+    }
+
+    .tab-bar, .tab-border {
+        margin: 0;
+    }
+
+    .editUrl {
+        display: flex;
+        line-height: 1.5rem;
+        align-items: center;
+
+        &.apply {
+            margin: 0 60px;
+        }
+    }
+    .error {
+        background-color: $orange;
+        border: 3px solid $red;
+        padding: 3px;
+        color: $red;
+    }
+    .article-wrapper {
+        &-image {
+            margin-top: 0;
+        }
+
+        &-headline {
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+    }
+    textarea.article-wrapper-headline {
+        height: auto;
+    }
+
+    div.article-wrapper-image {
+        border: 1px solid $orange;
+        background-color: $accent;
+
+        img {
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid $black;
+
+            &:hover {
+                border-color: $orange;
+            }
+        }
+    }
+
+    .section-text-container {
+        min-height: 300px;
+    }
+}
+

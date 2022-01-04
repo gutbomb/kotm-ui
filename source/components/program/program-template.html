@@ -1,0 +1,53 @@
+<hero-image class="program" hero-id="pc.program.heroId" ng-if="pc.ready"></hero-image>
+<ul class="tab-bar" ng-class="'bg-' + pc.program.color" ng-if="pc.program.tabs.length > 1">
+    <li class="tab" ng-repeat="tab in pc.program.tabs | orderBy:'tabOrder'" ng-class="[tab.activeTab ? 'active' : '', 'bg-' + pc.program.color]" ng-click="pc.changeTab($index)">{{tab.title}}</li>
+</ul>
+<div class="tab-border" ng-class="'bg-'+pc.program.color" ng-if="pc.program.tabs.length > 1"></div>
+<div class="main-container program-page" ng-class="'accent-' + pc.program.color">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div ng-repeat="tab in pc.program.tabs" ng-if="tab.activeTab">
+                <h1 ng-class="'color-' + pc.program.color" >{{pc.program.name}}</h1>
+                <div class="main-sections">
+                    <div class="triangle" ng-class="'bg-' + pc.program.color"></div>
+                    <section ng-repeat="section in tab.sections | orderBy:'sectionOrder'">
+                        <h2 ng-if="section.title">{{section.title}}</h2>
+                        <div class="img-wrap" ng-class="section.imagePosition" ng-if="section.image">
+                            <img ng-src="/images/{{section.image}}">
+                        </div>
+                        <div class="section-text-container">
+                            <div ng-bind-html="section.text"></div>
+                            <a ng-href="{{section.buttonLink}}" ng-if="section.buttonLink" class="btn" ng-class="'bg-' + pc.program.color">{{section.buttonText}}</a>
+                        </div>
+                    </section>
+                </div>
+                <section ng-if="pc.program.locations.length">
+                    <h2>{{pc.program.locationsTitle}}</h2>
+                    <span ng-bind-html="pc.program.locationsDescription"></span>
+                    <div class="locations">
+                        <div ng-repeat="location in pc.program.locations| orderBy:'locationOrder'" class="location">
+                            <div class="img-wrap">
+                                <img ng-if="location.image" ng-src="/images/{{location.image}}">
+                            </div>
+                            <h3>{{location.title}}</h3>
+                            <span ng-bind-html="location.description"></span>
+                        </div>
+                    </div>
+                </section>
+                <div class="apply-button-container" ng-if="pc.program.displayApplyButton">
+                    <a ng-href="{{pc.program.applyButtonLink}}" class="btn" ng-class="'bg-' + pc.program.color">{{pc.program.applyButtonText}}</a>
+                </div>
+                <div class="faq-section" ng-if="pc.program.questions">
+                    <div class="triangle" ng-class="'bg-' + pc.program.color"></div>
+                    <section class="faq">
+                        <h2>Frequently Asked Questions</h2>
+                        <div class="question-block" ng-repeat="question in pc.program.questions | orderBy:'questionOrder'">
+                            <div class="question" ng-click="question.displayAnswer = !question.displayAnswer"><i class="fas" ng-class="question.displayAnswer ? 'fa-minus' : 'fa-plus'"></i> {{question.question}}</span>
+                            <div class="answer" ng-if="question.displayAnswer" ng-bind-html="question.answer"></span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

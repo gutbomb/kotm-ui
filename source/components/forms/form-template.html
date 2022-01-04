@@ -1,0 +1,50 @@
+<div class="main-container form-page top-border" ng-class="'accent-' + fc.form.color">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <form name="mainForm" class="form" ng-if="!fc.success && !fc.error">
+                <div class="form-header">
+                    <h1>{{fc.form.title}}</h1>
+                </div>
+                <div class="form-body">
+                    <div ng-bind-html="fc.form.description"></div>
+                    <hr>
+                    <div ng-repeat="section in fc.form.sections | orderBy: 'order'">
+                        <h2 ng-if="section.title!==''">{{section.title}}</h2>
+                        <div ng-repeat="field in section.fields | orderBy: 'order'">
+                            <label>{{field.title}} <span class="required" ng-if="field.required">*</span></label>
+                            <input type="text" ng-model="field.value" ng-if="field.type==='text'" ng-required="field.required">
+                            <input type="tel" ng-model="field.value" ng-if="field.type==='tel'" ng-required="field.required">
+                            <input type="email" ng-model="field.value" ng-if="field.type==='email'" ng-required="field.required">
+                            <label ng-if="field.type==='radio'" ng-repeat="item in field.items | orderBy: 'order'" class="radio"><input type="radio" ng-model="field.value" ng-value="item" ng-required="field.required && !field.value">{{item.title}}</label>
+                            <label ng-if="field.type==='checkbox'" ng-repeat="item in field.items | orderBy: 'order'" class="radio"><input type="checkbox" ng-model="item.value" ng-value="item.value">{{item.title}}</label>
+                            <select ng-if="field.type==='select'" ng-model="field.value">
+                                <option ng-repeat="item in field.items | orderBy: 'order'" ng-value="item.title">{{item.title}}</option>
+                            </select>
+                            <div moment-picker="field.value" max-view="day" format="MM/DD/YYYY" today="true" locale="en-US" ng-if="field.type==='date'"> {{field.value | amDateFormat: 'MM/DD/YYYY'}}</div>
+                            <div ng-if="field.type==='file'"><input type="file" ng-model="field.value" form-upload ng-change="fc.uploadFile(section.id, field.id)"> <i class="fas fa-spinner fa-spin" ng-if="fc.uploading"></i></div>
+                            <div ng-if="field.type==='uploadFile'">{{field.value}} <i class="fas fa-trash" ng-click="fc.removeFile(section.id, field.id)"></i></div>
+                            <textarea ng-if="field.type==='textarea'" ng-model="field.value"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button class="btn" ng-click="fc.submitForm()" ng-disabled="mainForm.$invalid"><span ng-if="!fc.submitting">{{fc.form.submit}}</span><span ng-if="fc.submitting"><i class="fas fa-spinner fa-spin"></i></span></button>
+                </div>
+            </form>
+            <div class="form" ng-if="fc.success">
+                <div class="form-header">
+                    <h1>{{fc.form.success.title}}</h1>
+                </div>
+                <div class="form-body" ng-bind-html="fc.form.success.message"></div>
+            </div>
+            <div class="form" ng-if="fc.error">
+                <div class="form-header">
+                    <h1>We're Sorry</h1>
+                </div>
+                <div class="form-body">
+                    {{fc.errorMessage}}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+.main-container.landing-page {
+    border-top: 30px solid $green;
+
+    @media screen and (max-width: 1399px) {
+        padding: 0;
+    }
+    
+    h1, .landing-description {
+        margin-left: 60px;
+        margin-right: 60px;
+        margin-bottom: 20px;
+
+        @media screen and (max-width: $phone) {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+        }
+    }
+
+    .landing-section {
+        position: relative;
+        margin-left: 0;
+        padding-left: 60px;
+        padding-bottom: 20px;
+        background-image: linear-gradient(to right,  rgba(255,255,255,1), rgba(0,0,0,0),);
+
+        @media screen and (max-width: $phone) {
+            padding: 0 20px;
+            background-image: none;
+        }
+
+        h2 {
+            margin-bottom: 0;
+        }
+
+        hr {
+            @media screen and (min-width: $phone) {
+                display: none;
+            }
+        }
+
+        .section-image {
+            position: absolute;
+            right: 0;
+            z-index: -1;
+            width: auto;
+            height: 100%;
+
+            @media screen and (max-width: $phone) {
+                display: none;
+            }
+        }
+
+        i {
+            font-size: 80px;
+            margin-top: 20px;
+        }
+    
+        p, ul, li {
+            margin-top: 10px;
+            width: 300px;
+            
+            @media screen and (max-width: $phone) {
+                width: 100%;
+            }
+         
+        }
+
+        h3 {
+            text-transform: initial;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            margin-right: 60px;
+            align-items: center;
+
+            .btn {
+                margin-bottom: 10px;
+            }
+
+            @media screen and (max-width: $phone) {
+                margin-right: 0;
+                align-items: initial;
+            }
+        }
+
+        
+    }
+
+    .faq-section {
+        background-color: $verylightgray;
+        padding-top: 10px;
+
+        .faq {
+            margin-left: 0;
+            
+            h2, .question-block {
+                margin-left: 60px;
+
+                @media screen and (max-width: $phone) {
+                    margin-left: 20px;
+                }
+            }
+    
+            h2 {
+                margin-top: 10px;
+            }
+    
+            padding-bottom: 10px;
+        }
+    }
+    
+}

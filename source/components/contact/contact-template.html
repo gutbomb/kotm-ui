@@ -1,0 +1,68 @@
+<div class="main-container form-page contact-page top-border">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="form" ng-if="!cc.success && !cc.error">
+                <div class="form-header">
+                    <h1>Contact Us</h1>
+                </div>
+                <div class="form-body">
+                    <label>Name</label>
+                    <input type="text" ng-model="cc.contact.name">
+                    <label>Phone Number</label>
+                    <input type="tel" ng-model="cc.contact.phone">
+                    <label>Email</label>
+                    <input type="email" ng-model="cc.contact.email">
+                    <label class="subscribe">
+                        <input type="checkbox" ng-model="cc.contact.subscribe">
+                        Yes, I would like to sign-up for the Kids On The Move newsletter
+                    </label>
+                    <label>Message</label>
+                    <textarea ng-model="cc.contact.message"></textarea>
+                </div>
+                <div class="form-footer">
+                    <button class="btn bg-green" ng-click="cc.submitContact()">Submit</button>
+                </div>
+            </div>
+            <div class="form" ng-if="cc.success">
+                <div class="form-header">
+                    <h1>Thank You</h1>
+                </div>
+                <div class="form-body">
+                    Someone from Kids On The Move will get back to you shortly!
+                </div>
+            </div>
+            <div class="form" ng-if="cc.error">
+                <div class="form-header">
+                    <h1>We're Sorry</h1>
+                </div>
+                <div class="form-body">
+                    We are experiencing technical difficulties.  Your message was not sent.  Please try again later.
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="contact-social">
+        <a href="https://www.facebook.com/Kidsonthemove" class="contact-social-item" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/kotm_utah/" class="contact-social-item" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="http://www.youtube.com/user/kotmutah" class="contact-social-item" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="mailto:kids@kotm.org" class="contact-social-item"><i class="fas fa-envelope"></i></a>
+    </div>
+    <div class="hero-container">
+        <div class="overlay topright"></div>
+        <div class="hero-inner">
+            <img class="main-img" ng-src="/images/2021-02-22-09-16-Kids On the Move Inc - Google Maps saved.jpg">
+            <div class="text topright">
+                <div class="topline">Address</div>
+                <div class="headline">475 WEST 260 NORTH<br>OREM, UT 84057</div>
+            </div>
+            <div class="text middleright">
+                <div class="topline">Phone</div>
+                <div class="headline">801.221.9930</div>
+            </div>
+            <div class="text bottomright">
+                <div class="topline">Fax</div>
+                <div class="headline">801.221.0649</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+.main-container.error-page {
+    padding: 0;
+    position: relative;
+
+    img {
+        width: 100%;
+        
+    }
+
+    .error-message {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        color: $white;
+        font-weight: 500;
+        width: 40%;
+
+        @media screen and (max-width: $phone) {
+            width: auto;
+            left: 20px;
+        }
+
+        h1 {
+            font-weight: 900;
+            font-size: 150px;
+
+            @media screen and (max-width: $phone) {
+                font-size: 60px;
+            }
+        }
+
+        p {
+            font-size: 50px;
+            line-height: 60px;
+
+            @media screen and (max-width: $phone) {
+                margin-top: 40px;
+                font-size: 30px;
+                line-height: 30px;
+            }
+        }
+
+        padding: 0;
+    }
+
+    .error-button {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        width: 220px;
+        text-align: center;
+        bottom: 25%;
+        border: 3px solid $white;
+        color: $white;
+        text-transform: uppercase;
+        font-weight: 500;
+        padding: 8px;
+
+        @media screen and (max-width: $phone) {
+            bottom: 20px;
+        }
+    }
+}

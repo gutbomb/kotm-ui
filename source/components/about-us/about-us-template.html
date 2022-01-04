@@ -1,0 +1,67 @@
+<hero-image hero-id="9"></hero-image>
+<div class="main-container about-us">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <h1 ng-repeat="content in auc.history.content" ng-if="content.name==='aboutHeadline'" class="color-green">{{content.content}}</h1>
+            <div ng-repeat="content in auc.history.content" ng-if="content.name==='aboutDescription'" ng-bind-html="content.content"></div>
+            <h2 class="programs-row-headline">Our Programs</h2>
+            <div class="programs-row">
+                <div class="programs-row-item" ng-repeat="program in auc.programs">
+                    <div class="img-wrap">
+                        <img ng-src="/images/{{program.aboutImage}}" class="program-about-image">
+                    </div>
+                    <span class="programs-row-item-title" ng-class="'bg-' + program.color">{{program.name}}</span>
+                    <div class="programs-row-item-content">
+                        <p>{{program.mediumDescription}}</p>
+                    </div>
+                    <div class="programs-row-item-button">
+                        <a ng-href="/programs/{{program.link}}" class="btn" ng-class="'bg-' + program.color">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <section class="history">
+                <h2>Our History</h2>
+                <div class="history-item" ng-repeat="item in auc.history.years | orderBy:'year'">
+                    <div class="history-item-mobile">
+                        <span class="history-item-year">{{item.year}}</span>
+                        <div class="img-wrap">
+                            <img ng-src="/images/{{item.image}}">
+                        </div>
+                        <h3>{{item.headline}}</h3>
+                        <div class="history-item-content" ng-bind-html="item.content"></div>
+                    </div>
+                    <div class="history-item-left">
+                        <h3 ng-if="$index % 2 === 1" class="fade-in">{{item.headline}}</h3>
+                        <div class="history-item-content fade-in" ng-bind-html="item.content" ng-if="$index % 2 === 1"></div>
+                        <span class="history-item-year fade-in" ng-if="$index % 2 === 0">{{item.year}}</span>
+                        <div class="img-wrap" ng-if="$index % 2 === 0">
+                            <img ng-src="/images/{{item.image}}" class="fade-in">
+                        </div>
+                    </div>
+                    <div class="history-item-right">
+                        <h3 ng-if="$index % 2 === 0" class="fade-in">{{item.headline}}</h3>
+                        <div class="history-item-content fade-in" ng-bind-html="item.content" ng-if="$index % 2 === 0"></div>
+                        <span class="history-item-year fade-in" ng-if="$index % 2 === 1">{{item.year}}</span>
+                        <div class="img-wrap" ng-if="$index % 2 === 1">
+                            <img ng-src="/images/{{item.image}}" class="fade-in">
+                        </div>
+                    </div>
+                </div>
+                <div class="history-endline"></div>
+                <div class="history-bottom">
+                    <div class="history-bottom-line"></div>
+                    <div class="history-bottom-headline">
+                        <div class="now-container">
+                            <h2>
+                                <span class="circle"></span>
+                                <span ng-repeat="content in auc.history.content" ng-if="content.name==='aboutHistoryEndHeadline'">{{content.content}}</span>
+                            </h2>
+                            <span ng-repeat="content in auc.history.content" ng-if="content.name==='aboutHistoryEndText'" ng-bind-html="content.content"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+

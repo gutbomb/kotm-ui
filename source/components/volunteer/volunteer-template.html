@@ -1,0 +1,223 @@
+<script src="//cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
+<script language="javascript" type="text/javascript">
+    /*
+     * Message handling code
+     */
+    function popupMessage(text, title) {
+        if( title === undefined || title === null || title === "" ) {
+            $('#standard-message > div.popup-message-title').hide();
+            $('#standard-message > div.popup-message-title').html('');
+            $('#standard-message > div.popup-message-text').removeClass('popup-message-text-posttitle');
+        }
+        else {
+            $('#standard-message > div.popup-message-title').show();
+            $('#standard-message > div.popup-message-title').html(title);
+            $('#standard-message > div.popup-message-text').addClass('popup-message-text-posttitle');
+        }
+        return _popupHandler(text, "standard-message");
+    }
+    function popupError(text) {
+        return _popupHandler(text, "error-message");
+    }
+    function popupConfirm(text) {
+        return _popupHandler(text, "confirm-message");
+    }
+    var msgPromiseResolves = {};
+    function _popupHandler(_text, _typeId) {
+        var text = _text;
+        var typeId = _typeId;
+        return new Promise(function(resolve, reject){
+            // set the message text
+            $('#'+typeId+' > div.popup-message-text').html(text);
+            
+            // set up click handlers for clearing the message
+            $('#'+typeId+' > div.popup-message-button').unbind('click');
+            $('#'+typeId+' > div.popup-message-button').click(function(){
+                // clear the saved promise's resolve() since we're about to resolve it
+                delete(msgPromiseResolves[typeId]);
+                // deactivate key handlers and enable scrolling (if this is the last message still visible)
+                if(getCountMessagesShowing() <= 1) {
+                    $(document).unbind('keyup', vol_portal_msg_key_handler);
+                    $('#vol-sys-frame').contents().unbind('keyup', vol_portal_msg_key_handler);
+                    enableScrolling();
+                    $(window).unbind('resize', disableScrolling);
+                }
+                // hide message
+                $("#"+typeId).fadeOut(200, function(){
+                    $('#'+typeId).css("z-index", 999); // reset to default messagebox z-index
+                });
+                $('#lightbox-'+typeId).fadeOut(200, function(){
+                    $('#lightbox-'+typeId).css("z-index", 998); // reset to default lightbox z-index
+                });
+                // Delay button processing to make sure things have time to clear before any page load.
+                // Without delay, the lightbox can fail to show on a subsequent message when rapid clicking.
+                var button = this;
+                setTimeout( function(){
+                    resolve( button.getAttribute('name') );
+                }, 100);
+            });
+            $('#lightbox-'+typeId).unbind('click');
+            $('#lightbox-'+typeId).click(function(){
+                $("#"+typeId+" > div.popup-message-button[esc_key_default='true']").click();
+            });
+            
+            // If any other messages are showing besides this one, promote this one to the top
+            var topMsg = getTopMessage();
+            if(topMsg != null && topMsg.attr('id') !== typeId) {
+                // there is a top message (visible) and it's not this message, so promote this message above
+                var topZIndex = parseInt(topMsg.css('z-index'), 10);
+                $('#lightbox-'+typeId).css('z-index', topZIndex+1);
+                $('#'+typeId).css('z-index', topZIndex+2);
+            }
+            
+            // if this is the first message, activate key handlers (e.g., so ESC and ENTER keys work) and disable scrolling
+            if(getCountMessagesShowing() < 1) {
+                $('#vol-sys-frame').contents().keyup(vol_portal_msg_key_handler);
+                $(document).keyup(vol_portal_msg_key_handler);
+                disableScrolling();
+                // update the disabled scrolling any time screen is resized or zoomed in case presence of scrollbar/scrolling changes
+                $(window).resize(disableScrolling);
+            }
+            
+            // show the message
+            $('#lightbox-'+typeId).show();
+            $('#'+typeId).show();
+            
+            // if this message type is being repeated without having been closed, then resolve the prior instantiation's dangling promise
+            if(msgPromiseResolves[typeId]) {
+                var buttonNameUsedForLightboxTap = $("#"+typeId+" > div.popup-message-button[esc_key_default='true']").attr('name');
+                msgPromiseResolves[typeId]( buttonNameUsedForLightboxTap );
+            }
+            // store the new promise's resolve() so it can be resolved if the message gets repeated without closing
+            msgPromiseResolves[typeId] = resolve;
+        });
+    }
+    function disableScrolling() {
+        // We don't want to just set overflow to hidden or in windows any scrollbars will disappear and the screen will jump as a result.
+        if( $(document).height() > $(window).height() ) {
+            // Only disable scrolling if a scrollbar is on the screen. Otherwise, it will cause a scrollbar to appear in Windows, and the screen will jump.
+            var scrollTop = ($('html').scrollTop()) ? $('html').scrollTop() : $('body').scrollTop(); // Works for Chrome, Firefox, IE...
+            $('html').addClass('noscroll').css('top',-scrollTop); // set top postion to keep screen from jumping to top
+        }
+        else {
+            enableScrolling();
+        }
+    }
+    function enableScrolling() {
+        var scrollTop = parseInt($('html').css('top'));
+        $('html').removeClass('noscroll');
+        $('html,body').scrollTop(-scrollTop); // set top position to keep screen from jumping to top
+    }
+    function vol_portal_msg_key_handler(e) {
+        var topMsg = getTopMessage();
+        if(topMsg == null) {
+            return;
+        }
+        var topTypeId = topMsg.attr('id');
+        if(e.which == 27) {
+            // ESCAPE key
+            $("#"+topTypeId+" > div.popup-message-button[esc_key_default='true']").click();
+        }
+        else if(e.which == 13) {
+            // ENTER key
+            $("#"+topTypeId+" > div.popup-message-button[enter_key_default='true']").click();
+        }
+    }
+    function getTopMessage() {
+        var topZIndex = -1;
+        var topMsg = null;
+        getMessageElements().forEach(function(item, index){
+            // only consider visible elements that are higher than any seen so far
+            var zIndex = parseInt(item.css('z-index'), 10);
+            if(item.is(":visible") && zIndex > topZIndex) {
+                topZIndex = zIndex;
+                topMsg = item;
+            }
+        });
+        return topMsg;
+    }
+    function getCountMessagesShowing() {
+        var count = 0;
+        getMessageElements().forEach(function(item, index){
+            if(item.is(":visible")) {
+                count++;
+            }
+        });
+        return count/2; // divide by two so as to not count both the messageboxes and lightboxes
+    }
+    function getMessageElements() {
+        return [$('#lightbox-standard-message'), $('#standard-message'), $('#lightbox-error-message'), $('#error-message'), $('#lightbox-confirm-message'), $('#confirm-message')];
+    }
+    function highlightButton(id) {
+        $('#'+id).addClass('popup-message-button-active');
+    }
+    function unhighlightButton(id) {
+        $('#'+id).removeClass('popup-message-button-active');
+    }
+
+    /*
+     * Frame handling code
+     */ 
+    var skipNextScrollTopOnIframeResize = false;
+    function skipNextScrollTop() {
+        skipNextScrollTopOnIframeResize = true;
+    }
+    function getIframeTop() {
+        return $("#vol-sys-frame").offset().top;
+    }
+    function getIframeHeight() {
+        return $('#vol-sys-frame').height();
+    }
+    function setIframeHeight(size) {
+        $('#vol-sys-frame').height(size);
+    }
+    function resizeIframe(scrollTop) {
+        if(scrollTop && skipNextScrollTopOnIframeResize) {
+            scrollTop = false;
+            skipNextScrollTopOnIframeResize = false;
+        }
+        var scrollPosition = $(window).scrollTop();
+        
+        var frame = document.getElementById('vol-sys-frame');
+        // In some browsers (though not all):
+        // 		"scrollHeight" is at least as tall as the frame itself, plus more if the
+        // 		inner content is taller than the frame. Therefore, in order to make the 
+        // 		frame shrink when the content shrinks, we set the frame height low before 
+        // 		measuring the scroll height. This way, the scroll height always measures 
+        // 		the height of the actual inner content (and never the frame itself).
+        frame.style.height = '50px';
+        // the "+100" is because some browsers report the height just a bit short and/or
+        // the scrollbar flashes on the screen briefly when elements expand/contract the
+        // iframe height; buffer prevents all of that
+        var height = frame.contentWindow.document.body.scrollHeight + 86;
+        if(height > 50) { // good minimum size for all pages
+            frame.style.height = height + 'px';
+        }
+        
+        if(scrollTop) {
+            window.scrollTo(window.scrollX, 0);
+        }
+        else {
+            window.scrollTo(window.scrollX, scrollPosition);
+        }
+    }
+</script>
+<div class="main-container volunteer-page">
+    <!-- Message elements -->
+    <!-- These need to be before the header so they can overlay the entire screen. -->
+    <div id="lightbox-standard-message" class="lightbox" style="display:none;"></div>
+    <div id="standard-message" class="standard-message" style="display:none;"><div class="popup-message-title"></div><div class="popup-message-text"></div><div class="popup-message-button" id="popup-message-button-std-msg" name="OK" esc_key_default="true" enter_key_default="true" onmousedown="javascript:highlightButton(this.id);" onmouseleave="javascript:unhighlightButton(this.id);" onmouseup="javascript:unhighlightButton(this.id);">OK</div></div>
+    <div id="lightbox-error-message" class="lightbox" style="display:none;"></div>
+    <div id="error-message" class="standard-message error-message" style="display:none;"><div class="popup-message-title">Error</div><div class="popup-message-text popup-message-text-posttitle"></div><div class="popup-message-button" id="popup-message-button-err-msg" name="OK" esc_key_default="true" enter_key_default="true" onmousedown="javascript:highlightButton(this.id);" onmouseleave="javascript:unhighlightButton(this.id);" onmouseup="javascript:unhighlightButton(this.id);">OK</div></div>
+    <div id="lightbox-confirm-message" class="lightbox" style="display:none;"></div>
+    <div id="confirm-message" class="standard-message confirm-message" style="display:none;"><div class="popup-message-title">Please Confirm</div><div class="popup-message-text popup-message-text-posttitle"></div><div class="popup-message-button popup-message-button-left" id="popup-message-button-confirm-cancel" name="CANCEL" esc_key_default="true" onmousedown="javascript:highlightButton(this.id);" onmouseleave="javascript:unhighlightButton(this.id);" onmouseup="javascript:unhighlightButton(this.id);">Cancel</div><div class="popup-message-button popup-message-button-right" id="popup-message-button-confirm-ok" name="OK" enter_key_default="true" onmousedown="javascript:highlightButton(this.id);" onmouseleave="javascript:unhighlightButton(this.id);" onmouseup="javascript:unhighlightButton(this.id);">OK</div></div>
+
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="main-header">
+                <h1>Volunteer Portal</h1>
+            </div>
+            <iframe id="vol-sys-frame" class="core_iframe" src="{{vc.iframe}}" height="100%" width="100%" frameborder="0" scrolling="auto" style="border: none; height: 1936px;" onload="resizeIframe(true)"></iframe>
+        </main>
+    </div>
+</div>

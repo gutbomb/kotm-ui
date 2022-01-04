@@ -1,0 +1,107 @@
+<div class="main-container hero-page admin-page">
+    <ul class="toolbar main-toolbar">
+        <li ng-if="chc.heroChanged" ng-click="chc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="chc.heroChanged" ng-click="chc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="hero-container" ng-mouseenter="chc.mouseOnHero = true" ng-mouseleave="chc.mouseOnHero = false">
+        <div class="overlay" ng-class="chc.overlayClass"></div>
+        <div class="hero-inner" ng-repeat="hero in chc.hero.items | orderBy: 'heroOrder'" ng-show="hero.active">
+            <img class="main-img" ng-src="/images/{{hero.image}}">
+            <div class="text" ng-class="hero.position" ng-if="hero.position !== 'no-overlay'">
+                <div class="topline">{{hero.topline}}</div>
+                <div class="headline">{{hero.headline}}</div>
+                <div class="description">{{hero.description}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-pager" ng-mouseenter="chc.mouseOnHero = true" ng-mouseleave="chc.mouseOnHero = false" ng-if="chc.hero.items.length > 1">
+        <span ng-click="chc.changeHero(hero.id)" class="hero-pager-item" ng-repeat="hero in chc.hero.items | orderBy: 'heroOrder'" ng-class="chc.activeHero === chc.getHeroIndex(hero.id) ? 'active' : ''"></span>
+    </div>
+    <section class="edit-section">
+        <ul class="toolbar">
+            <li ng-if="!chc.titleOpen" ng-click="chc.addFrame()"><i class="fas fa-plus-square"></i> Add Frame</li>
+            <li ng-if="!chc.titleOpen" ng-click="chc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+            <li ng-if="chc.titleOpen" ng-click="chc.cancelEdit()"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <li ng-if="chc.titleOpen" ng-click="chc.saveEdit()"><i class="fas fa-check"></i> Finish Editing</li>
+        </ul>
+        <div>Carousel Title: <span ng-if="!chc.titleOpen">{{chc.hero.title}}</span><input ng-if="chc.titleOpen" type="text" ng-model="chc.hero.title"></div>
+        <div class="edit-section-item" ng-repeat="hero in chc.hero.items | orderBy: 'heroOrder'" ng-hide="chc.detailsOpen && !hero.detailsOpen">
+            <ul class="toolbar">
+                <li ng-hide="hero.detailsOpen" ng-click="chc.deleteFrameWarning(hero.id)"><i class="fas fa-trash"></i> Delete Frame</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.heroOrder !== 0 && chc.hero.items.length > 1" ng-click="chc.moveImage('up', hero.heroOrder, hero.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.heroOrder !== (chc.hero.items.length - 1)" ng-click="chc.moveImage('down', hero.heroOrder, hero.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                <li ng-hide="hero.detailsOpen" ng-if="!hero.imageOpen" ng-click="chc.openGallery(hero.id)"><i class="fas fa-images"></i> Choose Image</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.imageOpen" ng-click="chc.cancelEdit(hero.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <li ng-if="!hero.detailsOpen" ng-click="chc.openDetails(hero.id)"><i class="fas fa-pencil-alt"></i> Edit Details</li>
+                <li ng-if="hero.detailsOpen" ng-click="chc.cancelEdit(hero.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <li ng-if="hero.detailsOpen" ng-click="chc.saveEdit(hero.id)"><i class="fas fa-check"></i> Finish Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="chc.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="hero.imageOpen" class="image-gallery">
+                <div class="row image-gallery-controls">
+                    <div class="col-2 image-gallery-controls-prev"><span ng-if="chc.galleryPage !== 0" ng-click="chc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                    <div class="col-8 image-gallery-controls-page">Page: {{(chc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                    <div class="col-2 image-gallery-controls-next"><span ng-hide="(chc.galleryPage + 30) > filteredGallery.length" ng-click="chc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                    <div class="col-12"><input type="text" ng-model="chc.gallerySearchTerm" ng-change="chc.gallerySearch()" placeholder="Search"></div>
+                </div>
+                <div class="row image-gallery-items">
+                    <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (chc.images | filter:chc.gallerySearchTerm)) | limitTo: 30:chc.galleryPage">
+                        <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="chc.selectImage(hero.id, image.filename)">
+                        <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                    </div>
+                </div>
+                <div class="row image-gallery-upload">
+                    Upload new file: <input type="file" media-upload="chc.uploadFile"><i ng-if="chc.uploadFile" class="fas fa-upload" ng-click="chc.uploadImage(hero.id)"></i>
+                    <div class="file-error" ng-if="chc.fileError">{{chc.fileError}}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <img ng-src="/thumbs/{{hero.image}}" ng-if="hero.image">
+                </div>
+                <div class="col-md-6">
+                    <div>Top Line: <span ng-if="!hero.detailsOpen">{{hero.topline}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.topline"></div>
+                    <div>Headline Line: <span ng-if="!hero.detailsOpen">{{hero.headline}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.headline"></div>
+                    <div>Link: <span ng-if="!hero.detailsOpen">{{hero.link}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.link"></div>
+                    <div>Description: <span ng-if="!hero.detailsOpen">{{hero.description}}</span><textarea ng-if="hero.detailsOpen" ng-model="hero.description"></textarea></div>
+                </div>
+                <div class="col-md-3">
+                    <div>Text Position:
+                        <span ng-if="!hero.detailsOpen && hero.position === 'topleft'">Top Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'topright'">Top Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'bottomleft'">Bottom Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'bottomright'">Bottom Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middleleft'">Center Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middleright'">Center Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middletop'">Center Top</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middlebottom'">Center Bottom</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'no-overlay'">Hide Text</span>
+                        <select ng-if="hero.detailsOpen" ng-model="hero.position" class="form-control" ng-change="chc.changeHero(hero.id)">
+                            <option value="topleft">Top Left</option>
+                            <option value="topright">Top Right</option>
+                            <option value="bottomleft">Bottom Left</option>
+                            <option value="bottomright">Bottom Right</option>
+                            <option value="middleleft">Center Left</option>
+                            <option value="middleright">Center Right</option>
+                            <option value="middletop">Center Top</option>
+                            <option value="middlebottom">Center Bottom</option>
+                            <option value="no-overlay">Hide Text</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="error-popup" ng-if="chc.deleteFramePopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the selected frame?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="chc.deleteFrame()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="chc.cancelDeleteFrame()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

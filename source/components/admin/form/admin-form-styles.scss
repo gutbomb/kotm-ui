@@ -1,0 +1,119 @@
+.main-container.form-page.admin-page {
+    padding: 0;
+
+    .row.form-body {
+        margin: 0 60px;
+    }
+
+    .form-header {
+        input[type=text] {
+            font-family: $memphis;
+            color: $white;
+            padding: 10px 30px;
+            font-size: 3em;
+            margin: 0;
+            font-weight: normal;
+        }
+    }
+
+    .edit {
+        &-field, &-section {
+            .spacer {
+                min-height: 60px;
+            }
+        }
+
+        &-options {
+            margin: 20px 20px 20px 30px;
+
+            input[type=text], input[type=tel], input[type=email] {
+                width: 70%
+            }
+        }
+
+        &-dropdown {
+            background-color: $white;
+            border: 1px $black solid;
+            padding: 5px;
+            width: fit-content
+        }
+    }
+
+    .form-footer {
+        .toolbar {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+    }
+
+    .edit-required {
+        font-weight: normal;
+    }
+
+    .toolbar {
+        &.section {
+            margin-left: -30px;
+        }
+        &.item {
+            margin-left: 30px;
+        }
+    }
+
+    &.accent {
+        &-green {
+            .form-header {
+                input[type=text] {
+                    background-color: $green !important;
+                }
+            }
+        }
+    
+        &-red {
+            .form-header {
+                input[type=text] {
+                    background-color: $red !important;
+                }
+            }
+        }
+    
+        &-gray {
+            .form-header {
+                input[type=text] {
+                    background-color: $gray !important;
+                }
+            }
+        }
+    
+        &-teal {
+            .form-header {
+                input[type=text] {
+                    background-color: $teal !important;
+                }
+            }
+        }
+    
+        &-blue {
+            .form-header {
+                input[type=text] {
+                    background-color: $blue !important;
+                }
+            }
+        }
+    
+        &-orange {
+            .form-header {
+                input[type=text] {
+                    background-color: $orange !important;
+                }
+            }
+        }
+    
+        &-purple {
+            .form-header {
+                input[type=text] {
+                    background-color: $purple !important;
+                }
+            }
+        }
+    }
+}

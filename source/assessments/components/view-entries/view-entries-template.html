@@ -1,0 +1,17 @@
+<h3>View Building Entries <span ng-if="vec.clientView"> for <span class="entry-block" ng-class="'bg-' + vec.color">{{vec.number}}</span></h3>
+<a href="/assessments/#!/view-entries" ng-if="vec.clientView"><i class="fa fa-arrow-left"></i> Back to all entries</a>
+<section class="appointments">
+    <div class="row table-header appheader">
+        <div class="col-sm-1">Client</div>
+        <div class="col-sm-11">Date/Time</div>
+    </div>
+    <div class="row entry" ng-repeat="entry in vec.entries">
+        <div class="col-sm-1">
+            <a class="entry-block" ng-class="'bg-' + entry.color" ng-href="/assessments/#!/view-entries/{{entry.color}}/{{entry.number}}">{{entry.number}}</a>
+        </div>
+        <div class="col-sm-11">
+            <i ng-class="!entry.status ? ['text-danger', 'fa', 'fa-times-circle'] : ['text-success', 'fa', 'fa-check-circle']"></i>
+            {{entry.date | amDateFormat:vec.dateFormat}}
+        </div>
+    </span>
+</section>

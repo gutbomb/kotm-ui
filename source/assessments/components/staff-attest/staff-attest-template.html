@@ -1,0 +1,65 @@
+<div ng-if="sac.message">
+    {{sac.message}}
+</div>
+<div ng-if="sac.error">
+    {{sac.error}}
+</div>
+<div ng-if="!sac.error && !sac.message">
+    <div>
+        <h2>Kids On The Move Daily Staff Health Questionnaire</h2>
+        <p><strong>{{$root.user.firstName}} {{$root.user.lastName}}</strong>, In regards to the work day of <strong>{{sac.todayDate}}</strong>,</p>
+        <p>For <strong><u>any</u></strong> person currently residing in or visiting your residence:</p>
+        <div class="row">
+            <ol>
+                <li>
+                    <strong>Symptoms -</strong> I confirm that no one is currently exhibiting one or more of the following symptoms:
+                    <ul>
+                        <li>Fever (greater than 100F or 37.8C)</li>
+                        <li>Cough</li>
+                        <li>Shortness of breath or difficulty breathing</li>
+                        <li>New or unexplained body aches</li>
+                        <li>Sore throat</li>
+                        <li>Unexplained loss of taste or smell</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Close Contact -</strong> I confirm that no one has knowingly come into close contact (within 6 feet) with someone who has tested positive for COVID-19 in the past 10 days.
+                </li>
+                <li>
+                    <strong>Official Notification -</strong> l confirm that no one has been notified by a public health official in the past 10 days regarding diagnosis or possible exposure to COVID-19.
+                </li>
+            </ol>
+        </div>
+        <p>These statements are true and correct to the best of my knowledge.</p>
+        <div class="row">
+            <ul class="nodisc">
+                <li><label><input type="radio" name="options" id="option1" ng-model="sac.affirm" autocomplete="off" ng-value="true" ng-change="sac.noAffirm=false"> True</label></li>
+                <li><label><input type="radio" name="options" id="option2" ng-model="sac.affirm" autocomplete="off" ng-value="false" ng-change="sac.noAffirm=false"> False</label></li>
+            </ul>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" ng-disabled="sac.noAffirm" ng-click="sac.submit()" ng-if="sac.affirm"><span ng-class="sac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!sac.loading">Submit</span></button>
+            <button class="btn btn-primary" ng-disabled="sac.noAffirm" ng-click="sac.submit()" ng-if="!sac.affirm" data-toggle="modal" data-target="#warning-modal"><span ng-class="sac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!sac.loading">Submit</span></button>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="warning-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>You have selected false which means that you do not meet the attestation requirements for working today.  Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="sac.doSubmit()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    

@@ -1,0 +1,226 @@
+.program {
+    .hero-container {
+        margin-bottom: 0;
+    }
+    
+    .hero-pager {
+        margin-top: -42px;
+    }
+}
+
+.main-container.program-page {
+    main {
+        section {
+            display: block;
+            margin-top: 40px;
+
+            .locations {
+                display: flex;
+                padding-bottom: 18px;
+                .location {
+                    flex-basis: 33%;
+                    margin-right: 80px;
+
+                    .img-wrap {
+                        margin-bottom: 20px;
+                    }
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                    
+                    @media screen and (max-width: $phone) {
+                        flex-basis: initial;
+                        margin-right: 0;
+                    }
+                }
+
+                @media screen and (max-width: $phone) {
+                    display: block;
+                }
+            }
+        }
+
+        .main-sections, .faq-section {
+            margin-left: -60px;
+            margin-right: -60px;
+            padding: 0 60px 60px 60px;
+
+            @media screen and (max-width: $phone) {
+                margin-left: -20px;
+                margin-right: -20px;
+                padding: 0 20px;
+            }
+        }
+
+        .main-sections, .faq-section {
+            position: relative;
+            overflow: hidden;
+
+            .triangle {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                display: inline-block;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 500px 0 0 1500px;
+                z-index: 3;
+
+                &.bg-green, &.bg-teal, &.bg-blue, &.bg-orange, &.bg-purple, &.bg-red {
+                    background-color: transparent;
+                }
+
+                &.bg-green {
+                    border-color: transparent transparent transparent $palegreen;
+                }
+
+                &.bg-gray {
+                    border-color: transparent transparent transparent $verylightgray;
+                }
+                
+                &.bg-teal {
+                    border-color: transparent transparent transparent $paleteal;
+                }
+                
+                &.bg-blue {
+                    border-color: transparent transparent transparent $paleblue;
+                }
+                
+                &.bg-orange {
+                    border-color: transparent transparent transparent $paleorange;
+                }
+                
+                &.bg-purple {
+                    border-color: transparent transparent transparent $palepurple;
+                }
+                
+                &.bg-red {                
+                    border-color: transparent transparent transparent $palered;
+                }
+
+
+            }
+
+            section {
+                position: relative;
+                z-index: 4;
+                clear: both;
+
+                h2 {
+                    padding-top: 20px;
+                }
+            }
+        }
+
+        .main-sections {
+            section {
+                &:first-of-type {
+                    margin-top: 0;
+                }
+            }
+        }
+
+        .faq-section {
+            // min-height: 300px;
+            
+            .triangle {
+                width: 0;
+                height: 0;
+                bottom: initial;
+                top: 0;
+                border-width: 500px 1500px 0 0;
+                
+                &.bg-green {
+                    border-color: $palegreen transparent transparent transparent;
+                }
+
+                &.bg-gray {
+                    border-color: $verylightgray transparent transparent transparent;
+                }
+                
+                &.bg-teal {
+                    border-color: $paleteal transparent transparent transparent;
+                }
+                
+                &.bg-blue {
+                    border-color: $paleblue transparent transparent transparent;
+                }
+                
+                &.bg-orange {
+                    border-color: $paleorange transparent transparent transparent;
+                }
+                
+                &.bg-purple {
+                    border-color: $palepurple transparent transparent transparent;
+                }
+                
+                &.bg-red {                
+                    border-color: $palered transparent transparent transparent;
+                }
+            }
+        }
+
+        .apply-button-container {
+            text-align: center;
+            width: 100%;
+            margin-bottom: -18px;
+            margin-top: -18px;
+            z-index: 5;
+            position: relative;
+        }
+
+        .img-wrap {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            
+            img {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%,-50%);
+                max-width: 125%;
+                height: auto;
+            }
+
+            &.article-image-left {
+                float: left;
+                margin-right: 20px;
+            }
+
+            &.article-image-right {
+                float: right;
+                margin-left: 20px;
+            }
+
+            &.article-image-left, &.article-image-right {
+                width: calc(30% - 20px);
+                @media screen and (max-width: 1600px) {
+                    width: calc(40% - 20px);
+                }
+                @media screen and (max-width: 1200px) {
+                    width: calc(50% - 20px);
+                }
+                @media screen and (max-width: $phone) {
+                    margin: 0 0 10px 0;
+                    display: block;
+                    float: initial;
+                    width: 100%;
+                }
+            }
+        }
+
+        .section-text-container {
+            overflow: hidden;
+            margin-bottom: 20px;
+            @media screen and (max-width: $phone) {
+                .btn {
+                    min-width: 100%;
+                }
+            }
+        }
+    }
+}

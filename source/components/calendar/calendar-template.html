@@ -1,0 +1,102 @@
+<script src="/lib/js/fullcalendar.js"></script>
+<div class="main-container calendar-page">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content calendar" role="main">
+            <h1>Events Calendar</h1>
+            <div class="calendar-controls">
+                <div class="calendar-controls-view">
+                    <div class="calendar-controls-view-item" ng-class="cc.activeView === 'list' ? 'active' : ''" ng-click="cc.changeActiveView('list')">List View</div><div class="calendar-controls-view-item" ng-class="cc.activeView === 'calendar' ? 'active' : ''" ng-click="cc.changeActiveView('calendar')">Calendar View</div>
+                </div>
+                <div class="calendar-controls-search" ng-if="cc.activeView === 'list'">
+                    <input type="text" placeholder="Search" ng-model="cc.searchString" ng-keyup="$event.keyCode == 13 && cc.getSearch()"><i class="calendar-controls-search-button icon-search" ng-click="cc.getSearch()"></i>
+                    <div ng-if="cc.searchActive">Displaying {{cc.searchList.length}} search results for "{{cc.activeSearchString}}".<br><a href="#" ng-click="cc.clearSearch()">Clear Search</a></div>
+                </div>
+                <div class="calendar-controls-bottom" ng-if="cc.searchActive === false">
+                    <div class="calendar-controls-bottom-filter">
+                        <select ng-change="cc.changeCalendar()" ng-model="cc.selectedCalendar">
+                            <option value="all">All Event Categories</option>
+                            <option ng-repeat="calendar in cc.events" ng-value="{{$index}}" ng-if="calendar.name">{{calendar.name}}</option>
+                        </select>
+                    </div>
+                    <div class="calendar-controls-bottom-month">
+                        <i class="fas fa-angle-left" ng-click="cc.changeRange('prev')"></i> {{cc.activeRange}} <i class="fas fa-angle-right" ng-click="cc.changeRange('next')"></i>
+                    </div>
+                    <div class="calendar-controls-bottom-style" ng-if="cc.activeView==='calendar'">
+                        <div class="calendar-controls-bottom-style-item" ng-click="cc.changeView('month')" ng-class="cc.activeStyle === 'month' ? 'active' : ''">
+                            <i class="fas fa-calendar"></i> Month
+                        </div><div class="calendar-controls-bottom-style-item" ng-click="cc.changeView('agendaWeek')" ng-class="cc.activeStyle === 'agendaWeek' ? 'active' : ''">
+                            <i class="fas fa-calendar-week"></i> Week
+                        </div><div class="calendar-controls-bottom-style-item" ng-click="cc.changeView('agendaDay')" ng-class="cc.activeStyle === 'agendaDay' ? 'active' : ''">
+                            <i class="fas fa-calendar-day"></i> Day
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ui-calendar="cc.uiConfig.calendar" ng-model="cc.eventSources" ng-show="cc.activeView==='calendar'"></div>
+            <div ng-show="cc.activeView==='list'" class="results-list">
+                <div class="results-list-empty" ng-if="cc.noEvents">There are no events scheduled for the selected time-period.</div>
+                <div ng-repeat="event in cc.eventsList | orderBy: 'start'" class="results-list-item" ng-if="cc.selectedCalendar === 'all' && cc.searchActive === false">
+                    <div class="results-list-item-inner" ng-class="'border-' + event.color">
+                        <div class="results-list-item-inner-date-box">
+                            <div class="results-list-item-inner-date-box-day">{{event.start | amDateFormat: 'D'}}</div>
+                            <div class="results-list-item-inner-date-box-month">{{event.start | amDateFormat: 'MMM'}}</div>
+                        </div>
+                        <div class="results-list-item-inner-image">
+                            <img ng-src="/images/{{event.image}}" class="img-responsive d-block mx-auto">
+                        </div>
+                        <div class="results-list-item-inner-details">
+                            <h2>{{event.title}}</h2>
+                            <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{event.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                            <div>{{event.description | stripHTML | limitTo: 400}}<span ng-if="(event.description | stripHTML).length > 220">...</span></div>
+                            <a ng-href="/event/{{event.url}}" class="btn results-list-item-inner-details-button" ng-class="'bg-' + event.color">View Event</a>
+                        </div>
+                    </div>
+                </div>
+                <div ng-repeat="event in cc.eventsList | orderBy: 'start'" class="results-list-item" ng-if="event.programId === cc.events[cc.selectedCalendar].programId  && cc.searchActive === false">
+                    <div class="results-list-item-inner" ng-class="'border-' + event.color">
+                        <div class="results-list-item-inner-date-box">
+                            <div class="results-list-item-inner-date-box-day">{{event.start | amDateFormat: 'D'}}</div>
+                            <div class="results-list-item-inner-date-box-month">{{event.start | amDateFormat: 'MMM'}}</div>
+                        </div>
+                        <div class="results-list-item-inner-image">
+                            <img ng-src="/images/{{event.image}}" class="img-responsive d-block mx-auto">
+                        </div>
+                        <div class="results-list-item-inner-details">
+                            <h2>{{event.title}}</h2>
+                            <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{event.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                            <div>{{event.description | stripHTML | limitTo: 400}}<span ng-if="(event.description | stripHTML).length > 220">...</span></div>
+                            <a ng-href="/event/{{event.id}}" class="btn results-list-item-inner-details-button" ng-class="'bg-' + event.color">View Event</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="results-list-empty" ng-if="cc.noSearch && cc.searchActive">There are no events scheduled that meet your search criteria.</div>
+                <div ng-repeat="event in cc.searchList | orderBy: 'start'" class="results-list-item" ng-if="cc.searchActive === true">
+                    <div class="results-list-item-inner" ng-class="'border-' + event.color">
+                        <div class="results-list-item-inner-date-box">
+                            <div class="results-list-item-inner-date-box-day">{{event.start | amDateFormat: 'D'}}</div>
+                            <div class="results-list-item-inner-date-box-month">{{event.start | amDateFormat: 'MMM'}}</div>
+                        </div>
+                        <div class="results-list-item-inner-image">
+                            <img ng-src="/images/{{event.image}}" class="img-responsive d-block mx-auto">
+                        </div>
+                        <div class="results-list-item-inner-details">
+                            <h2>{{event.title}}</h2>
+                            <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{event.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                            <div>{{event.description | stripHTML | limitTo: 400}}<span ng-if="(event.description | stripHTML).length > 220">...</span></div>
+                            <a ng-href="/event/{{event.url}}" class="btn results-list-item-inner-details-button" ng-class="'bg-' + event.color">View Event</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<div id="selected-event" class="selected-event" ng-if="cc.displayEvent">
+    <div class="selected-event-top-bar" ng-class="cc.displayedEvent.bgClass"></div>
+    <div class="selected-event-inner">
+        <span class="selected-event-inner-title">{{cc.displayedEvent.title}}</span>
+        <span class="selected-event-inner-date-location">{{cc.displayedEvent.start._d | amDateFormat:'LLLL'}} | {{cc.displayedEvent.city}}</span>
+        <span class="selected-event-inner-description">{{cc.displayedEvent.description | stripHTML | limitTo: 220}}<span ng-if="(cc.displayedEvent.description | stripHTML).length > 220">...</span></span>
+        <a class="btn btn-primary" ng-class="cc.displayedEvent.bgClass" ng-href="/event/{{cc.displayedEvent.linkUrl}}">View Event</a>
+    </div>
+</div>

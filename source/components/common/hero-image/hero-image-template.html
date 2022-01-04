@@ -1,0 +1,14 @@
+<div class="hero-container" ng-mouseenter="hic.mouseOnHero = true" ng-mouseleave="hic.mouseOnHero = false">
+    <div class="overlay" ng-class="hic.overlayClass"></div>
+    <div class="hero-inner" ng-repeat="hero in hic.hero.items | orderBy: 'heroOrder'" ng-show="hero.active">
+        <img class="main-img" ng-src="/images/{{hero.image}}">
+        <a class="text" ng-class="hero.position" ng-if="hero.displayText" ng-href="{{hero.link}}">
+            <div class="topline">{{hero.topline}}</div>
+            <div class="headline">{{hero.headline}}</div>
+            <div class="description">{{hero.description}}</div>
+        </a>
+    </div>
+</div>
+<div class="hero-pager" ng-mouseenter="hic.mouseOnHero = true" ng-mouseleave="hic.mouseOnHero = false" ng-if="hic.hero.items.length > 1">
+    <span ng-click="hic.changeHero($index)" class="hero-pager-item" ng-repeat="hero in hic.hero.items | orderBy: 'heroOrder'" ng-class="hic.activeHero === $index ? 'active' : ''"></span>
+</div>

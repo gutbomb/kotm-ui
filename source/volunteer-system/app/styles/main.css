@@ -1,0 +1,271 @@
+/* --------------- GLOBAL STYLES --------------- */
+@font-face{
+	font-family:'Gotham';
+	src:url("/fonts/kotmtext/Gotham-Book.woff2") format("woff2"),url("/fonts/kotmtext/Gotham-Book.woff") format("woff");
+	font-weight:normal;
+	font-style:normal
+}
+@font-face{
+	font-family:'Gotham';
+	src:url("/fonts/kotmtext/Gotham-Medium.woff2") format("woff2"),url("/fonts/kotmtext/Gotham-Medium.woff") format("woff");
+	font-weight:500;
+	font-style:normal
+}
+@font-face{
+	font-family:'Gotham';
+	src:url("/fonts/kotmtext/Gotham-Bold.woff2") format("woff2"),url("/fonts/kotmtext/Gotham-Bold.woff") format("woff");
+	font-weight:bold;
+	font-style:normal
+}
+@font-face{
+	font-family:'Gotham';
+	src:url("/fonts/kotmtext/Gotham-Black.woff2") format("woff2"),url("/fonts/kotmtext/Gotham-Black.woff") format("woff");
+	font-weight:900;
+	font-style:normal
+}
+@font-face{
+	font-family:'Memphis';
+	src:url("/fonts/kotmtext/MemphisLTStd-Medium.woff2") format("woff2"),url("/fonts/kotmtext/MemphisLTStd-Medium.woff") format("woff");
+	font-weight:500;
+	font-style:normal
+}
+
+body {
+	font-family: 'Gotham';
+	font-size: 13px;
+	font-weight: normal;
+	color: #636363;
+	line-height: 20px;
+	margin: 0px;
+	padding: 0px;
+}
+
+div.spacer {
+	height: 5px;
+	width: 10px;
+	display: inline-block;
+}
+
+textarea {
+	border: solid 1px #CbCbCb;
+	padding: 3px;
+	font-family: 'Droid Sans', Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+input {
+	border: solid 1px #CbCbCb;
+}
+
+input:not([type="submit"]):not([type="button"]) {
+	font-family: 'Droid Sans', Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	text-indent: 1px;
+}
+
+input[type="submit"], input[type="button"], button {
+	border: none;
+	background-color: #418efe;
+	color: white;
+	font-weight: 600;
+	font-size: 12px;
+	padding: 4px 8px;
+	cursor: pointer;
+}
+
+@-moz-document url-prefix() {
+	input[type="submit"], input[type="button"] {
+		/*padding: 5px 5px 3px 5px;*/
+	}
+}
+
+input[type="submit"]:focus, input[type="button"]:focus {
+	outline: 0;
+}
+
+input[type="submit"]:hover, input[type="button"]:hover {
+	background-color: #317eee;
+}
+
+input[type="submit"]:active, input[type="button"]:active {
+	background-color: #61aefe;
+}
+
+table.invisible-table, table.invisible-table tr, table.invisible-table td {
+	border-collapse: collapse;
+	padding: 0px;
+	border: none;
+}
+
+.table-indent {
+	margin-left: 26px;
+}
+
+.text-indent {
+	margin-left: 25px;
+	margin-right: 25px;
+}
+
+/* --------------- Page Header Content (wrapper, links, and login form) --------------- */
+
+div.headerWrapper {
+	display: inline-block;
+	color: #929292;
+	width: 100%;
+	margin-top: 0px;
+	margin-bottom: 15px;
+}
+
+/* --------------- Main Page Content --------------- */
+
+div.mainContent {
+	margin: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+/* --------------- Basic Links --------------- */
+
+a:link, a:visited {
+	font-size: 14px;
+	color: #05aea8;
+	text-decoration: none;
+}
+
+a:active, a:hover {
+	font-size: 14px;
+	color: #fcb043;
+	text-decoration: none;
+}
+
+/* --------------- Heading Tags --------------- */
+
+h1 {
+	font-family: "Memphis";
+	font-weight: normal;
+	font-size: 20px;
+	line-height: 1em;
+	color: #fcb043;
+	text-align: left;
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 20px;
+}
+
+h2 {
+	font-family: "Memphis";
+	font-size: 14px;
+	margin: 6px 0px;
+}
+
+/* --------------- Table Settings --------------- */
+
+table, tr, th, td {
+	border-color: #d1d1d1;
+}
+
+/* --------------- Miscellaneous --------------- */
+
+div.devNotice {
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	color: red;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+    top: 23px;
+}
+
+div.devNotice a {
+	font-size: 75%;
+}
+
+div.stdMsg, div.stdErrorMsg {
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: bold;
+	text-align: left;
+	color: #ff3333;
+	padding: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 15px;
+}
+
+div.stdMsg div, div.stdErrorMsg div {
+	padding-bottom: 15px;
+}
+
+.veryImportant {
+	color: #ff3333;
+	font-weight: bold;
+}
+
+a.deleteImgLink {
+	text-decoration: none;
+}
+
+.deleteImgLink img {
+	border: none;
+	height: 22px;
+	padding: 5px;
+}
+
+#manual-volunteer-add {
+	display: block;
+	border: 1px solid #d1d1d1;
+	width: 318px;
+	padding: 0 10px 10px 10px;
+	height: 148px;
+	margin-top: 10px;
+}
+
+#manual-volunteer-add .input-block {
+	float: left;
+	margin-right: 0;
+	width: 50%;
+}
+
+#manual-volunteer-add .input-block.full {
+	margin-top: 10px;
+	width: 100%;
+}
+
+#manual-volunteer-add .input-block:first-of-type {
+	margin-right: 10px;
+	width: calc(50% - 10px);
+}
+
+#manual-volunteer-add .input-block input[type=text], #manual-volunteer-add .input-block input[type=email] {
+	width: 100%;
+}
+
+#manual-volunteer-add .button-block {
+	float: right;
+	margin-right: -2px;
+	margin-top: 5px;
+}
+
+#manual-volunteer-add button {
+	/* float: right; */
+	margin-left: 4px;
+	margin-top: 4px;
+}
+
+#manual-volunteer-add label {
+	display: block;
+}
+
+#covid-policy {
+	border: 1px solid #d1d1d1;
+	padding: 15px;
+	display: none;
+}

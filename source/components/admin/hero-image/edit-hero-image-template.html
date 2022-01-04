@@ -1,0 +1,108 @@
+<div class="main-container hero-page admin-page">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Carousel last updated {{ehc.edited.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{ehc.edited.firstname}} {{ehc.edited.lastname}}</span>
+        <li ng-if="ehc.heroChanged" ng-click="ehc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="ehc.heroChanged" ng-click="ehc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="hero-container" ng-mouseenter="ehc.mouseOnHero = true" ng-mouseleave="ehc.mouseOnHero = false">
+        <div class="overlay" ng-class="ehc.overlayClass"></div>
+        <div class="hero-inner" ng-repeat="hero in ehc.edited.items | orderBy: 'heroOrder'" ng-show="hero.active">
+            <img class="main-img" ng-src="/images/{{hero.image}}">
+            <div class="text" ng-class="hero.position" ng-if="hero.position !== 'no-overlay'">
+                <div class="topline">{{hero.topline}}</div>
+                <div class="headline">{{hero.headline}}</div>
+                <div class="description">{{hero.description}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-pager" ng-mouseenter="ehc.mouseOnHero = true" ng-mouseleave="ehc.mouseOnHero = false" ng-if="ehc.edited.items.length > 1">
+        <span ng-click="ehc.changeHero(hero.id)" class="hero-pager-item" ng-repeat="hero in ehc.edited.items | orderBy: 'heroOrder'" ng-class="ehc.activeHero === ehc.getHeroIndex(hero.id) ? 'active' : ''" ng-if="!hero.deleted"></span>
+    </div>
+    <section class="edit-section">
+        <ul class="toolbar">
+            <li ng-if="!ehc.titleOpen" ng-click="ehc.addFrame()"><i class="fas fa-plus-square"></i> Add Frame</li>
+            <li ng-if="!ehc.titleOpen" ng-click="ehc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+            <li ng-if="ehc.titleOpen" ng-click="ehc.cancelEdit('title', hero.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <li ng-if="ehc.titleOpen" ng-click="ehc.saveEdit('title', hero.id)"><i class="fas fa-check"></i> Finish Editing</li>
+        </ul>
+        <div>Carousel Title: <span ng-if="!ehc.titleOpen">{{ehc.edited.title}}</span><input ng-if="ehc.titleOpen" type="text" ng-model="ehc.edited.title"></div>
+        <div class="edit-section-item" ng-repeat="hero in ehc.edited.items | orderBy: 'heroOrder'" ng-hide="ehc.detailsOpen && !hero.detailsOpen" ng-if="!hero.deleted">
+            <ul class="toolbar">
+                <li ng-hide="hero.detailsOpen" ng-click="ehc.deleteFrameWarning(hero.id)"><i class="fas fa-trash"></i> Delete Frame</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.heroOrder !== 0 && ehc.edited.items.length > 1" ng-click="ehc.moveImage('up', hero.heroOrder, hero.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.heroOrder !== (ehc.edited.items.length - 1)" ng-click="ehc.moveImage('down', hero.heroOrder, hero.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                <li ng-hide="hero.detailsOpen" ng-if="!hero.imageOpen" ng-click="ehc.openGallery(hero.id)"><i class="fas fa-images"></i> Choose Image</li>
+                <li ng-hide="hero.detailsOpen" ng-if="hero.imageOpen" ng-click="ehc.cancelEdit('image', hero.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <li ng-if="!hero.detailsOpen" ng-click="ehc.openDetails(hero.id)"><i class="fas fa-pencil-alt"></i> Edit Details</li>
+                <li ng-if="hero.detailsOpen" ng-click="ehc.cancelEdit('details', hero.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <li ng-if="hero.detailsOpen" ng-click="ehc.saveEdit('details', hero.id)"><i class="fas fa-check"></i> Finish Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="ehc.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="hero.imageOpen" class="image-gallery">
+                <div class="row image-gallery-controls">
+                    <div class="col-2 image-gallery-controls-prev"><span ng-if="ehc.galleryPage !== 0" ng-click="ehc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                    <div class="col-8 image-gallery-controls-page">Page: {{(ehc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                    <div class="col-2 image-gallery-controls-next"><span ng-hide="(ehc.galleryPage + 30) > filteredGallery.length" ng-click="ehc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                    <div class="col-12"><input type="text" ng-model="ehc.gallerySearchTerm" ng-change="ehc.gallerySearch()" placeholder="Search"></div>
+                </div>
+                <div class="row image-gallery-items">
+                    <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (ehc.images | filter:ehc.gallerySearchTerm)) | limitTo: 30:ehc.galleryPage">
+                        <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="ehc.selectImage(hero.id, image.filename)">
+                        <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                    </div>
+                </div>
+                <div class="row image-gallery-upload">
+                    Upload new file: <input type="file" media-upload="ehc.uploadFile"><i ng-if="ehc.uploadFile" class="fas fa-upload" ng-click="ehc.uploadImage(hero.id)"></i>
+                    <div class="file-error" ng-if="ehc.fileError">{{ehc.fileError}}</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <img ng-src="/thumbs/{{hero.image}}" ng-if="hero.image">
+                </div>
+                <div class="col-md-6">
+                    <div>Top Line: <span ng-if="!hero.detailsOpen">{{hero.topline}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.topline"></div>
+                    <div>Headline Line: <span ng-if="!hero.detailsOpen">{{hero.headline}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.headline"></div>
+                    <div>Link: <span ng-if="!hero.detailsOpen">{{hero.link}}</span><input ng-if="hero.detailsOpen" type="text" ng-model="hero.link"></div>
+                    <div>Description: <span ng-if="!hero.detailsOpen">{{hero.description}}</span><textarea ng-if="hero.detailsOpen" ng-model="hero.description"></textarea></div>
+                </div>
+                <div class="col-md-3">
+                    <div>Text Position:
+                        <span ng-if="!hero.detailsOpen && hero.position === 'topleft'">Top Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'topright'">Top Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'bottomleft'">Bottom Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'bottomright'">Bottom Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middleleft'">Center Left</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middleright'">Center Right</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middletop'">Center Top</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'middlebottom'">Center Bottom</span>
+                        <span ng-if="!hero.detailsOpen && hero.position === 'no-overlay'">Hide Text</span>
+                        <select ng-if="hero.detailsOpen" ng-model="hero.position" class="form-control" ng-change="ehc.changeHero(hero.id)">
+                            <option value="topleft">Top Left</option>
+                            <option value="topright">Top Right</option>
+                            <option value="bottomleft">Bottom Left</option>
+                            <option value="bottomright">Bottom Right</option>
+                            <option value="middleleft">Center Left</option>
+                            <option value="middleright">Center Right</option>
+                            <option value="middletop">Center Top</option>
+                            <option value="middlebottom">Center Bottom</option>
+                            <option value="no-overlay">Hide Text</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="error-popup" ng-if="ehc.deleteFramePopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the selected frame?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="ehc.deleteFrame()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="ehc.cancelDeleteFrame()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,223 @@
+.nodisc {
+    list-style: none;
+    margin-left: -18px;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.editbutton {
+    cursor: pointer;
+
+}
+
+.editbutton .fa {
+    padding: 5px;
+}
+
+.session:nth-child(even), .entry:nth-child(even) {
+    background-color: lightgray;
+}
+
+span.nav-link {
+    cursor: pointer;
+}
+
+.bg-red {
+    background-color:red;
+}
+
+.bg-blue {
+    background-color:blue;
+}
+
+.bg-green {
+    background-color:green;
+}
+
+.bg-yellow {
+    background-color:yellow;
+}
+
+.bg-orange {
+    background-color:orange;
+}
+
+.bg-black {
+    background-color:black;
+}
+
+.bg-white {
+    background-color:white;
+}
+
+.bg-purple {
+    background-color:purple;
+}
+
+.bg-yellow, .bg-yellow:hover, .bg-white, .bg-white:hover {
+    color: black;
+}
+
+.bg-red, .bg-blue, .bg-green, .bg-orange, .bg-black, .bg-purple, .bg-red:hover, .bg-blue:hover, .bg-green:hover, .bg-orange:hover, .bg-black:hover, .bg-purple:hover {
+    color: white;
+}
+
+.dissolve.ng-hide {
+    opacity: 0;
+}
+  
+.dissolve.ng-hide-remove, .dissolve.ng-hide-add {
+    display: block !important; /* or inline-block, as appropriate */
+}
+  
+.dissolve.ng-hide-remove {
+    transition: all linear 1000ms;
+}
+  
+.dissolve.ng-hide-add {
+    transition: all linear 500ms;
+}
+
+.form-group.login-group .form-control {
+    border-top: 0;
+    border-radius: 0;
+}
+
+.form-group.login-group .form-control:nth-of-type(1) {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: solid 1px #ced4da !important;
+}
+.form-group.login-group .form-control:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.mobile-only {
+    display: none;
+}
+@media (max-width: 991px) {
+    body {
+        font-size: 0.9rem;
+    }
+    .editbutton .fa {
+        padding: 3px 0; 
+        font-size: 21px;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        font-size: 1rem;
+    }
+    .client.input-group .form-control {
+        display: block;
+        width: 100%;
+        border-radius: 0;
+        border-top: 0px;
+    }
+    .client.input-group .form-control:first-child {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-top: solid 1px #ced4da;
+        margin-left: -1px;
+        
+    }
+    .client.input-group .form-control:last-child {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .apptime .pr-1 {
+        padding-right: 15px !important;
+    }
+    .apptime .pl-1 {
+        padding-left: 15px !important;
+    }
+    .apptime .input-group, .apptime select {
+        margin-bottom: 1rem;
+    }
+    .apptime button {
+        width: 100%;
+    }
+    .table-header.appheader {
+        display: none;
+    }
+    .editbutton .fa {
+        padding: 5px;
+        font-size: 30px;
+    }
+    .assessment button {
+        width: 100%;
+    }
+    .mobile-only {
+        display: inline;
+    }
+}
+
+.btn.add-user {
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+a.fa-calendar {
+    color: black;
+}
+.edit-group .input-group input[type="text"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.edit-group input[type="email"] {
+    border-radius: 0;
+    border-top: none;
+    width: 100%;
+}
+.edit-group select {
+    border-top: none;
+}
+.edit-group select:nth-of-type(1) {
+    border-radius: 0;
+}
+.edit-group select:last-of-type {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.disabled-user, .disabled-user a {
+    /* text-decoration: line-through; */
+    color: lightgray;
+}
+.disabled-user.session {
+    background-color:#6c757d;
+}
+.disabled-user .form-control {
+    /* text-decoration: none !important; */
+}
+
+.entry-block {
+    padding: 3px;
+    border-radius: 3px;
+    font-weight: bold;
+    border: 1px solid darkgray;
+}
+
+/* .entry-block.bg-black {
+    border: 1px solid white;
+} */
+
+.entry-block:hover {
+    text-decoration: none;
+}
+
+.entry {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.staff-status {
+    cursor: pointer;
+}
+
+.staff-status, .staff-history {
+    display: block;
+}

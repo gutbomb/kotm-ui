@@ -1,0 +1,57 @@
+.login {
+    width: 100%;
+    background-color: $lightgray;
+    text-align: center;
+    padding: 10px 20%;
+
+    h1 {
+        margin: 20px 0;
+        font-size: 45px;
+        font-weight: bold;
+    }
+
+    &-container {
+        position: relative;
+        width:100%;
+        margin-bottom: 40px;
+
+        input[type=text], input[type=password] {
+            display: block;
+            background-color: white;
+        }
+
+        label {
+            text-align: left;
+        }
+
+        input[type=text], input[type=password], button, label {
+            width: 100%;
+            margin-bottom: 10px;
+            
+        }
+        
+        input[type=text], input[type=password], button {
+            height: 40px;
+        }
+
+        button {
+            border-radius: 0px;
+            font-size: 30px;
+            line-height: 30px;
+
+            &.registerButton {
+                position: absolute;
+                right: 0;
+                float: right;
+                width: initial;
+                font-size: 20px;
+                line-height: 20px;
+                height: auto;
+            }
+        }
+
+        hr {
+            border-top: 2px solid $black;
+        }
+    }
+}

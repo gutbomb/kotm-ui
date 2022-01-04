@@ -1,0 +1,480 @@
+
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<div class="main-container program-page admin-page" ng-class="'accent-' + epc.edited.color">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="epc.staged && $root.user.role === 'editor' && !epc.tabsChanged && !epc.nameChanged && !epc.sectionsChanged && !epc.locationsTitleChanged && !epc.locationsDescriptionChanged && !epc.locationsChanged && !epc.applyButtonChanged && !epc.questionsChanged && !epc.shortDescriptionChanged && !epc.mediumDescriptionChanged && !epc.linkChanged && !epc.homeImageChanged && !epc.aboutImageChanged && !epc.heroChanged && !epc.metaDescriptionChanged && !epc.metaTitleChanged && !epc.metaKeywordsChanged" ng-click="epc.removeStaged()"><i class="fas fa-ban"></i> Remove Approval Request</li>
+        <li ng-if="epc.staged && $root.user.role === 'admin' && !epc.tabsChanged && !epc.nameChanged && !epc.sectionsChanged && !epc.locationsTitleChanged && !epc.locationsDescriptionChanged && !epc.locationsChanged && !epc.applyButtonChanged && !epc.questionsChanged && !epc.shortDescriptionChanged && !epc.mediumDescriptionChanged && !epc.linkChanged && !epc.homeImageChanged && !epc.aboutImageChanged && !epc.heroChanged && !epc.metaDescriptionChanged && !epc.metaTitleChanged && !epc.metaKeywordsChanged" ng-click="epc.rejectRevision()"><i class="fas fa-ban"></i> Reject Approval</li>
+        <li ng-if="epc.staged && $root.user.role === 'admin' && !epc.tabsChanged && !epc.nameChanged && !epc.sectionsChanged && !epc.locationsTitleChanged && !epc.locationsDescriptionChanged && !epc.locationsChanged && !epc.applyButtonChanged && !epc.questionsChanged && !epc.shortDescriptionChanged && !epc.mediumDescriptionChanged && !epc.linkChanged && !epc.homeImageChanged && !epc.aboutImageChanged && !epc.heroChanged && !epc.metaDescriptionChanged && !epc.metaTitleChanged && !epc.metaKeywordsChanged" ng-click="epc.approveRevision()"><i class="fas fa-check"></i> <span ng-if="epc.stagedApproved === 0">Approve and </span>Publish Changes</li>
+        <li ng-if="epc.tabsChanged || epc.nameChanged || epc.sectionsChanged || epc.locationsTitleChanged || epc.locationsDescriptionChanged || epc.locationsChanged || epc.applyButtonChanged || epc.questionsChanged || epc.shortDescriptionChanged || epc.mediumDescriptionChanged || epc.linkChanged || epc.homeImageChanged || epc.aboutImageChanged || epc.heroChanged || epc.metaDescriptionChanged || epc.metaTitleChanged || epc.metaKeywordsChanged" ng-click="epc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="epc.tabsChanged || epc.nameChanged || epc.sectionsChanged || epc.locationsTitleChanged || epc.locationsDescriptionChanged || epc.locationsChanged || epc.applyButtonChanged || epc.questionsChanged || epc.shortDescriptionChanged || epc.mediumDescriptionChanged || epc.linkChanged || epc.homeImageChanged || epc.aboutImageChanged || epc.heroChanged || epc.metaDescriptionChanged || epc.metaTitleChanged || epc.metaKeywordsChanged" ng-click="epc.newRevisionDescriptionOpen = true"><i class="fas fa-check"></i> <span ng-if="$root.user.role === 'admin'">Publish Changes</span><span ng-if="$root.user.role === 'editor'">Submit Changes for Approval</span></li>
+    </ul>
+    <ul class="toolbar" ng-if="$root.user.role === 'admin'">
+        <span>Revision:
+            <select ng-change="epc.changeRevision()" ng-model="epc.selectedRevision">
+                <option ng-value="0">Live: {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</option>
+                <option ng-repeat="revision in epc.revisions" ng-value="revision.id">{{revision.approved ? 'Published': 'Awaiting Approval'}} : {{revision.created | amDateFormat: 'MMM D YYYY h:mm a'}} by {{revision.firstname}} {{revision.lastname}}</option>
+            </select>
+            <span ng-click="epc.revisionDescriptionOpen = true" class="toolbar-help link" ng-if="epc.revisionDescription">View Description</span>
+        </span>
+    </ul>
+    <div class="error-popup" ng-if="epc.revisionDescriptionOpen">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"></div>
+            <div class="error-popup-box-body">{{epc.revisionDescription}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-green" ng-click="epc.revisionDescriptionOpen = false">Okay</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="epc.newRevisionDescriptionOpen">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header">Description</div>
+            <div class="error-popup-box-body">
+                <p>Please provide a brief description of the changes you are submitting</p>
+                <textarea ng-model="epc.edited.revisionDescription"></textarea></div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-green" ng-click="epc.newRevisionDescriptionOpen = false">Cancel</button>
+                <button class="btn bg-green" ng-click="epc.submitEdit()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <hero-image class="program" hero-id="epc.edited.heroId" ng-if="epc.ready"></hero-image>
+    <ul class="tab-bar" ng-class="'bg-' + epc.edited.color">
+        <li class="tab" ng-repeat="tab in epc.edited.tabs | orderBy:'tabOrder'" ng-class="[tab.activeTab ? 'active' : '', 'bg-' + epc.edited.color]" ng-click="epc.changeTab(tab.id)" ng-if="!tab.deleted">
+            <i class="fas fa-arrow-left" ng-if="tab.tabOrder !== 0" ng-click="epc.moveTab('left', tab.tabOrder, tab.id)"></i>
+            <i class="fas fa-pencil-alt" ng-if="!tab.nameEdit" ng-click="tab.nameEdit = true"></i>
+            <i class="fas fa-check" ng-if="tab.nameEdit" ng-click="epc.saveTabNameEdit(tab.id)"></i>
+            <span ng-if="!tab.nameEdit">{{tab.title}}</span>
+            <input type="text" ng-model="tab.title" ng-if="tab.nameEdit">
+            <i class="fas fa-trash" ng-if="!tab.nameEdit" ng-click="epc.deleteTabWarning(tab.id)"></i>
+            <i class="fas fa-ban" ng-if="tab.nameEdit" ng-click="epc.cancelTabNameEdit(tab.id)"></i>
+            <i class="fas fa-arrow-right" ng-if="tab.tabOrder !== (epc.edited.tabs.length - 1)" ng-click="epc.moveTab('right', tab.tabOrder, tab.id)"></i>
+        </li>
+    </ul>
+    <div class="tab-border" ng-class="'bg-' + epc.edited.color"></div>
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <ul class="toolbar tabs">
+                <li ng-if="!epc.heroOpen" ng-click="epc.openHeroGallery()"><i class="fas fa-images"></i> Select Image Carousel</li>
+                <li ng-if="epc.heroChanged && !epc.heroOpen" ng-click="epc.revertEdit('heroId')"><i class="fas fa-undo"></i> Undo Carousel Changes</li>
+                <li ng-if="epc.tabsChanged && !epc.heroOpen" ng-click="epc.revertEdit('tabs')"><i class="fas fa-undo"></i> Undo Tab Changes</li>
+                <li ng-if="!epc.heroOpen" ng-click="epc.createNewTab()"><i class="fas fa-plus-square"></i> Add New Tab</li>
+                <li ng-if="epc.heroOpen" ng-click="epc.heroOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="epc.tabsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="epc.heroOpen" class="hero-gallery">
+                <div class="row" ng-repeat="hero in epc.heroes">
+                    <div class="col-md-3 hero-gallery-title"><span ng-click="epc.selectHero(hero.id)">{{hero.title}}</span></div>
+                    <div class="col-md-9 hero-gallery-image">
+                        <div class="hero-gallery-image-wrapper" ng-repeat="item in hero.items" ng-click="epc.selectHero(hero.id)">
+                            <img ng-src="/thumbs/{{item.image}}">
+                            <div class="hero-gallery-image-wrapper-headline">{{item.headline}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-repeat="tab in epc.edited.tabs" ng-if="tab.activeTab">
+                <ul class="toolbar">
+                    <li ng-if="!epc.nameOpen" ng-click="epc.nameOpen = true"><i class="fas fa-pencil-alt"></i> Edit Program Name</li>
+                    <li ng-if="!epc.nameOpen && epc.nameChanged" ng-click="epc.revertEdit('name')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="epc.nameOpen" ng-click="epc.saveEdit('name')"><i class="fas fa-check"></i> Finish Editing Program Name</li>
+                    <li ng-if="epc.nameOpen" ng-click="epc.cancelEdit('name')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="epc.nameChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <h1 ng-if="!epc.nameOpen" ng-class="'color-' + epc.edited.color" >{{epc.edited.name}}</h1>
+                <textarea class="program-name" ng-if="epc.nameOpen" ng-model="epc.edited.name" ng-class="'color-' + epc.edited.color"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="epc.sectionsChanged" ng-click="epc.revertEdit('sections', tab.id)"><i class="fas fa-undo"></i> Undo Sections Changes</li>
+                    <li ng-click="epc.createNewSection(tab.id)"><i class="fas fa-plus-square"></i> Add New Section</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="epc.sectionsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="main-sections">
+                    <div class="triangle" ng-class="'bg-' + epc.edited.color"></div>
+                    <section ng-repeat="section in tab.sections | orderBy:'sectionOrder'" ng-if="!section.deleted">
+                        <hr>
+                        <ul class="toolbar section-toolbar">
+                            <li ng-click="epc.deleteSectionWarning(tab.id, section.id)"><i class="fas fa-trash"></i> Delete Section</li>
+                            <li ng-if="section.sectionOrder !== 0" ng-click="epc.moveSection('up', section.sectionOrder, tab.id, section.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                            <li ng-if="section.sectionOrder !== (tab.sections.length - 1)" ng-click="epc.moveSection('down', section.sectionOrder, tab.id, section.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                            <li ng-if="!section.image" ng-click="epc.openGallery(tab.id, section.id)"><i class="fas fa-images"></i> Add Image</li>
+                            <li ng-if="!section.buttonLink" ng-click="epc.createNewLink(tab.id, section.id)"><i class="fas fa-link"></i> Add Link Button</li>
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="epc.textChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                            </div>
+                        </ul>
+                        <ul class="toolbar section-toolbar">
+                            <li ng-if="!section.titleOpen" ng-click="section.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Section Title</li>
+                            <li ng-if="!section.titleOpen && section.titleChanged" ng-click="epc.cancelEdit('title', tab.id, section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                            <li ng-if="section.titleOpen" ng-click="epc.saveEdit('title', tab.id, section.id)"><i class="fas fa-check"></i> Finish Editing Section Title</li>
+                            <li ng-if="section.titleOpen" ng-click="epc.cancelEdit('title', tab.id, section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify">The section title is optional.  The first section on a tab usually doesn't have a title.</div>
+                                <div class="toolbar-help-notify" ng-if="section.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                            </div>
+                        </ul>
+                        <h2 ng-if="section.title && !section.titleOpen">{{section.title}}</h2>
+                        <textarea ng-if="section.titleOpen" ng-model="section.title" class="section-title"></textarea>
+                        <ul class="toolbar" ng-if="section.image">
+                            <li ng-click="epc.openGallery(tab.id, section.id)"><i class="fas fa-images"></i> Change Image</li>
+                            <li ng-if="section.imageOpen" ng-click="section.imageOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <li ng-if="!section.imageOpen && section.image && section.imagePosition === 'article-image-right'" ng-click="epc.moveImage(tab.id, section.id, 'left')"><i class="fas fa-arrow-left"></i> Move Left</li>
+                            <li ng-if="!section.imageOpen && section.image && section.imagePosition === 'article-image-left'" ng-click="epc.moveImage(tab.id, section.id, 'right')"><i class="fas fa-arrow-right"></i> Move Right</li>
+                            <li ng-if="!section.imageOpen" ng-click="epc.deleteImage(tab.id, section.id)"><i class="fas fa-trash"></i> Delete Image</li>
+                        </ul>
+                        <div ng-if="section.imageOpen" class="image-gallery">
+                            <div class="row image-gallery-controls">
+                                <div class="col-2 image-gallery-controls-prev"><span ng-if="epc.galleryPage !== 0" ng-click="epc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                                <div class="col-8 image-gallery-controls-page">Page: {{(epc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                                <div class="col-2 image-gallery-controls-next"><span ng-hide="(epc.galleryPage + 30) > filteredGallery.length" ng-click="epc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                                <div class="col-12"><input type="text" ng-model="epc.gallerySearchTerm" ng-change="epc.gallerySearch()" placeholder="Search"></div>
+                            </div>
+                            <div class="row image-gallery-items">
+                                <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (epc.images | filter:epc.gallerySearchTerm)) | limitTo: 30:epc.galleryPage">
+                                    <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="epc.selectImage(tab.id, section.id, image.filename)">
+                                    <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                                </div>
+                            </div>
+                            <div class="row image-gallery-upload">
+                                Upload new file: <input type="file" media-upload="epc.uploadFile"><i ng-if="epc.uploadFile" class="fas fa-upload" ng-click="epc.uploadImage(tab.id, section.id)"></i>
+                                <div class="file-error" ng-if="epc.fileError">{{epc.fileError}}</div>
+                            </div>
+                        </div>
+                        <div class="img-wrap" ng-class="section.imagePosition" ng-if="section.image && !section.imageOpen">
+                            <img ng-src="/images/{{section.image}}">
+                        </div>
+                        <div class="section-text-container">
+                            <ul class="toolbar">
+                                <li ng-if="!section.textOpen" ng-click="section.textOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                                <li ng-if="!section.textOpen && section.textChanged" ng-click="epc.revertEdit('text', tab.id, section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                                <li ng-if="section.textOpen" ng-click="epc.saveEdit('text', tab.id, section.id)"><i class="fas fa-check"></i> Finish Editing Text</li>
+                                <li ng-if="section.textOpen" ng-click="epc.cancelEdit('text', tab.id, section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <div class="toolbar-help">
+                                    <div class="toolbar-help-notify" ng-if="section.textChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                                </div>
+                            </ul>
+                            <div ng-if="!section.textOpen" ng-bind-html="section.text"></div>
+                            <ng-ckeditor class="page-content" ng-if="section.textOpen" ng-config="epc.ckeditorConfig" ng-model="section.text"></ng-ckeditor>
+                            <ul class="toolbar section-toolbar" ng-if="section.buttonLink">
+                                <li ng-if="!section.buttonOpen" ng-click="section.buttonOpen = true"><i class="fas fa-pencil-alt"></i> Edit Link Button</li>
+                                <li ng-if="!section.buttonOpen && section.buttonChanged" ng-click="epc.revertEdit('button', tab.id, section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                                <li ng-if="section.buttonOpen" ng-click="epc.saveEdit('button', tab.id, section.id)"><i class="fas fa-check"></i> Finish Editing Link Button</li>
+                                <li ng-if="section.buttonOpen" ng-click="epc.cancelEdit('button', tab.id, section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-if="!section.buttonOpen" ng-click="epc.deleteButton(tab.id, section.id)"><i class="fas fa-trash"></i> Delete Button</li>
+                                <div class="toolbar-help">
+                                    <div class="toolbar-help-notify" ng-if="section.buttonChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                                </div>
+                            </ul>
+                            <a ng-href="{{section.buttonLink}}" ng-if="section.buttonLink && !section.buttonOpen" class="btn" ng-class="'bg-' + epc.edited.color">{{section.buttonText}}</a>
+                            <div ng-if="section.buttonLink && section.buttonOpen" class="btn" ng-class="'bg-' + epc.edited.color">
+                                <input type="text" ng-model="section.buttonText">
+                            </div>
+                            <div ng-if="section.buttonLink && section.buttonOpen" class="editUrl">
+                                URL: <input type="text" ng-model="section.buttonLink">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <ul class="toolbar" ng-if="!epc.edited.locations.length">
+                    <li ng-click="epc.openLocations()" ng-if="!epc.locationsOpen"><i class="fas fa-map-marked-alt"></i> Add Location</li>
+                    <li ng-click="epc.locationsOpen = false" ng-if="epc.locationsOpen"><i class="fas fa-ban"></i> Cancel</li>
+                    <li ng-if="epc.locationsChanged" ng-click="epc.revertEdit('locations')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This section will not display if you don't select any locations</div>
+                        <div class="toolbar-help-notify" ng-if="epc.locationsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <section ng-if="epc.edited.locations.length || epc.locationsOpen" class="locations-section">
+                    <ul class="toolbar">
+                        <li ng-if="!epc.locationsTitleOpen" ng-click="epc.locationsTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Locations Title</li>
+                        <li ng-if="!epc.locationsTitleOpen && epc.locationsTitleChanged" ng-click="epc.revertEdit('locationsTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.locationsTitleOpen" ng-click="epc.saveEdit('locationsTitle')"><i class="fas fa-check"></i> Finish Editing Locations Title</li>
+                        <li ng-if="epc.locationsTitleOpen" ng-click="epc.cancelEdit('locationsTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="epc.locationsTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <h2 ng-if="!epc.locationsTitleOpen">{{epc.edited.locationsTitle}}</h2>
+                    <textarea ng-if="epc.locationsTitleOpen" ng-model="epc.edited.locationsTitle" class="section-title"></textarea>
+                    <ul class="toolbar">
+                        <li ng-if="!epc.locationsDescriptionOpen" ng-click="epc.locationsDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                        <li ng-if="!epc.locationsDescriptionOpen && epc.locationsDescriptionChanged" ng-click="epc.revertEdit('locationsDescription', tab.id, section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.locationsDescriptionOpen" ng-click="epc.saveEdit('locationsDescription', tab.id, section.id)"><i class="fas fa-check"></i> Finish Editing Text</li>
+                        <li ng-if="epc.locationsDescriptionOpen" ng-click="epc.cancelEdit('locationsDescription', tab.id, section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="epc.locationsDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <span ng-if="!epc.locationsDescriptionOpen" ng-bind-html="epc.edited.locationsDescription"></span>
+                    <ng-ckeditor ng-if="epc.locationsDescriptionOpen" ng-config="epc.ckeditorConfig" ng-model="epc.edited.locationsDescription"></ng-ckeditor>
+                    <ul class="toolbar" ng-if="epc.edited.locations.length">
+                        <li ng-click="epc.openLocations()" ng-if="!epc.locationsOpen"><i class="fas fa-map-marked-alt"></i> Add Location</li>
+                        <li ng-click="epc.locationsOpen = false" ng-if="epc.locationsOpen"><i class="fas fa-ban"></i> Cancel</li>
+                        <li ng-if="epc.locationsChanged" ng-click="epc.revertEdit('locations')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="epc.locationsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div ng-if="epc.locationsOpen" class="all-locations">
+                        <div class="row" ng-repeat="newLocation in epc.allLocations" ng-if="!newLocation.existing">
+                            <div class="col-md-1">
+                                <img ng-if="newLocation.image" ng-src="/images/{{newLocation.image}}">
+                            </div>
+                            <div class="col-md-5">
+                                {{newLocation.title}}
+                            </div>
+                            <div class="col-md-5">
+                                {{newLocation.street1}}<br>
+                                <span ng-if="newLocation.street2">{{newLocation.street2}}<br></span>
+                                {{newLocation.city}}, {{newLocation.state}} {{newLocation.zip}}
+                            </div>
+                            <div class="col-md-1">
+                                <span class="add-location" ng-click="epc.selectLocation($index, newLocation.id)"><i class="fas fa-plus-square"></i> Add</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="locations" ng-if="!epc.locationsOpen">
+                        <div ng-repeat="location in epc.edited.locations| orderBy:'locationOrder'" class="location" ng-if="!location.deleted">
+                            <ul class="toolbar">
+                                <li ng-if="location.locationOrder !== 0" ng-click="epc.moveLocation('left', location.locationOrder, location.id)"><i class="fas fa-arrow-left"></i> Move Left</li>
+                                <li ng-click="epc.deleteLocation(location.id)"><i class="fas fa-trash"></i> Remove</li>
+                                <li ng-if="location.locationOrder !== (epc.edited.locations.length - 1)" ng-click="epc.moveLocation('right', location.locationOrder, location.id)"><i class="fas fa-arrow-right"></i> Move Right</li>
+                            </ul>
+                            <div class="img-wrap">
+                                <img ng-if="location.image" ng-src="/images/{{location.image}}">
+                            </div>
+                            <h3>{{location.title}}</h3>
+                            <span ng-bind-html="location.description"></span>
+                        </div>
+                    </div>
+                </section>
+                <ul class="toolbar section-toolbar">
+                    <li ng-if="!epc.edited.displayApplyButton" ng-click="epc.enableApplyButton()"><i class="fas fa-link"></i> Add Apply Button</li>
+                    <li ng-if="!epc.applyButtonOpen && epc.edited.displayApplyButton" ng-click="epc.applyButtonOpen = true"><i class="fas fa-pencil-alt"></i> Edit Apply Button</li>
+                    <li ng-if="!epc.applyButtonOpen && epc.applyButtonChanged" ng-click="epc.revertEdit('applyButton')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="epc.applyButtonOpen && epc.edited.displayApplyButton" ng-click="epc.saveEdit('applyButton')"><i class="fas fa-check"></i> Finish Editing Apply Button</li>
+                    <li ng-if="epc.applyButtonOpen && epc.edited.displayApplyButton" ng-click="epc.cancelEdit('applyButton')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <li ng-if="!epc.applyButtonOpen && epc.edited.displayApplyButton" ng-click="epc.disableApplyButton()"><i class="fas fa-trash"></i> Delete Button</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="epc.applyButtonChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="apply-button-container" ng-if="epc.edited.displayApplyButton">
+                    <a ng-if="!epc.applyButtonOpen" ng-href="{{epc.edited.applyButtonLink}}" class="btn" ng-class="'bg-' + epc.edited.color">{{epc.edited.applyButtonText}}</a>
+                    <div ng-if="epc.applyButtonOpen" class="btn" ng-class="'bg-' + epc.edited.color">
+                        <input type="text" ng-model="epc.edited.applyButtonText">
+                    </div>
+                    <div ng-if="epc.applyButtonOpen" class="editUrl apply">
+                        URL: <input type="text" ng-model="epc.edited.applyButtonLink">
+                    </div>
+                </div>
+                <ul class="toolbar">
+                    <li ng-click="epc.addNewQuestion()"><i class="far fa-building"></i> Add Question</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This section will not display if you don't add any questions</div>
+                        <div class="toolbar-help-notify" ng-if="epc.questionsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="faq-section" ng-if="epc.edited.questions.length">
+                    <div class="triangle" ng-class="'bg-' + epc.edited.color"></div>
+                    <section class="faq">
+                        <h2>Frequently Asked Questions</h2>
+                        <div class="question-block" ng-repeat="question in epc.edited.questions | orderBy:'questionOrder'" ng-if="!question.deleted">
+                            
+                            <ul class="toolbar">
+                                <li ng-if="!question.questionOpen" ng-click="question.questionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Question</li>
+                                <li ng-if="question.questionOpen" ng-click="epc.saveEdit('question', question.id)"><i class="fas fa-check"></i> Finish Editing Question</li>
+                                <li ng-if="question.questionOpen" ng-click="epc.cancelEdit('question', question.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-if="!question.questionOpen" ng-click="epc.deleteQuestion(question.id)"><i class="fas fa-trash"></i> Delete Question</li>
+                                <li ng-if="question.questionOrder !== 0" ng-click="epc.moveQuestion('up', question.questionOrder, question.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                                <li ng-if="question.questionOrder !== (epc.edited.questions.length - 1)" ng-click="epc.moveQuestion('down', question.questionOrder, question.id)"><i class="fas fa-arrow-down"></i> Move Down</li>    
+                            </ul>
+                            <div ng-if="!question.questionOpen" class="question" ng-click="question.displayAnswer = !question.displayAnswer"><i class="fas" ng-class="question.displayAnswer ? 'fa-minus' : 'fa-plus'"></i> {{question.question}}</div>
+                            <div class="answer" ng-if="question.displayAnswer && !question.questionOpen" ng-bind-html="question.answer"></div>
+                            <div class="editUrl" ng-if="question.questionOpen">Question: <input type="text" ng-model="question.question"></div>
+                            <div ng-if="question.questionOpen">
+                                Answer:
+                                <ng-ckeditor ng-config="epc.ckeditorConfig" ng-model="question.answer"></ng-ckeditor>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="metaData" ng-show="$root.user.role === 'admin'">
+                    <h2>Meta Data</h2>
+                    <ul class="toolbar">
+                        <li ng-if="!epc.linkOpen" ng-click="epc.linkOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                        <li ng-if="!epc.linkOpen && epc.linkChanged" ng-click="epc.revertEdit('link')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.linkOpen" ng-click="epc.saveEdit('link')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                        <li ng-if="epc.linkOpen" ng-click="epc.cancelEdit('link')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This defaults to the program name with dashes instead of spaces.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.linkChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div class="error" ng-if="epc.linkError">{{epc.linkError}}</div>
+                    <div class="editUrl">https://kotm.org/programs/<span ng-if="!epc.linkOpen">{{epc.edited.link}}</span><input ng-if="epc.linkOpen" type="text" ng-model="epc.edited.link" ng-change="epc.encodeUrl()"></div>
+
+                    <ul class="toolbar">
+                        <li ng-if="!epc.shortDescriptionOpen" ng-click="epc.shortDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Program Short Description</li>
+                        <li ng-if="!epc.shortDescriptionOpen && epc.shortDescriptionChanged" ng-click="epc.revertEdit('shortDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.shortDescriptionOpen" ng-click="epc.saveEdit('shortDescription')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                        <li ng-if="epc.shortDescriptionOpen" ng-click="epc.cancelEdit('shortDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This short description appears on the homepage in the programs grid.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.shortDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div ng-if="!epc.shortDescriptionOpen">{{epc.edited.shortDescription}}</div>
+                    <textarea ng-model="epc.edited.shortDescription" ng-if="epc.shortDescriptionOpen"></textarea>
+
+                    <ul class="toolbar">
+                        <li ng-click="epc.openMetaGallery('home')"><i class="fas fa-images"></i> Change Homepage Grid Image</li>
+                        <li ng-if="epc.homeImageOpen" ng-click="epc.homeImageOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This image appears on the home page in the programs grid.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.homeImageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+
+                    <div ng-if="epc.homeImageOpen" class="image-gallery">
+                        <div class="row image-gallery-controls">
+                            <div class="col-2 image-gallery-controls-prev"><span ng-if="epc.galleryPage !== 0" ng-click="epc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                            <div class="col-8 image-gallery-controls-page">Page: {{(epc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                            <div class="col-2 image-gallery-controls-next"><span ng-hide="(epc.galleryPage + 30) > filteredGallery.length" ng-click="epc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                            <div class="col-12"><input type="text" ng-model="epc.gallerySearchTerm" ng-change="epc.gallerySearch()" placeholder="Search"></div>
+                        </div>
+                        <div class="row image-gallery-items">
+                            <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (epc.images | filter:epc.gallerySearchTerm)) | limitTo: 30:epc.galleryPage">
+                                <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="epc.selectMetaImage('home', image.filename)">
+                                <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                            </div>
+                        </div>
+                        <div class="row image-gallery-upload">
+                            Upload new file: <input type="file" media-upload="epc.uploadFile"><i ng-if="epc.uploadFile" class="fas fa-upload" ng-click="epc.uploadMetaImage('home')"></i>
+                            <div class="file-error" ng-if="epc.fileError">{{epc.fileError}}</div>
+                        </div>
+                    </div>
+
+                    <div ng-if="!epc.homeImageOpen">
+                        <img class="gallery-image" ng-src="/thumbs/{{epc.edited.homeImage}}">
+                    </div>
+
+                    <ul class="toolbar">
+                        <li ng-if="!epc.mediumDescriptionOpen" ng-click="epc.mediumDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Program Medium Description</li>
+                        <li ng-if="!epc.mediumDescriptionOpen && epc.mediumDescriptionChanged" ng-click="epc.revertEdit('mediumDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.mediumDescriptionOpen" ng-click="epc.saveEdit('mediumDescription')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                        <li ng-if="epc.mediumDescriptionOpen" ng-click="epc.cancelEdit('mediumDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This medium description appears on the about us in the programs blocks.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.mediumDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div ng-if="!epc.mediumDescriptionOpen">{{epc.edited.mediumDescription}}</div>
+                    <textarea ng-model="epc.edited.mediumDescription" ng-if="epc.mediumDescriptionOpen"></textarea>
+
+                    <ul class="toolbar">
+                        <li ng-click="epc.openMetaGallery('about')"><i class="fas fa-images"></i> Change About Us Block Image</li>
+                        <li ng-if="epc.aboutImageOpen" ng-click="epc.aboutImageOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This image appears on the about us in the programs blocks. Any image will be converted to grayscale.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.aboutImageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+
+                    <div ng-if="epc.aboutImageOpen" class="image-gallery">
+                        <div class="row image-gallery-controls">
+                            <div class="col-2 image-gallery-controls-prev"><span ng-if="epc.galleryPage !== 0" ng-click="epc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                            <div class="col-8 image-gallery-controls-page">Page: {{(epc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                            <div class="col-2 image-gallery-controls-next"><span ng-hide="(epc.galleryPage + 30) > filteredGallery.length" ng-click="epc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                            <div class="col-12"><input type="text" ng-model="epc.gallerySearchTerm" ng-change="epc.gallerySearch()" placeholder="Search"></div>
+                        </div>
+                        <div class="row image-gallery-items">
+                            <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (epc.images | filter:epc.gallerySearchTerm)) | limitTo: 30:epc.galleryPage">
+                                <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="epc.selectMetaImage('about', image.filename)">
+                                <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                            </div>
+                        </div>
+                        <div class="row image-gallery-upload">
+                            Upload new file: <input type="file" media-upload="epc.uploadFile"><i ng-if="epc.uploadFile" class="fas fa-upload" ng-click="epc.uploadMetaImage('about')"></i>
+                            <div class="file-error" ng-if="epc.fileError">{{epc.fileError}}</div>
+                        </div>
+                    </div>
+
+                    <div ng-if="!epc.aboutImageOpen">
+                        <img class="gallery-image program-about-image" ng-src="/thumbs/{{epc.edited.aboutImage}}">
+                    </div>
+                    <ul class="toolbar">
+                        <li ng-if="!epc.metaDescriptionOpen" ng-click="epc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                        <li ng-if="!epc.metaDescriptionOpen && epc.metaDescriptionChanged" ng-click="epc.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.metaDescriptionOpen" ng-click="epc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                        <li ng-if="epc.metaDescriptionOpen" ng-click="epc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div ng-if="!epc.metaDescriptionOpen">{{epc.edited.meta.description}}</div>
+                    <textarea ng-model="epc.edited.meta.description" ng-if="epc.metaDescriptionOpen"></textarea>
+                    <ul class="toolbar">
+                        <li ng-if="!epc.metaTitleOpen" ng-click="epc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                        <li ng-if="!epc.metaTitleOpen && epc.metaTitleChanged" ng-click="epc.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.metaTitleOpen" ng-click="epc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                        <li ng-if="epc.metaTitleOpen" ng-click="epc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                            <div class="toolbar-help-notify" ng-if="epc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div class="editUrl">Title: <span ng-if="!epc.metaTitleOpen">{{epc.edited.meta.title}}</span><input ng-if="epc.metaTitleOpen" type="text" ng-model="epc.edited.meta.title"></div>
+                    <ul class="toolbar">
+                        <li ng-if="!epc.metaKeywordsOpen" ng-click="epc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                        <li ng-if="!epc.metaKeywordsOpen && epc.metaKeywordsChanged" ng-click="epc.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="epc.metaKeywordsOpen" ng-click="epc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                        <li ng-if="epc.metaKeywordsOpen" ng-click="epc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                            <div class="toolbar-help-notify" ng-if="epc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div class="editUrl">Keywords: <span ng-if="!epc.metaKeywordsOpen">{{epc.edited.meta.keywords}}</span><input ng-if="epc.metaKeywordsOpen" type="text" ng-model="epc.edited.meta.keywords"></div>        
+                    
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="epc.deleteTabPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Deleting the tab: <strong>{{epc.edited.tabs[epc.deleteTabIndex].title}}</strong> will delete the tab from the tab bar AND all of the content that is displayed when the user clicks the tab.  Is this what you want?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="epc.deleteTab()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="epc.cancelDeleteTab()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="epc.responseErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh Oh!</div>
+            <div class="error-popup-box-body">{{epc.responseError}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="epc.responseErrorPopup = false">Ok, I'll Fix It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="epc.deleteSectionPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the selected section?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="epc.deleteSection()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="epc.cancelDeleteSection()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

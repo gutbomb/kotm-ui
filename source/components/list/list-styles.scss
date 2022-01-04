@@ -1,0 +1,39 @@
+.main-container.list-page {
+    padding-top: 30px;
+
+    &.top-border {
+        &-green {
+            border-top: 30px solid $green;
+        }
+
+        &-gray {
+            border-top: 30px solid $gray;
+        }
+        
+        &-teal {
+            border-top: 30px solid $teal;
+        }
+        
+        &-blue {
+            border-top: 30px solid $blue;
+        }
+        
+        &-orange {
+            border-top: 30px solid $orange;
+        }
+        
+        &-purple {
+            border-top: 30px solid $purple;
+        }
+        
+        &-red {
+            border-top: 30px solid $red;
+        }
+    }
+
+    main {
+        h1 {
+            margin-top: 0;
+        }
+    }
+}

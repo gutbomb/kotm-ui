@@ -1,0 +1,232 @@
+.main-container.article-page {
+    padding: 0;
+
+    .row {
+        margin: 0;
+    }
+    
+    main.article {
+        padding: 0;
+    }
+
+    .article {
+        overflow: hidden;
+        
+        
+        
+        &-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0;
+            display: flex;
+            width: 100%;
+            
+            &-left, &-middle, &-right {
+                display: inline-block;
+            }
+
+            &-left, &-right {
+                height: 400px;
+            }
+
+            &-left {
+                background-color: $green;
+                width: 600px;
+            
+                &.bg-red {
+                    background-color: $red;
+                }
+                
+                &.bg-green {
+                    background-color: $green;
+                }
+                
+                &.bg-gray {
+                    background-color: $gray;
+                }
+                
+                &.bg-teal {
+                    background-color: $teal;
+                }
+                
+                &.bg-blue {
+                    background-color: $blue;
+                }
+                
+                &.bg-orange {
+                    background-color: $orange;
+                }
+                
+                &.bg-purple {
+                    background-color: $purple;
+                }
+            }
+
+            &-middle {
+                display: inline-block;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 400px 400px 0 0;
+                z-index: 1;
+
+                background-color: $lightgreen;
+                
+                border-color: $green transparent transparent transparent;
+
+                &.bg-red {
+                    background-color: $lightred;
+                    border-color: $red transparent transparent transparent;
+                }
+
+                &.bg-green {
+                    background-color: $lightgreen;
+                    border-color: $green transparent transparent transparent;
+                }
+                
+                &.bg-gray {
+                    background-color: $lightgray;
+                    border-color: $gray transparent transparent transparent;
+                }
+                
+                &.bg-teal {
+                    background-color: $lightteal;
+                    border-color: $teal transparent transparent transparent;
+                }
+                
+                &.bg-blue {
+                    background-color: $lightblue;
+                    border-color: $blue transparent transparent transparent;
+                }
+                
+                &.bg-orange {
+                    background-color: $lightorange;
+                    border-color: $orange transparent transparent transparent;
+                }
+                
+                &.bg-purple {
+                    background-color: $lightpurple;
+                    border-color: $purple transparent transparent transparent;
+                }
+            }
+
+            &-right {
+                flex-basis: 100%;
+                background-color: $lightgreen;
+
+                &.bg-red {
+                    background-color: $lightred;
+                }
+
+                &.bg-green {
+                    background-color: $lightgreen;
+                }
+                
+                &.bg-gray {
+                    background-color: $lightgray;
+                }
+                
+                &.bg-teal {
+                    background-color: $lightteal;
+                }
+                
+                &.bg-blue {
+                    background-color: $lightblue;
+                }
+                
+                &.bg-orange {
+                    background-color: $lightorange;
+                }
+                
+                &.bg-purple {
+                    background-color: $lightpurple;
+                }
+            }
+        }
+            
+            
+        
+        &-wrapper {
+            padding: 0 60px;
+            position: relative;
+            top: 30px;
+            width: 100%;
+            z-index: 2;
+
+            @media screen and (min-width: 1400px) {
+                padding: 0 15%;
+            }
+        
+            @media screen and (min-width: 1921px) {
+                padding: 0 20%;
+            }
+
+            @media screen and (max-width: $phone) {
+                padding: 0 20px;
+            }
+            
+            &-date {
+                font-weight: bold;
+            }
+
+            &-image {
+                margin-top: 10px;
+                width: 100%;
+                height: auto;
+
+                @media screen and (max-width: $phone) {
+                    display: none;
+                }
+
+                &-bottom {
+                    width: 100%;
+                    margin-bottom: 60px;
+                    @media screen and (min-width: $phone) {
+                        display: none;
+                    }
+                }
+            }
+
+            &-headline {
+                margin-top: 35px;
+                font-weight: bold;
+                color: $black;
+                font-size: 50px;
+            }
+
+            &-content {
+                background-color: $accent;
+                border-top: solid 4px $black;
+                padding: 30px;
+                margin-bottom: 60px;
+
+                @media screen and (max-width: $phone) {
+                    margin-bottom: 10px;
+                }
+
+                &-date {
+                    font-size: 14px;
+                }
+
+                &-text {
+                    margin-top: 10px;
+                    margin-bottom: 80px;
+
+                    img {
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            h1 {
+                margin-top: 0px;
+
+                &.article-wrapper-headline {
+                    margin-top: 20px;
+                }
+            }
+            
+        }
+    }
+}

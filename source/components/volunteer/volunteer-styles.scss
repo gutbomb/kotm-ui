@@ -1,0 +1,107 @@
+.main-container.volunteer-page {
+    border-top: 30px solid $green;
+
+    @media screen and (max-width: $phone) {
+        padding: 0 10px;
+    }
+
+    div.lightbox {
+        opacity: 0.3;
+        background: #000000;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0px;
+        left: 0px;
+        z-index: 998;
+    }
+    div.standard-message {
+        /* position element on screen */
+        position: fixed;
+        z-index: 999;
+        top: 50%;
+        left: 50%;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -webkit-transform: translateZ(0) scale(1.0, 1.0);
+        transform: translate(-50%, -50%);
+        /* style the element */
+        background-color: #ffffff;
+        width: 300px;
+        border-radius: 9px; /* This should be set same as radius values for popup-message-button below */
+        text-align: center;
+    }
+    div.error-message {
+        border: 2px solid #ff7979;
+    }
+    div.confirm-message {
+        /* placeholder, nothing needed here */
+    }
+    div.popup-message-text {
+        margin: 25px;
+        margin-bottom: 24px; /* Adjusts the text height to yield an even height for the whole dialog, so the centering transform doesn't split pixels to yield blurry artifacts */
+        font-size: 14px;
+        line-height: 18px;
+        word-wrap: break-word;
+    }
+    div.popup-message-text > div, div.popup-message-text p {
+        margin-bottom: 14px;
+    }
+    div.popup-message-title {
+        margin: 25px;
+        margin-bottom: 13px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    div.popup-message-text-posttitle {
+        margin-top: 0px;
+    }
+    div.popup-message-button-active {
+        /* Do this by adding/removing a class, rather than with the :active selector because the site disables onmousedown event, which breaks :active for some browsers */
+        background-color: #f1f1f1;
+    }
+    div.popup-message-button {
+        font-size: 16px;
+        padding: 10px;
+        border-top: 1px solid #e6e6e6;
+        color: #418efe;
+        cursor: pointer;
+        /* These should be set same as radius value for standard-message above */
+        border-bottom-left-radius: 9px;
+        border-bottom-right-radius: 9px;
+    }
+    div.popup-message-button-left {
+        border-bottom-right-radius: 0px;
+        display: inline-block;
+        width: 130px;
+    }
+    div.popup-message-button-right {
+        border-bottom-left-radius: 0px;
+        display: inline-block;
+        width: 129px;
+        border-left: 1px solid #e6e6e6;
+    }
+    html.noscroll {
+        /* For disabling the scrollbar when messages pop up. */
+        position: fixed; 
+        overflow-y: scroll;
+        width: 100%;
+    }
+    
+    /*
+     * Frame styles
+     */
+    iframe.core_iframe {
+        width: 100%;
+        height: 10px; /* starts small, but will get resized on load */
+        /* Counteract the extra whitespace at bottom due to padding in 
+           iframe height, see resizeIframe() */
+        margin-bottom: -86px;
+    }
+
+    .row {
+        margin-bottom: 60px;
+    }
+}
+
+
+

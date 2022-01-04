@@ -1,0 +1,22 @@
+<hero-image class="program" hero-id="ac.article.heroId" ng-if="ac.article.heroId && ac.article.layout==='page'"></hero-image>
+<div class="main-container article-page" ng-class="['accent-' + ac.article.color, !ac.article.heroId && ac.article.layout==='page' ? 'top-border' : '']">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content article" role="main">
+            <div class="article-bg" ng-if="ac.article.layout==='article'">
+                <div class="article-bg-left" ng-class="'bg-' + ac.article.color" ng-class="'bg-'+ac.article.color"></div>
+                <div class="article-bg-middle" ng-class="'bg-' + ac.article.color" ng-class="'bg-'+ac.article.color"></div>
+                <div class="article-bg-right" ng-class="'bg-' + ac.article.color" ng-class="'bg-'+ac.article.color"></div>
+            </div>
+            <div class="article-wrapper">
+                <span class="article-wrapper-date" ng-if="ac.article.layout==='article'">{{ac.article.posted | amDateFormat: 'LL'}}</span>
+                <img class="article-wrapper-image" ng-hide="ac.article.image==='logo.png'" ng-src="/images/{{ac.article.image}}" ng-if="ac.article.image && ac.article.layout==='article'">
+                <h1 ng-class="ac.article.layout === 'article' ? 'article-wrapper-headline' : 'page-headline'">{{ac.article.title}}</h1>
+                <div ng-class="ac.article.layout === 'article' ? 'article-wrapper-content' : ''">
+                    <span class="article-wrapper-content-date" ng-if="ac.article.layout==='article'">Posted {{ac.article.posted | amDateFormat: 'LL'}}</span>
+                    <div class="article-wrapper-content-text" ng-bind-html="ac.article.text"></div>
+                </div>
+                <img class="article-wrapper-image-bottom" ng-hide="ac.article.image==='logo.png'" ng-src="/images/{{ac.article.image}}" ng-if="ac.article.image && ac.article.layout==='article'">
+            </div>
+        </main>
+    </div>
+</div>

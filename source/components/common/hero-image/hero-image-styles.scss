@@ -1,0 +1,220 @@
+.hero-container {
+    margin-bottom: 20px;
+    height: 700px;
+    position: relative;
+    overflow: hidden;
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        z-index: 2;
+        width: 150%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        transition: all ease-out 2s;
+        transform: skew(15deg);
+        left:-30%;
+        
+
+        &.topright, &.bottomright, &.middleright {
+            width: 100%;
+            left: 35%;
+        }
+
+        &.topleft, &.bottomleft, &.middleleft {
+            width: 100%;
+            left: -35%;
+        }
+
+        &.no-overlay {
+            width: 100%;
+            left:-150%;
+            transition: all ease-out 3s;
+        }
+    }
+
+    .hero-inner {
+        transition: all linear 0.5s;
+
+        &.ng-hide {
+            opacity: 0;
+            .main-img, .text {
+                opacity: 0;
+            }
+        }
+
+        .main-img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            width: 100%;
+            height: auto;
+
+            transition: all linear 0.5s;
+
+            @media screen and (max-width: $phone) {
+                width: 125%;
+                max-width: 125%;
+            }
+        }
+
+        
+
+        .text {
+            position: absolute;
+            z-index: 3;
+            text-transform: uppercase;
+            color: $white;
+            width: 40%;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            transition: all ease-in 1s;
+
+            &.topright {
+                top: 10%;
+                right: 10%;
+                bottom: initial;
+                left: initial;
+                @media screen and (max-width: $phone) {
+                    right: 15%;
+                }
+                
+            }
+
+            &.topleft {
+                top: 10%;
+                right: initial;
+                bottom: initial;
+                left: 10%;
+            }
+
+            &.bottomright {
+                top: initial;
+                right: 10%;
+                bottom: 10%;
+                left: initial;
+                @media screen and (max-width: $phone) {
+                    right: 15%;
+                }
+            }
+
+            &.bottomleft {
+                top: initial;
+                right: initial;
+                bottom: 10%;
+                left: 10%;
+            }
+
+            &.middleleft {
+                top: initial;
+                right: initial;
+                bottom: 50%;
+                left: 10%;
+                transform: translate(0,50%);
+            }
+
+            &.middleright {
+                top: initial;
+                right: 10%;
+                bottom: 50%;
+                left: initial;
+                transform: translate(0,50%);
+                @media screen and (max-width: $phone) {
+                    right: 15%;
+                }
+            }
+
+            &.middletop {
+                top: 10%;
+                right: initial;
+                bottom: initial;
+                left: 50%;
+                transform: translate(-50%,0);
+            }
+
+            &.middlebottom {
+                top: initial;
+                right: initial;
+                bottom: 10%;
+                left: 50%;
+                transform: translate(-50%,0);
+            }
+
+            .topline {
+                font-weight: normal;
+                border-bottom: 2px solid $white;
+                margin-bottom: 10px;
+                width: 60%;
+                white-space: nowrap;
+                padding-bottom: 10px;
+
+                @media screen and (max-width: $phone) {
+                    font-size: 10px;
+                }
+            }
+
+            .headline {
+                font-weight: 900;
+            }
+
+            .description, .headline {
+                font-size: 50px;
+                line-height: 1.2em;
+                margin-bottom: 10px;
+
+                @media screen and (max-width: 1299px) {
+                    font-size: 30px;
+                }
+            
+                @media screen and (max-width: 900px) {
+                    font-size: 20px;
+                }
+
+                @media screen and (max-width: $phone) {
+                    font-size: 16px;
+                }
+            }
+
+            .description {
+                font-weight: normal;
+            }
+        }
+    }
+    
+    @media screen and (max-width: 1299px) {
+        height: 500px;
+    }
+
+    @media screen and (max-width: 900px) {
+        height: 300px;
+    }
+}
+
+.hero-pager {
+    position: relative;
+    z-index: 4;
+    margin-top: -38px;
+    text-align: center;
+    width: 100%;
+
+    &-item {
+        width: 15px;
+        height: 15px;
+        border: solid 2px #727272;
+        border-radius: 50%;
+        display: inline-block;
+        // background-color: #ffffff;
+        background-image: linear-gradient(to top, #ffffff, #a8a8a8);
+        cursor: pointer;
+        margin: 10px;
+
+        &.active {
+            border-color: #9fd3f2;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "dev" : {
+        "appConfig": {
+            "apiUrl": "http://localhost:3002/api",
+            "tokenName": "kotm2020_token"
+        }
+    },
+    "staging" : {
+        "appConfig": {
+            "apiUrl": "http://kotm-staging.kotm.internal:3002/api",
+            "tokenName": "kotm2020_token"
+        }
+    },
+    "prod" : {
+        "appConfig": {
+            "apiUrl": "https://api.kotm.org/api",
+            "tokenName": "kotm2020_token"
+        }
+    }
+}

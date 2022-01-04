@@ -1,0 +1,81 @@
+.main-container.media-page {
+    border-top: 30px solid $green;
+    
+    .search {
+        width: 100%;
+        text-align: center;
+
+        &-bar {
+            text-align: center;
+            position: relative;
+            padding: 20px;
+            width: 400px;
+            margin: 0;
+            display: inline-block;
+
+            @media screen and (max-width: $phone) {
+                width: 100%;
+                padding: 20px 0;
+            }
+    
+            input[type=text] {
+                width: 100%;
+                text-transform: uppercase;
+                font-weight: 500;
+                font-size: 14px;
+                padding: 8px;
+                background-color: $white;
+                color: $black;
+                border: solid 2px $black;
+            }
+    
+            &-button {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                font-size: 28px;
+                color: $green;
+                cursor: pointer;
+
+                &.close {
+                    right: 30px;
+                    top: 26px;
+                }
+            }
+        }
+    }
+
+    .document-list-item {
+        margin-top: 10px;
+        padding: 3px;
+        cursor: pointer;
+
+        &-title {
+            font-weight: bold;
+        }
+
+        &-date {
+            text-align: right;
+        }
+
+        &-action {
+            text-align: right;
+            
+            a {
+                width: 100%;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+        &-year {
+            font-size: 30px;
+            font-weight: 900;
+            margin-top: 20px;
+        }
+
+        &:hover {
+            background-color: $verylightgray;
+        }
+    }
+}

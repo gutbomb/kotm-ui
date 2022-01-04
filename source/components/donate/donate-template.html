@@ -1,0 +1,25 @@
+<div class="main-container donate-page">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="main-header">
+                <h1>{{dc.pageContent.headline}}</h1>
+                <h2>{{dc.pageContent.subtitle}}</h2>
+                <div class="title-line">&nbsp;</div>
+                <div class="donation-header" ng-bind-html="dc.pageContent.description"></div>
+            </div>
+            <div class="donate-bg">
+                <div class="donate-block">
+                    <script src="https://donorbox.org/widget.js" paypalExpress="false"></script><iframe src="https://donorbox.org/embed/donate-to-kotm" name="donorbox" allowpaymentrequest="" seamless="seamless" frameborder="0" scrolling="no" height="900px" width="100%" style="max-width: 500px; min-width: 250px; max-height:none!important"></iframe>
+                    <hr class="hr-large">
+                    <div class="donation-legal"><p>{{dc.pageContent.boilerplate}}</p></div>
+                    <div class="donation-footer">
+                        <h1>{{dc.pageContent.otherWaysHeadline}}</h1>
+                        <div class="title-line">&nbsp;</div>
+                        <div ng-bind-html="dc.pageContent.otherWaysText"></div>
+                    </div>
+                    <img ng-src="/images/{{dc.pageContent.image}}">
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

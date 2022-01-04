@@ -1,0 +1,738 @@
+<div class="main-container admin-page top-border-green">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="main-header">
+                <h1>KOTM.org Admin</h1>
+            </div>
+            <ul class="tab-bar bg-green">
+                <li class="tab bg-green" ng-click="ac.changeTab('articles')" ng-class="ac.activeTab === 'articles' ? 'active' : ''" ng-click="pc.changeTab($index)">Articles</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('specialpages')" ng-class="ac.activeTab === 'specialpages' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Special Pages</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('forms')" ng-class="ac.activeTab === 'forms' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Forms</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('images')" ng-class="ac.activeTab === 'images' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Images</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('carousels')" ng-class="ac.activeTab === 'carousels' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Carousels</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('programs')" ng-class="ac.activeTab === 'programs' ? 'active' : ''" ng-click="pc.changeTab($index)">Programs</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('header')" ng-class="ac.activeTab === 'header' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Header</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('footer')" ng-class="ac.activeTab === 'footer' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Footer</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('media')" ng-class="ac.activeTab === 'media' ? 'active' : ''" ng-click="pc.changeTab($index)" ng-if="$root.user.role === 'admin'">Media</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('rsvp')" ng-class="ac.activeTab === 'rsvp' ? 'active' : ''" ng-click="pc.changeTab($index)">RSVP</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('locations')" ng-class="ac.activeTab === 'locations' ? 'active' : ''" ng-click="pc.changeTab($index)">Locations</li>
+                <li class="tab bg-green" ng-click="ac.changeTab('account')" ng-class="ac.activeTab === 'account' ? 'active' : ''" ng-click="pc.changeTab($index)">Account</li>
+                </ul>
+            <div class="tab-border bg-green"></div>
+            <div class="main-content" ng-if="ac.activeTab === 'articles'">
+                <h2>Articles</h2>
+                <p>Article pages are the generic content pages of the site.  This is a list of all articles on the website.</p>
+                <a href="/admin/create-article" class="btn bg-green" ng-if="$root.user.role === 'admin'">Create New Article</a>
+                <div class="row">
+                    <div class="col-md-4"><strong>Title</strong></div>
+                    <div class="col-md-2"><strong>Author</strong></div>
+                    <div class="col-md-2"><strong>Posted</strong></div>
+                    <div class="col-md-2"><strong>Updated</strong></div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row" ng-repeat="article in ac.articles">
+                    <div class="col-md-4"><a ng-href="/article/{{article.url}}">{{article.title}}</a></div>
+                    <div class="col-md-2">{{article.firstname}} {{article.lastname}}</div>
+                    <div class="col-md-2">{{article.posted | amDateFormat: 'MMM D YYYY h:mm a'}}</div>
+                    <div class="col-md-2">{{article.updated | amDateFormat: 'MMM D YYYY h:mm a'}}</div>
+                    <div class="col-md-2">
+                        <a ng-href="/admin/edit-article/{{article.url}}" class="fas fa-pencil-alt"></a>
+                        <i class="far fa-trash-alt" ng-click="ac.openDeleteArticlePopup(article.title, article.url, article.pageId)" ng-if="$root.user.role === 'admin'"></i>
+                    </div>
+                </div>
+                <hr>
+                <h2>Page Lists</h2>
+                <p>A Page list is a special page that contains links to other pages.  It has a long description field at the top and then a list of pages.</p>
+                <a href="/admin/create-list" class="btn bg-green" ng-if="$root.user.role === 'admin'">Create New Page List</a>
+                <div class="row">
+                    <div class="col-md-6"><strong>Title</strong></div>
+                    <div class="col-md-2"><strong>Author</strong></div>
+                    <div class="col-md-2"><strong>Updated</strong></div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row" ng-repeat="list in ac.lists">
+                    <div class="col-md-6"><a ng-href="/list/{{list.url}}">{{list.title}}</a></div>
+                    <div class="col-md-2">{{list.firstname}} {{list.lastname}}</div>
+                    <div class="col-md-2">{{list.updated | amDateFormat: 'MMM D YYYY h:mm a'}}</div>
+                    <div class="col-md-2">
+                        <a ng-href="/admin/edit-list/{{list.url}}" class="fas fa-pencil-alt"></a>
+                        <i class="far fa-trash-alt" ng-click="ac.openDeleteListPopup(list.title, list.url, list.id, list.pageId)" ng-if="$root.user.role === 'admin'"></i>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.displayDeleteArticlePopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Are you sure?</div>
+                        <div class="error-popup-box-body">Do you really want to delete the article: <strong>{{ac.deleteArticleTitle}}</strong></div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.deleteArticle(ac.deleteArticleUrl, ac.deleteArticleId)">Yes</button>
+                            <button class="btn bg-gray" ng-click="ac.closeDeleteArticlePopup()">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.displayDeleteListPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Are you sure?</div>
+                        <div class="error-popup-box-body">Do you really want to delete the page list: <strong>{{ac.deleteListTitle}}</strong></div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.deleteList(ac.deleteListUrl, ac.deleteListId, ac.deleteListPageId)">Yes</button>
+                            <button class="btn bg-gray" ng-click="ac.closeDeleteListPopup()">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'specialpages'">
+                <h2>Special Pages</h2>
+                <p>Special pages are pages that have their own special design.  Here is a list of the special pages on the site that can be edited.</p>
+                <div class="row" ng-if="$root.user.role === 'admin'">
+                    <div class="col-md-11"><a href="/home">Homepage</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-home" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11"><a href="/give">Ways to Give</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-landing/give" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11"><a href="/about-us">About Us</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-about" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11"><a href="/about/board">Board of Directors</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-board" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-11"><a href="/donate">Monetary Donations</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-donate" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'forms'">
+                <h2>Forms</h2>
+                <p>Here is a list of the forms on the site that can be edited.</p>
+                <a href="/admin/create-form" class="btn bg-green" ng-if="$root.user.role === 'admin'">Create New Form</a>
+                <div class="row">
+                    <div class="col-md-10"><strong>Title</strong></div>
+                    <div class="col-md-2"></div>
+                </div>
+                <div class="row" ng-repeat="form in ac.forms">
+                    <div class="col-md-10"><a ng-href="/form/{{form.url}}">{{form.title}}</a></div>
+                    <div class="col-md-2">
+                        <a ng-href="/admin/edit-form/{{form.url}}" class="fas fa-pencil-alt"></a>
+                        <i class="far fa-trash-alt" ng-click="ac.deleteFormWarning(form.title, form.url)" ng-if="$root.user.role === 'admin'"></i>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.deleteFormPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+                        <div class="error-popup-box-body">Do you want to delete the <strong>{{ac.deletedForm.title}}</strong> form?</div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.doDeleteForm()">Yes, Delete It</button>
+                            <button class="btn bg-gray" ng-click="ac.cancelDeleteForm()">No, Keep It</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'images'">
+                <h2>Images</h2>
+                <p>Images can be managed here.  Clicking an image will copy it's URL to the clipboard so you can paste it into your content.</p>
+                <div class="image-gallery">
+                    <div class="row image-gallery-controls">
+                        <div class="col-2 image-gallery-controls-prev"><span ng-if="ac.galleryPage !== 0" ng-click="ac.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                        <div class="col-8 image-gallery-controls-page">Page: {{(ac.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                        <div class="col-2 image-gallery-controls-next"><span ng-hide="(ac.galleryPage + 30) > filteredGallery.length" ng-click="ac.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                        <div class="col-12"><input type="text" ng-model="ac.gallerySearchTerm" ng-change="ac.gallerySearch()" placeholder="Search"></div>
+                    </div>
+                    <div class="row image-gallery-items">
+                        <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (ac.images | filter:ac.gallerySearchTerm)) | limitTo: 30:ac.galleryPage">
+                            <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ngclipboard data-clipboard-text="/images/{{image.filename}}" ng-click="ac.clipboardNotify(image.id)">
+                            <div class="image-gallery-items-image-filename" ngclipboard data-clipboard-text="/images/{{image.filename}}" ng-click="ac.clipboardNotify(image.id)">{{image.filename}}</div>
+                            <div class="image-gallery-items-image-notify" ng-if="image.notify">{{image.notify}}</div>
+                        </div>
+                    </div>
+                    <div class="row image-gallery-upload">
+                        Upload new file: <input type="file" media-upload="ac.uploadFile"><i ng-if="ac.uploadFile" class="fas" ng-click="ac.uploadMainGalleryImage()" ng-class="ac.uploading ? 'fa-spinner fa-spin' : 'fa-upload'"></i>
+                        <div class="file-error" ng-if="ac.fileError">{{ac.fileError}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'carousels'">
+                <h2>Carousels</h2>
+                <p>Carousels are the rotating image blocks on the top of many pages on the site</p>
+                <a href="/admin/create-carousel" class="btn bg-green">Create New Carousel</a>
+                <div class="row">
+                    <div class="col-md-11"><strong>Title</strong></div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row" ng-repeat="hero in ac.heroes">
+                    <div class="col-md-11"><a ng-href="/admin/edit-hero/{{hero.id}}">{{hero.title}}</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-hero/{{hero.id}}" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'programs'">
+                <h2>Program Pages</h2>
+                <p>Program Pages are the pages where we highlight the services each program offers</p>
+                <div class="row">
+                    <div class="col-md-11"><strong>Title</strong></div>
+                    <div class="col-md-1"></div>
+                </div>
+                <div class="row" ng-repeat="program in ac.programs">
+                    <div class="col-md-11"><a class="program" ng-class="program.color" ng-href="/programs/{{program.link}}">{{program.name}}</a></div>
+                    <div class="col-md-1">
+                        <a ng-href="/admin/edit-program/{{program.link}}" class="fas fa-pencil-alt"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'header'">
+                <h2>Header</h2>
+                
+                <div class="row">
+                    <ul class="toolbar">
+                        <li ng-if="ac.menuChanged" ng-click="ac.getHeader()"><i class="fas fa-ban"></i> Cancel Menu Changes</li>
+                        <li ng-if="ac.menuChanged" ng-click="ac.submitMenuEdit()"><i class="fas fa-check"></i> Publish Menu Changes</li>
+                    </ul>
+                    <div class="menu-container" ng-repeat="menu in ac.editedHeader | orderBy: 'menuOrder'">
+                        <div class="menu-title">
+                            <span ng-if="!menu.titleOpen">{{menu.title}}</span>
+                            <input type="text" ng-if="menu.titleOpen" ng-model="menu.title">
+                            <div class="menu-item-controls">
+                                <i ng-hide="ac.menuItemOpen" class="fas fa-pencil-alt" ng-click="ac.openMenuTitle(menu.id)"></i>
+                                <i ng-hide="ac.menuItemOpen" class="fas fa-plus-square" ng-click="ac.addMenuItem(menu.id)"></i>
+                                <i class="fas fa-check" ng-if="menu.titleOpen" ng-click="ac.saveMenuTitle(menu.id)"></i>
+                                <i class="fas fa-ban" ng-if="menu.titleOpen" ng-click="ac.cancelMenuTitle(menu.id)"></i>
+                            </div>
+                        </div>
+                        <div class="menu">
+                            <div class="menu-item" ng-repeat="item in menu.items | orderBy: 'itemOrder'" ng-if="!item.deleted" ng-class="item.itemOpen ? 'open' : ''">
+                                <span ng-if="!item.itemOpen">{{item.title}}</span>
+                                <input ng-if="item.itemOpen" type="text" ng-model="item.title" class="menu-item-title">
+                                <div class="menu-item-controls">
+                                    <i ng-hide="ac.menuItemOpen" class="fas fa-pencil-alt" ng-click="ac.openMenuItem(menu.id, item.id)"></i>
+                                    <i ng-hide="ac.menuItemOpen" class="fas fa-trash" ng-click="ac.deleteMenuItemWarning(menu.id, item.id)"></i>
+                                    <i ng-hide="ac.menuItemOpen" class="fas fa-arrow-up" ng-if="item.itemOrder !== 0" ng-click="ac.moveMenuItem('up', item.itemOrder, menu.id, item.id)"></i>
+                                    <i ng-hide="ac.menuItemOpen" class="fas fa-arrow-down" ng-if="item.itemOrder !== (ac.editedHeader[ac.getMenuIndex(menu.id)].items.length - 1)" ng-click="ac.moveMenuItem('down', item.itemOrder, menu.id, item.id)"></i>
+                                    <i class="fas fa-check" ng-if="item.itemOpen" ng-click="ac.saveMenuItem(menu.id, item.id)"></i>
+                                    <i class="fas fa-ban" ng-if="item.itemOpen" ng-click="ac.cancelMenuItem(menu.id, item.id)"></i>
+                                </div>
+                                <div class="menu-item-edit" ng-if="item.itemOpen">
+                                    <label>URL</label><br>
+                                    <input type="text" ng-model="item.url"><br>
+                                    <label>Select Page</label><br>
+                                    <select ng-model="ac.selectedMenuItemUrl" ng-change="item.url = ac.selectedMenuItemUrl">
+                                        <option ng-value="page.url" ng-repeat="page in ac.pages">{{page.title}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.deleteMenuItemPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+                        <div class="error-popup-box-body">Do you want to delete the <strong>{{ac.editedHeader[ac.deleteMenuItem.menuIndex].items[ac.deleteMenuItem.itemIndex].title}}</strong> item from the <strong>{{ac.editedHeader[ac.deleteMenuItem.menuIndex].title}}</strong> menu?</div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.doDeleteMenuItem()">Yes, Delete It</button>
+                            <button class="btn bg-gray" ng-click="ac.cancelDeleteMenuItem()">No, Keep It</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'footer'">
+                <h2>Footer</h2>
+                <div class="row">
+                    <ul class="toolbar">
+                        <li ng-if="ac.footerChanged" ng-click="ac.getFooter()"><i class="fas fa-ban"></i> Cancel Footer Changes</li>
+                        <li ng-if="ac.footerChanged" ng-click="ac.submitFooterEdit()"><i class="fas fa-check"></i> Publish Footer Changes</li>
+                    </ul>
+                    <div class="edit-footer-container" ng-repeat="footerGroup in ac.editedFooter | orderBy: 'footerOrder'">
+                        <div class="edit-footer-title">
+                            <span ng-if="!footerGroup.titleOpen">{{footerGroup.title}}</span>
+                            <input type="text" ng-if="footerGroup.titleOpen" ng-model="footerGroup.title">
+                            <div class="edit-footer-item-controls">
+                                <i ng-hide="ac.footerGroupItemOpen" class="fas fa-pencil-alt" ng-click="ac.openFooterGroupTitle(footerGroup.id)"></i>
+                                <i ng-hide="ac.footerGroupItemOpen" class="fas fa-plus-square" ng-click="ac.addFooterGroupItem(footerGroup.id)"></i>
+                                <i class="fas fa-check" ng-if="footerGroup.titleOpen" ng-click="ac.saveFooterGroupTitle(footerGroup.id)"></i>
+                                <i class="fas fa-ban" ng-if="footerGroup.titleOpen" ng-click="ac.cancelFooterGroupTitle(footerGroup.id)"></i>
+                            </div>
+                        </div>
+                        <div class="edit-footer">
+                            <div class="edit-footer-item" ng-repeat="item in footerGroup.items | orderBy: 'itemOrder'" ng-if="!item.deleted">
+                                <hr ng-if="item.itemOpen">
+                                <span ng-if="!item.itemOpen">{{item.title}}</span>
+                                <input ng-if="item.itemOpen" type="text" ng-model="item.title" class="edit-footer-item-title">
+                                <div class="edit-footer-item-controls">
+                                    <i ng-hide="ac.footerGroupItemOpen" class="fas fa-pencil-alt" ng-click="ac.openFooterGroupItem(footerGroup.id, item.id)"></i>
+                                    <i ng-hide="ac.footerGroupItemOpen" class="fas fa-trash" ng-click="ac.deleteFooterGroupItemWarning(footerGroup.id, item.id)"></i>
+                                    <i ng-hide="ac.footerGroupItemOpen" class="fas fa-arrow-up" ng-if="item.itemOrder !== 0" ng-click="ac.moveFooterGroupItem('up', item.itemOrder, footerGroup.id, item.id)"></i>
+                                    <i ng-hide="ac.footerGroupItemOpen" class="fas fa-arrow-down" ng-if="item.itemOrder !== (ac.editedFooter[ac.getFooterGroupIndex(footerGroup.id)].items.length - 1)" ng-click="ac.moveFooterGroupItem('down', item.itemOrder, footerGroup.id, item.id)"></i>
+                                    <i class="fas fa-check" ng-if="item.itemOpen" ng-click="ac.saveFooterGroupItem(footerGroup.id, item.id)"></i>
+                                    <i class="fas fa-ban" ng-if="item.itemOpen" ng-click="ac.cancelFooterGroupItem(footerGroup.id, item.id)"></i>
+                                </div>
+                                <div class="edit-footer-item-edit" ng-if="item.itemOpen">
+                                    <label>URL</label><br>
+                                    <input type="text" ng-model="item.url"><br>
+                                    <label>Select Page</label><br>
+                                    <select ng-model="ac.selectedFooterGroupPageId" ng-change="ac.selectFooterPage(footerGroup.id, item.id)">
+                                        <option ng-value="page.id" ng-repeat="page in ac.pages">{{page.title}} ({{page.type}})</option>
+                                    </select>
+                                </div>
+                                <hr ng-if="item.itemOpen">
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.deleteFooterGroupItemPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+                        <div class="error-popup-box-body">Do you want to delete the <strong>{{ac.editedFooter[ac.deleteFooterGroupItem.menuIndex].items[ac.deleteFooterGroupItem.itemIndex].title}}</strong> item from the <strong>{{ac.editedFooter[ac.deleteFooterGroupItem.menuIndex].title}}</strong> footer group?</div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.doDeleteFooterGroupItem()">Yes, Delete It</button>
+                            <button class="btn bg-gray" ng-click="ac.cancelDeleteFooterGroupItem()">No, Keep It</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'media'">
+                <h2>Media</h2>
+                <hr>
+                <div ng-repeat="category in ac.editedMedia | orderBy: 'category'" class="media-category">
+                    
+                    <ul class="toolbar">
+                        <li ng-if="category.categoryChanged && !category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="ac.getMedia()"><i class="fas fa-ban"></i> Cancel Changes</li>
+                        <li ng-if="category.categoryChanged && !category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="ac.submitMediaEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+                    </ul>
+                    <ul class="toolbar">
+                        <li ng-if="!category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="category.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Name</li>
+                        <li ng-if="category.headlineOpen" ng-click="ac.saveMediaEdit('headline', category.categoryOrder)"><i class="fas fa-check"></i> Save Name</li>
+                        <li ng-if="category.headlineOpen" ng-click="ac.cancelMediaEdit('headline', category.categoryOrder)"><i class="fas fa-ban"></i> Cancel Name Edit</li>
+                        <li ng-if="!category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="ac.openMediaGallery($index)"><i class="fas fa-images"></i> Edit Image</li>
+                        <li ng-if="category.imageOpen" ng-click="category.imageOpen = false"><i class="fas fa-ban"></i> Cancel Image Edit</li>
+                        <li ng-if="!category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="category.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                        <li ng-if="category.descriptionOpen" ng-click="ac.saveMediaEdit('description', category.categoryOrder)"><i class="fas fa-check"></i> Save Description</li>
+                        <li ng-if="category.descriptionOpen" ng-click="ac.cancelMediaEdit('description', category.categoryOrder)"><i class="fas fa-ban"></i> Cancel Description Edit</li>
+                        <li ng-if="!category.headlineOpen && !category.imageOpen && !category.descriptionOpen" ng-click="ac.newMediaItem($index)"><i class="fas fa-plus-square"></i> Add Item</li>
+                    </ul>
+
+                    <div ng-if="category.imageOpen" class="image-gallery">
+                        <div class="row image-gallery-controls">
+                            <div class="col-2 image-gallery-controls-prev"><span ng-if="ac.galleryPage !== 0" ng-click="ac.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                            <div class="col-8 image-gallery-controls-page">Page: {{(ac.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                            <div class="col-2 image-gallery-controls-next"><span ng-hide="(ac.galleryPage + 30) > filteredGallery.length" ng-click="ac.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                            <div class="col-12"><input type="text" ng-model="ac.gallerySearchTerm" ng-change="ac.gallerySearch()" placeholder="Search"></div>
+                        </div>
+                        <div class="row image-gallery-items">
+                            <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (ac.images | filter:ac.gallerySearchTerm)) | limitTo: 30:ac.galleryPage">
+                                <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="ac.selectMediaImage(category.categoryOrder, image.filename)">
+                                <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                            </div>
+                        </div>
+                        <div class="row image-gallery-upload">
+                            Upload new file: <input type="file" media-upload="ac.uploadFile"><i ng-if="ac.uploadFile" class="fas fa-upload" ng-click="ac.uploadImage(category.categoryOrder)"></i>
+                            <div class="file-error" ng-if="ac.fileError">{{ac.fileError}}</div>
+                        </div>
+                    </div>
+                    <h2 ng-if="!category.headlineOpen">{{category.headline}}</h2>
+                    <div ng-if="category.headlineOpen">Name: <input type="text" ng-model="category.headline"></div>
+                    <img ng-if="!category.imageOpen" ng-src="/thumbs/{{category.image}}">
+                    <div ng-if="!category.descriptionOpen">{{category.description}}</div>
+                    <div ng-if="category.descriptionOpen">Description:<textarea ng-model="category.description"></textarea></div>
+                    <hr>
+                    <div ng-repeat="file in category.items | orderBy: '-date'" class="media-item" ng-if="!file.deleted">
+                        <div>
+                            <strong>Title:</strong>
+                            <span ng-if="!file.titleOpen">{{file.title}}</span>
+                            <input ng-if="file.titleOpen" type="text" ng-model="file.title">
+                            <div class="edit-footer-item-controls">
+                                <i class="fas fa-pencil-alt" ng-if="!file.titleOpen" ng-click="file.titleOpen = true"></i>
+                                <i class="fas fa-check" ng-if="file.titleOpen" ng-click="ac.saveMediaEdit('title', category.categoryOrder, file.id)"></i>
+                                <i class="fas fa-ban" ng-if="file.titleOpen" ng-click="ac.cancelMediaEdit('title', category.categoryOrder, file.id)"></i>
+                            </div>
+                        </div>
+                        <div><strong>Added:</strong> {{file.date | amDateFormat: 'MMMM D, YYYY'}}</div>
+                        <div>
+                            <strong>Filename:</strong>
+                            <span ng-if="file.filename">{{file.filename}}</span>
+                            <input type="file" media-upload="file.newFile" ng-if="!file.filename">
+                            <div class="edit-footer-item-controls">
+                                <i class="fas fa-trash" ng-click="ac.deleteMediaItemWarning(category.categoryOrder, file.id)" ng-if="!file.uploading && file.filename"></i>
+                                <i class="fas fa-upload" ng-click="ac.uploadMediaFile(category.categoryOrder, file.id)" ng-if="!file.filename && file.newFile && !file.uploading"></i>
+                                <i class="fas fa-spinner fa-spin" ng-if="file.uploading"></i>
+                            </div>
+                            <div class="file-error" ng-if="file.fileError">{{file.fileError}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.deleteMediaItemPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+                        <div class="error-popup-box-body">Do you want to delete the <strong>{{ac.editedMedia[ac.deleteMediaItem.categoryIndex].items[ac.deleteMediaItem.itemIndex].title}}</strong> item from the <strong>{{ac.editedMedia[ac.deleteMediaItem.categoryIndex].headline}}</strong> category?</div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.doDeleteMediaItem()">Yes, Delete It</button>
+                            <button class="btn bg-gray" ng-click="ac.cancelDeleteMediaItem()">No, Keep It</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'rsvp'">
+                <h2>RSVP</h2>
+                <p>You can set up RSVP for events and view RSVP responses here.</p>
+                <h2 class="events-dropdown" ng-click="ac.rsvpOpen = !ac.rsvpOpen">RSVP Events <i class="fas" ng-class="ac.rsvpOpen ? 'fa-caret-up' : 'fa-caret-down'"></i></h2>
+                <div class="row table-header" ng-if="ac.rsvpOpen">
+                    <div class="col-3">Title</div>
+                    <div class="col-4">Date</div>
+                    <div class="col-2">Location</div>
+                    <div class="col-2">Responses/Attendees</div>
+                    <div class="col-1"></div>
+                </div>
+                <div class="row event-item" ng-repeat="rsvpEvent in ac.events | orderBy: 'start'" ng-if="ac.rsvpOpen && rsvpEvent.rsvp" ng-class="rsvpEvent.open || rsvpEvent.view ? 'open' : ''">
+                    <div class="col-3">{{rsvpEvent.title}}</div>
+                    <div class="col-4">{{rsvpEvent.start | amDateFormat: 'LLLL'}}</div>
+                    <div class="col-2">{{rsvpEvent.locationTitle}}</div>
+                    <div class="col-2">{{rsvpEvent.responses}}/{{rsvpEvent.attendees}}</div>
+                    <div class="col-1 text-right">
+                        <i ng-click="ac.viewRsvp(rsvpEvent.id)" ng-if="!rsvpEvent.open && !rsvpEvent.view" class="fas fa-eye"></i>
+                        <i ng-click="rsvpEvent.open = true" ng-if="!rsvpEvent.open && !rsvpEvent.view" class="fas fa-pencil-alt"></i>
+                        <i ng-click="ac.saveRsvp(rsvpEvent)" ng-if="rsvpEvent.open" class="fas fa-save"></i>
+                        <i ng-click="rsvpEvent.open = false" ng-if="rsvpEvent.open" class="fas fa-times"></i>
+                        <i ng-click="rsvpEvent.view = false" ng-if="rsvpEvent.view" class="fas fa-times"></i>
+                        <i ng-click="ac.removeRsvp(rsvpEvent.id)" ng-if="!rsvpEvent.open && !rsvpEvent.view" class="fas fa-minus"></i>
+                    </div>
+                    <div class="col-12 rsvp" ng-if="rsvpEvent.view">
+                        <hr>
+                        RSVP URL: https://kotm.org/event/{{rsvpEvent.url}}/rsvp<br><br>
+                        RSVP QR Code: <img ng-src="/images/qr-{{rsvpEvent.url}}.png">
+                        <hr>
+                        <div class="row table-header">
+                            <div class="col-3" ng-click="rsvpEvent.sort = 'name'">Name <i ng-if="rsvpEvent.sort==='name'" class="fas fa-caret-down"></i></div>
+                            <div class="col-3" ng-click="rsvpEvent.sort = 'email'">Email <i ng-if="rsvpEvent.sort==='email'" class="fas fa-caret-down"></i></div>
+                            <div class="col-1" ng-click="rsvpEvent.sort = 'response'">Response <i ng-if="rsvpEvent.sort==='response'" class="fas fa-caret-down"></i></div>
+                            <div class="col-1" ng-click="rsvpEvent.sort = 'notes'">People <i ng-if="rsvpEvent.sort==='notes'" class="fas fa-caret-down"></i></div>
+                            <div class="col-4" ng-click="rsvpEvent.sort = 'notes'">Notes <i ng-if="rsvpEvent.sort==='notes'" class="fas fa-caret-down"></i></div>
+                        </div>
+                        <div class="row" ng-repeat="response in rsvpEvent.rsvpData | orderBy: rsvpEvent.sort">
+                            <div class="col-3">{{response.name}}</div>
+                            <div class="col-3">{{response.email}}</div>
+                            <div class="col-1">{{response.response ? 'yes' : 'no'}}</div>
+                            <div class="col-1">{{response.attendingNum}}</div>
+                            <div class="col-4">{{response.notes}}</div>
+                        </div>
+                    </div>
+                    <div class="col-12 rsvp" ng-if="rsvpEvent.open">
+                        <label>RSVP Section Title</label>
+                        <input type="text" ng-model="rsvpEvent.rsvpTitle">
+                        <label>RSVP Section Description</label>
+                        <textarea ng-model="rsvpEvent.rsvpDescription"></textarea>
+                        <label>Attendees</label>
+                        <input type="number" ng-model="rsvpEvent.attendees"><br>
+                        <label>Email address for Notification</label>
+                        <input type="email" ng-model="rsvpEvent.rsvpEmail"><br>
+                        <label>Reminder Email (sent to attendees 2 days before event)</label>
+                        <textarea ng-model="rsvpEvent.rsvpReminder"></textarea><br>
+                    </div>
+                </div>
+                <h2 class="events-dropdown" ng-click="ac.nonRsvpOpen = !ac.nonRsvpOpen">Non-RSVP Events <i class="fas" ng-class="ac.nonRsvpOpen ? 'fa-caret-up' : 'fa-caret-down'"></i></h2>
+                <div class="row table-header" ng-if="ac.nonRsvpOpen">
+                    <div class="col-3">Title</div>
+                    <div class="col-4">Date</div>
+                    <div class="col-3">Location</div>
+                    <div class="col-2"></div>
+                </div>
+                <div class="row event-item" ng-repeat="nonRsvpEvent in ac.events | orderBy: '-start'" ng-if="ac.nonRsvpOpen && !nonRsvpEvent.rsvp">
+                    <div class="col-3">{{nonRsvpEvent.title}}</div>
+                    <div class="col-4">{{nonRsvpEvent.start | amDateFormat: 'LLLL'}}</div>
+                    <div class="col-3">{{nonRsvpEvent.locationTitle}}</div>
+                    <div class="col-2 text-right">
+                        <i class="fas fa-plus" ng-click="ac.addRsvp(nonRsvpEvent.id)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'locations'">
+                <script src="/lib/js/ckeditor/ckeditor.js"></script>
+                <h2>Locations</h2>
+                <p>Locations for events and programs can be added, removed, and edited here.</p>
+                <ul class="toolbar">
+                    <li ng-if="ac.locationsChanged" ng-click="ac.submitLocationsEdit()" class="float-right"><i class="fas fa-check"></i> Publish Changes</li>
+                    <li ng-if="ac.locationsChanged" ng-click="ac.getLocations()" class="float-right"><i class="fas fa-ban"></i> Cancel Changes</li>
+                    <li ng-click="ac.newLocation()"><i class="fas fa-plus-square"></i> Add Location</li>
+                </ul>
+                <div ng-repeat="location in ac.editedLocations | orderBy:'title'" ng-if="!location.deleted" class="row location-item">
+                    <div class="col-2">
+                        <img ng-if="location.image" class="location-item-image" ng-src="/images/{{location.image}}">
+                    </div>
+                    <div class="col-10">
+                        <ul class="toolbar">
+                            <li ng-if="!location.addressOpen && !location.titleOpen && !location.imageOpen && !location.descriptionOpen" ng-click="location.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+                            <li ng-if="location.titleOpen" ng-click="ac.saveLocationEdit('title', location.id)"><i class="fas fa-check"></i> Save Title</li>
+                            <li ng-if="location.titleOpen" ng-click="ac.cancelLocationEdit('title', location.id)"><i class="fas fa-ban"></i> Cancel Title Changes</li>
+                            <li ng-if="!location.addressOpen && !location.titleOpen && !location.imageOpen && !location.descriptionOpen" ng-click="ac.openLocationGallery(location.id)"><i class="fas fa-images"></i> Edit Image</li>
+                            <li ng-if="location.imageOpen" ng-click="ac.cancelLocationEdit('image', location.id)"><i class="fas fa-ban"></i> Cancel Image Changes</li>
+                            <li ng-if="location.imageOpen" ng-click="ac.removeLocationImage(location.id)"><i class="fas fa-trash"></i> Remove Image</li>
+                            <li ng-if="!location.addressOpen && !location.titleOpen && !location.imageOpen && !location.descriptionOpen" ng-click="location.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                            <li ng-if="location.descriptionOpen" ng-click="ac.saveLocationEdit('description', location.id)"><i class="fas fa-check"></i> Save Description</li>
+                            <li ng-if="location.descriptionOpen" ng-click="ac.cancelLocationEdit('description', location.id)"><i class="fas fa-ban"></i> Cancel Description Changes</li>
+                            <li ng-if="!location.addressOpen && !location.titleOpen && !location.imageOpen && !location.descriptionOpen" ng-click="location.addressOpen = true"><i class="fas fa-map-marked-alt"></i> Edit Address</li>
+                            <li ng-if="location.addressOpen" ng-click="ac.saveLocationEdit('address', location.id)"><i class="fas fa-check"></i> Save Address</li>
+                            <li ng-if="location.addressOpen" ng-click="ac.cancelLocationEdit('address', location.id)"><i class="fas fa-ban"></i> Cancel Address Changes</li>
+                            <li ng-if="$root.user.role === 'admin' && !location.addressOpen && !location.titleOpen && !location.imageOpen && !location.descriptionOpen" ng-click="ac.deleteLocationItemWarning(location.id)"><i class="fas fa-trash"></i> Delete Location</li>
+                        </ul>
+                        <div ng-if="location.imageOpen" class="image-gallery">
+                            <div class="row image-gallery-controls">
+                                <div class="col-2 image-gallery-controls-prev"><span ng-if="ac.galleryPage !== 0" ng-click="ac.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                                <div class="col-8 image-gallery-controls-page">Page: {{(ac.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                                <div class="col-2 image-gallery-controls-next"><span ng-hide="(ac.galleryPage + 30) > filteredGallery.length" ng-click="ac.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                                <div class="col-12"><input type="text" ng-model="ac.gallerySearchTerm" ng-change="ac.gallerySearch()" placeholder="Search"></div>
+                            </div>
+                            <div class="row image-gallery-items">
+                                <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (ac.images | filter:ac.gallerySearchTerm)) | limitTo: 30:ac.galleryPage">
+                                    <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="ac.selectLocationImage(location.id, image.filename)">
+                                    <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                                </div>
+                            </div>
+                            <div class="row image-gallery-upload">
+                                Upload new file: <input type="file" media-upload="ac.uploadFile"><i ng-if="ac.uploadFile" class="fas fa-upload" ng-click="ac.uploadLocationImage(location.id)"></i>
+                                <div class="file-error" ng-if="ac.fileError">{{ac.fileError}}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <label>Location Title:</label>
+                                <h3 ng-if="!location.titleOpen">{{location.title}}</h3>
+                                <input ng-if="location.titleOpen" type="text" ng-model="location.title">
+                                <label>Location Description:</label>
+                                <div ng-if="!location.descriptionOpen" ng-bind-html="location.description"></div>
+                                <ng-ckeditor ng-if="location.descriptionOpen" ng-config="ac.ckeditorConfig" ng-model="location.description"></ng-ckeditor>
+                            </div>
+                            <div class="col-4 location-item-address">
+                                <label>Address:</label>
+                                <div ng-if="!location.addressOpen">{{location.street1}}</div>
+                                <div ng-if="location.addressOpen">
+                                    <input type="text" ng-model="location.street1" placeholder="Street Address">
+                                </div>
+                                <div ng-if="location.street2 && !location.addressOpen">{{location.street2}}</div>
+                                <div ng-if="location.addressOpen">
+                                    <input type="text" ng-model="location.street2" placeholder="Street Address Line 2">
+                                </div>
+                                <div ng-if="!location.addressOpen">{{location.city}}<span ng-if="location.city && location.state">,</span> {{location.state}} {{location.zip}}</div>
+                                <div ng-if="location.addressOpen">
+                                    <input type="text" ng-model="location.city" placeholder="City">
+                                    <select ng-model="location.state">
+                                        <optgroup class="default-opt">
+                                            <option value="">State</option>
+                                        </optgroup>
+                                        <option value="AL">Alabama</option>
+                                        <option value="AK">Alaska</option>
+                                        <option value="AZ">Arizona</option>
+                                        <option value="AR">Arkansas</option>
+                                        <option value="CA">California</option>
+                                        <option value="CO">Colorado</option>
+                                        <option value="CT">Connecticut</option>
+                                        <option value="DE">Delaware</option>
+                                        <option value="DC">District Of Columbia</option>
+                                        <option value="FL">Florida</option>
+                                        <option value="GA">Georgia</option>
+                                        <option value="HI">Hawaii</option>
+                                        <option value="ID">Idaho</option>
+                                        <option value="IL">Illinois</option>
+                                        <option value="IN">Indiana</option>
+                                        <option value="IA">Iowa</option>
+                                        <option value="KS">Kansas</option>
+                                        <option value="KY">Kentucky</option>
+                                        <option value="LA">Louisiana</option>
+                                        <option value="ME">Maine</option>
+                                        <option value="MD">Maryland</option>
+                                        <option value="MA">Massachusetts</option>
+                                        <option value="MI">Michigan</option>
+                                        <option value="MN">Minnesota</option>
+                                        <option value="MS">Mississippi</option>
+                                        <option value="MO">Missouri</option>
+                                        <option value="MT">Montana</option>
+                                        <option value="NE">Nebraska</option>
+                                        <option value="NV">Nevada</option>
+                                        <option value="NH">New Hampshire</option>
+                                        <option value="NJ">New Jersey</option>
+                                        <option value="NM">New Mexico</option>
+                                        <option value="NY">New York</option>
+                                        <option value="NC">North Carolina</option>
+                                        <option value="ND">North Dakota</option>
+                                        <option value="OH">Ohio</option>
+                                        <option value="OK">Oklahoma</option>
+                                        <option value="OR">Oregon</option>
+                                        <option value="PA">Pennsylvania</option>
+                                        <option value="RI">Rhode Island</option>
+                                        <option value="SC">South Carolina</option>
+                                        <option value="SD">South Dakota</option>
+                                        <option value="TN">Tennessee</option>
+                                        <option value="TX">Texas</option>
+                                        <option value="UT">Utah</option>
+                                        <option value="VT">Vermont</option>
+                                        <option value="VA">Virginia</option>
+                                        <option value="WA">Washington</option>
+                                        <option value="WV">West Virginia</option>
+                                        <option value="WI">Wisconsin</option>
+                                        <option value="WY">Wyoming</option>
+                                    </select>
+                                    <input type="text" ng-model="location.zip" placeholder="Zipcode">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="error-popup" ng-if="ac.deleteLocationPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+                        <div class="error-popup-box-body">Do you want to delete the <strong>{{ac.editedLocations[ac.deleteLocationIndex].title}}</strong> location?</div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.deleteLocation()">Yes, Delete It</button>
+                            <button class="btn bg-gray" ng-click="ac.cancelDeleteLocation()">No, Keep It</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content" ng-if="ac.activeTab === 'account'">
+                <div class="error-popup" ng-if="ac.displayDeleteUserPopup">
+                    <div class="error-popup-box">
+                        <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Are you sure?</div>
+                        <div class="error-popup-box-body">Do you really want to delete the user: <strong>{{ac.deleteUserName}}</strong></div>
+                        <div class="error-popup-box-footer">
+                            <button class="btn bg-red" ng-click="ac.deleteUser(ac.deleteUserId)">Yes</button>
+                            <button class="btn bg-gray" ng-click="ac.closeDeleteUserPopup()">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Account</h2>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn bg-green float-right" ng-click="ac.logout()">Logout</button>
+                        <a href="/admin/change-password" class="btn bg-green float-right">Change Password</a>
+                    </div>
+                </div>
+                <hr>
+                <section ng-if="!ac.newUserForm">
+                    <h2>Edit Account Details for {{ac.editUser.email}}</h2>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Email
+                        </div>
+                        <div class="col-md-4">
+                            <input type="email" ng-model="ac.editUser.email" class="form-control">
+                        </div>
+                        <div class="col-md-2" ng-if="ac.editUser.id !== $root.user.id">
+                            Role
+                        </div>
+                        <div class="col-md-4" ng-if="ac.editUser.id !== $root.user.id">
+                            <select ng-model="ac.editUser.role" class="form-control">
+                                <option value="admin">Admin</option>
+                                <option value="editor">Editor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            First Name
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" ng-model="ac.editUser.firstname" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            Last Name
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" ng-model="ac.editUser.lastname" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn bg-green float-right" ng-click="ac.updateUser()">Save Changes</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section ng-if="ac.newUserForm" ng-if="$root.user.role === 'admin'">
+                    <h2>Create New Account</h2>
+                    <div class="row">
+                        <div class="col-md-2">
+                            Email
+                        </div>
+                        <div class="col-md-4">
+                            <input type="email" ng-model="ac.newUser.email" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            Role
+                        </div>
+                        <div class="col-md-4">
+                            <select ng-model="ac.newUser.role" class="form-control">
+                                <option value="admin">Admin</option>
+                                <option value="editor">Editor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            First Name
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" ng-model="ac.newUser.firstname" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            Last Name
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" ng-model="ac.newUser.lastname" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn bg-green float-right" ng-click="ac.addUser()">Save New User</button>
+                            <button class="btn bg-gray float-right" ng-click="ac.changeTab('account')">Cancel</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <hr>
+                <section ng-if="!ac.newUserForm && $root.user.role === 'admin'">
+                    <h2>Manage Admin Users</h2>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn bg-green float-right" ng-click="ac.newUserForm=true">Add New User</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2"><strong>Name</strong></div>
+                        <div class="col-md-2"><strong>Email</strong></div>
+                        <div class="col-md-2"><strong>Role</strong></div>
+                        <div class="col-md-2"><strong>Last Login</strong></div>
+                        <div class="col-md-2"><strong>Created</strong></div>
+                        <div class="col-md-2"><strong><span class="float-right">Options</span></strong></div>
+                    </div>
+                    <div class="row" ng-repeat="user in ac.users">
+                        <div class="col-md-2">{{user.firstname}} {{user.lastname}}</div>
+                        <div class="col-md-2">{{user.email}}</div>
+                        <div class="col-md-2">{{user.role}}</div>
+                        <div class="col-md-2">{{user.lastLoginDate | amDateFormat: 'MMM D YYYY h:mm a'}}</div>
+                        <div class="col-md-2">{{user.createDate | amDateFormat: 'MMM D YYYY'}}</div>
+                        <div class="col-md-2">
+                            <span class="float-right">
+                                <i class="fas fa-pencil-alt" ng-click="ac.selectEditUser($index)"></i>
+                                <!-- <i class="fa fa-key" ng-click="ac.resetPassword($index)"></i> -->
+                                <i class="fa fa-trash-alt text-danger" ng-click="ac.openDeleteUserPopup($index)"></i>
+                            </span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>

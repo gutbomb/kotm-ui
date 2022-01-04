@@ -1,0 +1,17 @@
+version: '2'
+services:
+  apache:
+    build:
+      context: apache
+    ports:
+      - 8080:80
+    volumes:
+      - ./public:/var/www/html
+    external_links:
+      - kotm2020-api_mysql_1:mysql
+    networks:
+      - custom
+
+networks:
+  custom:
+    external: true

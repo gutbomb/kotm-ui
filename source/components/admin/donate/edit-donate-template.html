@@ -1,0 +1,585 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<div class="main-container donate-page admin-page">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="edc.imageChanged || edc.headlineChanged || edc.subtitleChanged || edc.descriptionChanged || edc.programsChanged || edc.boilerplateChanged || edc.buttonTextChanged || edc.otherWaysHeadlineChanged || edc.otherWaysTextChanged || edc.metaDescriptionChanged || edc.metaTitleChanged || edc.metaKeywordsChanged" ng-click="edc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="edc.imageChanged || edc.headlineChanged || edc.subtitleChanged || edc.descriptionChanged || edc.programsChanged || edc.boilerplateChanged || edc.buttonTextChanged || edc.otherWaysHeadlineChanged || edc.otherWaysTextChanged || edc.metaDescriptionChanged || edc.metaTitleChanged || edc.metaKeywordsChanged" ng-click="edc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="main-header">
+                <ul class="toolbar">
+                    <li ng-if="!edc.headlineOpen" ng-click="edc.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                    <li ng-if="!edc.headlineOpen && edc.headlineChanged" ng-click="edc.revertEdit('headline')"><i class="fas fa-undo"></i> Undo Headline Changes</li>
+                    <li ng-if="edc.headlineOpen" ng-click="edc.saveEdit('headline')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                    <li ng-if="edc.headlineOpen" ng-click="edc.cancelEdit('headline')"><i class="fas fa-ban"></i> Cancel Editing Headline</li>
+                    <li ng-if="!edc.imageOpen" ng-click="edc.openGallery()"><i class="fas fa-images"></i> Choose Image</li>
+                    <li ng-if="edc.imageOpen" ng-click="edc.cancelEdit('image')"><i class="fas fa-ban"></i> Cancel Editing Image</li>
+                    <li ng-if="!edc.imageOpen && edc.imageChanged" ng-click="edc.revertEdit('image')"><i class="fas fa-undo"></i> Undo Image Changes</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="edc.headlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+
+                <div ng-if="edc.imageOpen" class="image-gallery">
+                    <div class="row image-gallery-controls">
+                        <div class="col-2 image-gallery-controls-prev"><span ng-if="edc.galleryPage !== 0" ng-click="edc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                        <div class="col-8 image-gallery-controls-page">Page: {{(edc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                        <div class="col-2 image-gallery-controls-next"><span ng-hide="(edc.galleryPage + 30) > filteredGallery.length" ng-click="edc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                        <div class="col-12"><input type="text" ng-model="edc.gallerySearchTerm" ng-change="edc.gallerySearch()" placeholder="Search"></div>
+                    </div>
+                    <div class="row image-gallery-items">
+                        <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (edc.images | filter:edc.gallerySearchTerm)) | limitTo: 30:edc.galleryPage">
+                            <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="edc.selectImage(image.filename)">
+                            <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                        </div>
+                    </div>
+                    <div class="row image-gallery-upload">
+                        Upload new file: <input type="file" media-upload="edc.uploadFile"><i ng-if="edc.uploadFile" class="fas fa-upload" ng-click="edc.uploadImage()"></i>
+                        <div class="file-error" ng-if="edc.fileError">{{edc.fileError}}</div>
+                    </div>
+                </div>
+
+                <h1 ng-if="!edc.headlineOpen">{{edc.edited.headline}}</h1>
+                <textarea ng-if="edc.headlineOpen" ng-model="edc.edited.headline" class="edit-headline"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!edc.subtitleOpen" ng-click="edc.subtitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Subtitle</li>
+                    <li ng-if="!edc.subtitleOpen && edc.subtitleChanged" ng-click="edc.revertEdit('subtitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="edc.subtitleOpen" ng-click="edc.saveEdit('subtitle')"><i class="fas fa-check"></i> Finish Editing Subtitle</li>
+                    <li ng-if="edc.subtitleOpen" ng-click="edc.cancelEdit('subtitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="edc.subtitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <h2 ng-if="!edc.subtitleOpen">{{edc.edited.subtitle}}</h2>
+                <input ng-if="edc.subtitleOpen" type="text" ng-model="edc.edited.subtitle" class="edit-subtitle">
+                <div class="title-line">&nbsp;</div>
+                <ul class="toolbar">
+                    <li ng-if="!edc.descriptionOpen" ng-click="edc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                    <li ng-if="!edc.descriptionOpen && edc.descriptionChanged" ng-click="edc.revertEdit('description')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="edc.descriptionOpen" ng-click="edc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                    <li ng-if="edc.descriptionOpen" ng-click="edc.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="edc.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="donation-header" ng-bind-html="edc.edited.description" ng-if="!edc.descriptionOpen"></div>
+                <div class="ng-ckeditor-container"><ng-ckeditor ng-if="edc.descriptionOpen" ng-config="edc.descriptionCkeditorConfig" ng-model="edc.edited.description"></ng-ckeditor></div>
+            </div>
+            <div class="donate-bg">
+                <div class="donate-block">
+                    <h2>Donation Amount</h2>
+                    <div class="donation-row">
+                        <button class="amount-button" ng-click="edc.donation.amount=10">$10</button>
+                        <button class="amount-button" ng-click="edc.donation.amount=25">$25</button>
+                        <button class="amount-button" ng-click="edc.donation.amount=50">$50</button>
+                        <button class="amount-button" ng-click="edc.donation.amount=100">$100</button>
+                        <button class="amount-button" ng-click="edc.donation.amount=250">$250</button>
+                    </div>
+                    <div class="donation-row mobile-row">
+                        <label for="amount" class="amount-label">Other <span class="other-dollar">$</span><input type="text" id="amount" ng-model="edc.donation.amount"><span class="error-text" id="error-amount">error</span></label>
+                        <!-- <label for="monthly" class="monthly-label"><input type="checkbox" id="monthly"> Make this a monthly donation</label> -->
+                        <span id="monthlyemail">To make this a monthly donation please email <a href="mailto:kids@kotm.org">kids@kotm.org</a> to get started.</span>
+                    </div>
+                    <hr>
+                    <div class="donation-row">
+                        <label for="program">Please direct my donation to a specific program</label>
+                    </div>
+                    <ul class="toolbar">
+                        <li ng-click="edc.addProgram()"><i class="fas fa-plus-square"></i> Add Program</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="edc.programsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div class="donation-row">
+                        <div class="programs-list">
+                            <div ng-repeat="program in edc.edited.programs | orderBy: 'programOrder'" ng-if="!program.deleted">
+                                <span ng-if="!program.programOpen">{{program.title}}</span>
+                                <input type="text" ng-model="program.title" ng-if="program.programOpen">
+                                <div class="menu-item-controls">
+                                    <i ng-hide="edc.programOpen" class="fas fa-pencil-alt" ng-click="edc.openProgram(program.id)"></i>
+                                    <i ng-hide="edc.programOpen" class="fas fa-trash" ng-click="edc.deleteProgramWarning(program.id)"></i>
+                                    <i ng-hide="edc.programOpen" class="fas fa-arrow-up" ng-if="program.programOrder !== 0" ng-click="edc.moveProgram('up', program.programOrder, program.id)"></i>
+                                    <i ng-hide="edc.programOpen" class="fas fa-arrow-down" ng-if="program.programOrder !== ((edc.edited.programs.length-edc.numProgramsDeleted) - 1)" ng-click="edc.moveProgram('down', program.programOrder, program.id)"></i>
+                                    <i class="fas fa-check" ng-if="program.programOpen" ng-click="edc.saveProgram(program.id)"></i>
+                                    <i class="fas fa-ban" ng-if="program.programOpen" ng-click="edc.cancelProgram(program.id)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h2>Personal Information</h2>
+                    <div class="donation-row mobile-row">
+                        <div class="fieldcontainer"><input type="text" id="firstname" placeholder="First Name" ng-model="edc.donation.firstName"><span class="error-text" id="error-firstname">error</span></div>
+                        <div class="fieldcontainer"><input type="text" id="lastname" placeholder="Last Name" ng-model="edc.donation.lastName"><span class="error-text" id="error-lastname">error</span></div>
+                    </div>
+                    <div class="donation-row">
+                        <div class="fieldcontainer emailfield"><input type="email" id="email" placeholder="Email Address" ng-model="edc.donation.email"><span class="error-text" id="error-email">error</span></div>
+                    </div>
+                    <div class="donation-row">
+                        <div class="fieldcontainer"><label for="optin" id="optinlabel"><input type="checkbox" id="optin" ng-model="edc.donation.contactOptIn">Yes, I would like to receive communication from Kids On The Move</label></div>
+                    </div>
+                    <hr>
+                    <h2>Billing Information</h2>
+                    <div class="donation-row mobile-row">
+                        <div class="fieldcontainer address1field"><input type="text" id="address1" placeholder="Address Line 1" ng-model="edc.donation.address1"><span class="error-text" id="error-address1">error</span></div>
+                        <div class="fieldcontainer address2field"><input type="text" id="address2" placeholder="Address Line 2" ng-model="edc.donation.address2"></div>
+                    </div>
+                    <div class="donation-row mobile-row">
+                        <div class="fieldcontainer"><input type="text" id="city" placeholder="City" ng-model="edc.donation.city"><span class="error-text" id="error-city">error</span></div>
+                        <div class="fieldcontainer">
+                            <select id="state" class="unchanged" ng-model="edc.donation.state">
+                                <optgroup class="default-opt">
+                                    <option value="">State</option>
+                                </optgroup>
+                                <option value="AL">Alabama</option>
+                                <option value="AK">Alaska</option>
+                                <option value="AZ">Arizona</option>
+                                <option value="AR">Arkansas</option>
+                                <option value="CA">California</option>
+                                <option value="CO">Colorado</option>
+                                <option value="CT">Connecticut</option>
+                                <option value="DE">Delaware</option>
+                                <option value="DC">District Of Columbia</option>
+                                <option value="FL">Florida</option>
+                                <option value="GA">Georgia</option>
+                                <option value="HI">Hawaii</option>
+                                <option value="ID">Idaho</option>
+                                <option value="IL">Illinois</option>
+                                <option value="IN">Indiana</option>
+                                <option value="IA">Iowa</option>
+                                <option value="KS">Kansas</option>
+                                <option value="KY">Kentucky</option>
+                                <option value="LA">Louisiana</option>
+                                <option value="ME">Maine</option>
+                                <option value="MD">Maryland</option>
+                                <option value="MA">Massachusetts</option>
+                                <option value="MI">Michigan</option>
+                                <option value="MN">Minnesota</option>
+                                <option value="MS">Mississippi</option>
+                                <option value="MO">Missouri</option>
+                                <option value="MT">Montana</option>
+                                <option value="NE">Nebraska</option>
+                                <option value="NV">Nevada</option>
+                                <option value="NH">New Hampshire</option>
+                                <option value="NJ">New Jersey</option>
+                                <option value="NM">New Mexico</option>
+                                <option value="NY">New York</option>
+                                <option value="NC">North Carolina</option>
+                                <option value="ND">North Dakota</option>
+                                <option value="OH">Ohio</option>
+                                <option value="OK">Oklahoma</option>
+                                <option value="OR">Oregon</option>
+                                <option value="PA">Pennsylvania</option>
+                                <option value="RI">Rhode Island</option>
+                                <option value="SC">South Carolina</option>
+                                <option value="SD">South Dakota</option>
+                                <option value="TN">Tennessee</option>
+                                <option value="TX">Texas</option>
+                                <option value="UT">Utah</option>
+                                <option value="VT">Vermont</option>
+                                <option value="VA">Virginia</option>
+                                <option value="WA">Washington</option>
+                                <option value="WV">West Virginia</option>
+                                <option value="WI">Wisconsin</option>
+                                <option value="WY">Wyoming</option>
+                            </select>
+                            <span class="error-text" id="error-state">error</span>
+                        </div>
+                    </div>
+                    <div class="donation-row mobile-row">
+                        <div class="fieldcontainer"><input type="text" id="zipcode" placeholder="Zip Code" pattern="[0-9]*" ng-model="edc.donation.zipcode"><span class="error-text" id="error-zipcode">error</span></div>
+                        <div class="fieldcontainer">
+                            <select id="country" ng-model="edc.donation.country">
+                                <optgroup class="default-opt">
+                                    <option value="">Country</option>
+                                </optgroup>
+                                <option value="Afganistan">Afghanistan</option>
+                                <option value="Albania">Albania</option>
+                                <option value="Algeria">Algeria</option>
+                                <option value="American Samoa">American Samoa</option>
+                                <option value="Andorra">Andorra</option>
+                                <option value="Angola">Angola</option>
+                                <option value="Anguilla">Anguilla</option>
+                                <option value="Antigua & Barbuda">Antigua & Barbuda</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Armenia">Armenia</option>
+                                <option value="Aruba">Aruba</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Austria">Austria</option>
+                                <option value="Azerbaijan">Azerbaijan</option>
+                                <option value="Bahamas">Bahamas</option>
+                                <option value="Bahrain">Bahrain</option>
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="Barbados">Barbados</option>
+                                <option value="Belarus">Belarus</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="Belize">Belize</option>
+                                <option value="Benin">Benin</option>
+                                <option value="Bermuda">Bermuda</option>
+                                <option value="Bhutan">Bhutan</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Bonaire">Bonaire</option>
+                                <option value="Bosnia & Herzegovina">Bosnia & Herzegovina</option>
+                                <option value="Botswana">Botswana</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="British Indian Ocean Ter">British Indian Ocean Ter</option>
+                                <option value="Brunei">Brunei</option>
+                                <option value="Bulgaria">Bulgaria</option>
+                                <option value="Burkina Faso">Burkina Faso</option>
+                                <option value="Burundi">Burundi</option>
+                                <option value="Cambodia">Cambodia</option>
+                                <option value="Cameroon">Cameroon</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Canary Islands">Canary Islands</option>
+                                <option value="Cape Verde">Cape Verde</option>
+                                <option value="Cayman Islands">Cayman Islands</option>
+                                <option value="Central African Republic">Central African Republic</option>
+                                <option value="Chad">Chad</option>
+                                <option value="Channel Islands">Channel Islands</option>
+                                <option value="Chile">Chile</option>
+                                <option value="China">China</option>
+                                <option value="Christmas Island">Christmas Island</option>
+                                <option value="Cocos Island">Cocos Island</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Comoros">Comoros</option>
+                                <option value="Congo">Congo</option>
+                                <option value="Cook Islands">Cook Islands</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Cote DIvoire">Cote DIvoire</option>
+                                <option value="Croatia">Croatia</option>
+                                <option value="Cuba">Cuba</option>
+                                <option value="Curaco">Curacao</option>
+                                <option value="Cyprus">Cyprus</option>
+                                <option value="Czech Republic">Czech Republic</option>
+                                <option value="Denmark">Denmark</option>
+                                <option value="Djibouti">Djibouti</option>
+                                <option value="Dominica">Dominica</option>
+                                <option value="Dominican Republic">Dominican Republic</option>
+                                <option value="East Timor">East Timor</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="Egypt">Egypt</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                <option value="Eritrea">Eritrea</option>
+                                <option value="Estonia">Estonia</option>
+                                <option value="Ethiopia">Ethiopia</option>
+                                <option value="Falkland Islands">Falkland Islands</option>
+                                <option value="Faroe Islands">Faroe Islands</option>
+                                <option value="Fiji">Fiji</option>
+                                <option value="Finland">Finland</option>
+                                <option value="France">France</option>
+                                <option value="French Guiana">French Guiana</option>
+                                <option value="French Polynesia">French Polynesia</option>
+                                <option value="French Southern Ter">French Southern Ter</option>
+                                <option value="Gabon">Gabon</option>
+                                <option value="Gambia">Gambia</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Ghana">Ghana</option>
+                                <option value="Gibraltar">Gibraltar</option>
+                                <option value="Great Britain">Great Britain</option>
+                                <option value="Greece">Greece</option>
+                                <option value="Greenland">Greenland</option>
+                                <option value="Grenada">Grenada</option>
+                                <option value="Guadeloupe">Guadeloupe</option>
+                                <option value="Guam">Guam</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Guinea">Guinea</option>
+                                <option value="Guyana">Guyana</option>
+                                <option value="Haiti">Haiti</option>
+                                <option value="Hawaii">Hawaii</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="Hong Kong">Hong Kong</option>
+                                <option value="Hungary">Hungary</option>
+                                <option value="Iceland">Iceland</option>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="India">India</option>
+                                <option value="Iran">Iran</option>
+                                <option value="Iraq">Iraq</option>
+                                <option value="Ireland">Ireland</option>
+                                <option value="Isle of Man">Isle of Man</option>
+                                <option value="Israel">Israel</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Jamaica">Jamaica</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Jordan">Jordan</option>
+                                <option value="Kazakhstan">Kazakhstan</option>
+                                <option value="Kenya">Kenya</option>
+                                <option value="Kiribati">Kiribati</option>
+                                <option value="Korea North">Korea North</option>
+                                <option value="Korea Sout">Korea South</option>
+                                <option value="Kuwait">Kuwait</option>
+                                <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                <option value="Laos">Laos</option>
+                                <option value="Latvia">Latvia</option>
+                                <option value="Lebanon">Lebanon</option>
+                                <option value="Lesotho">Lesotho</option>
+                                <option value="Liberia">Liberia</option>
+                                <option value="Libya">Libya</option>
+                                <option value="Liechtenstein">Liechtenstein</option>
+                                <option value="Lithuania">Lithuania</option>
+                                <option value="Luxembourg">Luxembourg</option>
+                                <option value="Macau">Macau</option>
+                                <option value="Macedonia">Macedonia</option>
+                                <option value="Madagascar">Madagascar</option>
+                                <option value="Malaysia">Malaysia</option>
+                                <option value="Malawi">Malawi</option>
+                                <option value="Maldives">Maldives</option>
+                                <option value="Mali">Mali</option>
+                                <option value="Malta">Malta</option>
+                                <option value="Marshall Islands">Marshall Islands</option>
+                                <option value="Martinique">Martinique</option>
+                                <option value="Mauritania">Mauritania</option>
+                                <option value="Mauritius">Mauritius</option>
+                                <option value="Mayotte">Mayotte</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="Midway Islands">Midway Islands</option>
+                                <option value="Moldova">Moldova</option>
+                                <option value="Monaco">Monaco</option>
+                                <option value="Mongolia">Mongolia</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Morocco">Morocco</option>
+                                <option value="Mozambique">Mozambique</option>
+                                <option value="Myanmar">Myanmar</option>
+                                <option value="Nambia">Nambia</option>
+                                <option value="Nauru">Nauru</option>
+                                <option value="Nepal">Nepal</option>
+                                <option value="Netherland Antilles">Netherland Antilles</option>
+                                <option value="Netherlands">Netherlands (Holland, Europe)</option>
+                                <option value="Nevis">Nevis</option>
+                                <option value="New Caledonia">New Caledonia</option>
+                                <option value="New Zealand">New Zealand</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Niger">Niger</option>
+                                <option value="Nigeria">Nigeria</option>
+                                <option value="Niue">Niue</option>
+                                <option value="Norfolk Island">Norfolk Island</option>
+                                <option value="Norway">Norway</option>
+                                <option value="Oman">Oman</option>
+                                <option value="Pakistan">Pakistan</option>
+                                <option value="Palau Island">Palau Island</option>
+                                <option value="Palestine">Palestine</option>
+                                <option value="Panama">Panama</option>
+                                <option value="Papua New Guinea">Papua New Guinea</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Peru">Peru</option>
+                                <option value="Phillipines">Philippines</option>
+                                <option value="Pitcairn Island">Pitcairn Island</option>
+                                <option value="Poland">Poland</option>
+                                <option value="Portugal">Portugal</option>
+                                <option value="Puerto Rico">Puerto Rico</option>
+                                <option value="Qatar">Qatar</option>
+                                <option value="Republic of Montenegro">Republic of Montenegro</option>
+                                <option value="Republic of Serbia">Republic of Serbia</option>
+                                <option value="Reunion">Reunion</option>
+                                <option value="Romania">Romania</option>
+                                <option value="Russia">Russia</option>
+                                <option value="Rwanda">Rwanda</option>
+                                <option value="St Barthelemy">St Barthelemy</option>
+                                <option value="St Eustatius">St Eustatius</option>
+                                <option value="St Helena">St Helena</option>
+                                <option value="St Kitts-Nevis">St Kitts-Nevis</option>
+                                <option value="St Lucia">St Lucia</option>
+                                <option value="St Maarten">St Maarten</option>
+                                <option value="St Pierre & Miquelon">St Pierre & Miquelon</option>
+                                <option value="St Vincent & Grenadines">St Vincent & Grenadines</option>
+                                <option value="Saipan">Saipan</option>
+                                <option value="Samoa">Samoa</option>
+                                <option value="Samoa American">Samoa American</option>
+                                <option value="San Marino">San Marino</option>
+                                <option value="Sao Tome & Principe">Sao Tome & Principe</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="Senegal">Senegal</option>
+                                <option value="Seychelles">Seychelles</option>
+                                <option value="Sierra Leone">Sierra Leone</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="Slovakia">Slovakia</option>
+                                <option value="Slovenia">Slovenia</option>
+                                <option value="Solomon Islands">Solomon Islands</option>
+                                <option value="Somalia">Somalia</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="Spain">Spain</option>
+                                <option value="Sri Lanka">Sri Lanka</option>
+                                <option value="Sudan">Sudan</option>
+                                <option value="Suriname">Suriname</option>
+                                <option value="Swaziland">Swaziland</option>
+                                <option value="Sweden">Sweden</option>
+                                <option value="Switzerland">Switzerland</option>
+                                <option value="Syria">Syria</option>
+                                <option value="Tahiti">Tahiti</option>
+                                <option value="Taiwan">Taiwan</option>
+                                <option value="Tajikistan">Tajikistan</option>
+                                <option value="Tanzania">Tanzania</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Togo">Togo</option>
+                                <option value="Tokelau">Tokelau</option>
+                                <option value="Tonga">Tonga</option>
+                                <option value="Trinidad & Tobago">Trinidad & Tobago</option>
+                                <option value="Tunisia">Tunisia</option>
+                                <option value="Turkey">Turkey</option>
+                                <option value="Turkmenistan">Turkmenistan</option>
+                                <option value="Turks & Caicos Is">Turks & Caicos Is</option>
+                                <option value="Tuvalu">Tuvalu</option>
+                                <option value="Uganda">Uganda</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="United Arab Erimates">United Arab Emirates</option>
+                                <option value="United States of America" selected>United States of America</option>
+                                <option value="Uraguay">Uruguay</option>
+                                <option value="Uzbekistan">Uzbekistan</option>
+                                <option value="Vanuatu">Vanuatu</option>
+                                <option value="Vatican City State">Vatican City State</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Vietnam">Vietnam</option>
+                                <option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option>
+                                <option value="Virgin Islands (USA)">Virgin Islands (USA)</option>
+                                <option value="Wake Island">Wake Island</option>
+                                <option value="Wallis & Futana Is">Wallis & Futana Is</option>
+                                <option value="Yemen">Yemen</option>
+                                <option value="Zaire">Zaire</option>
+                                <option value="Zambia">Zambia</option>
+                                <option value="Zimbabwe">Zimbabwe</option>
+                            </select>
+                            <span class="error-text" id="error-country">error</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="donation-row mobile-row">
+                        <div class="fieldcontainer ccfield">
+                            <input type="text" id="creditcard" placeholder="Credit Card Number" pattern="[0-9]*" ng-model="edc.donation.card">
+                            <span class="error-text" id="error-creditcard">error</span>
+                        </div>
+                        <div class="fieldcontainer expfield">
+                            <select id="exp_month" class="unchanged" ng-model="edc.donation.expMonth">
+                                <optgroup class="default-opt">
+                                    <option value="">Exp. Month</option>
+                                </optgroup>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <span class="error-text" id="error-exp_month">error</span>
+                        </div>
+                        <div class="fieldcontainer expfield">
+                            <select id="exp_year" class="unchanged" ng-model="edc.donation.expYear">
+                                <optgroup class="default-opt">
+                                    <option value="">Exp. Year</option>
+                                </optgroup>
+                                <option ng-value="year" ng-repeat="year in edc.expYears">{{year}}</option>
+                            </select>
+                            <span class="error-text" id="error-exp_year">error</span>
+                        </div>
+                        <div class="fieldcontainer cvcfield"><input type="text" id="cvc" placeholder="CVC" pattern="[0-9]*" ng-model="edc.donation.cvc"><span class="error-text" id="error-cvc">error</span></div>
+                    </div>
+                    <ul class="toolbar">
+                        <li ng-if="!edc.buttonTextOpen" ng-click="edc.buttonTextOpen = true"><i class="fas fa-pencil-alt"></i> Edit Button Text</li>
+                        <li ng-if="!edc.buttonTextOpen && edc.buttonTextChanged" ng-click="edc.revertEdit('buttonText')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="edc.buttonTextOpen" ng-click="edc.saveEdit('buttonText')"><i class="fas fa-check"></i> Finish Editing Button Text</li>
+                        <li ng-if="edc.buttonTextOpen" ng-click="edc.cancelEdit('buttonText')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="edc.buttonTextChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <button ng-if="!edc.buttonTextOpen" class="donate-now-button" ng-click="edc.submitDonation()">{{edc.edited.buttonText}}</button>
+                    <div class="donate-now-button" ng-if="edc.buttonTextOpen"><input type="text" ng-model="edc.edited.buttonText"></div>
+                    <hr class="hr-large">
+                    <ul class="toolbar">
+                        <li ng-if="!edc.boilerplateOpen" ng-click="edc.boilerplateOpen = true"><i class="fas fa-pencil-alt"></i> Edit Boilerplate</li>
+                        <li ng-if="!edc.boilerplateOpen && edc.boilerplateChanged" ng-click="edc.revertEdit('boilerplate')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="edc.boilerplateOpen" ng-click="edc.saveEdit('boilerplate')"><i class="fas fa-check"></i> Finish Editing Boilerplate</li>
+                        <li ng-if="edc.boilerplateOpen" ng-click="edc.cancelEdit('boilerplate')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="edc.boilerplateChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                        </div>
+                    </ul>
+                    <div class="donation-legal" ng-if="!edc.boilerplateOpen"><p>{{edc.edited.boilerplate}}</p></div>
+                    <textarea class="edit-boilerplate" ng-model="edc.edited.boilerplate" ng-if="edc.boilerplateOpen"></textarea>
+                    <div class="donation-footer">
+                        <ul class="toolbar">
+                            <li ng-if="!edc.otherWaysHeadlineOpen" ng-click="edc.otherWaysHeadlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                            <li ng-if="!edc.otherWaysHeadlineOpen && edc.otherWaysHeadlineChanged" ng-click="edc.revertEdit('otherWaysHeadline')"><i class="fas fa-undo"></i> Undo Changes</li>
+                            <li ng-if="edc.otherWaysHeadlineOpen" ng-click="edc.saveEdit('otherWaysHeadline')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                            <li ng-if="edc.otherWaysHeadlineOpen" ng-click="edc.cancelEdit('otherWaysHeadline')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="edc.otherWaysHeadlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                            </div>
+                        </ul>
+                        <h1 ng-if="!edc.otherWaysHeadlineOpen">{{edc.edited.otherWaysHeadline}}</h1>
+                        <input class="edit-other-ways-title" type="text" ng-if="edc.otherWaysHeadlineOpen" ng-model="edc.edited.otherWaysHeadline">
+                        <div class="title-line">&nbsp;</div>
+                        <ul class="toolbar">
+                            <li ng-if="!edc.otherWaysTextOpen" ng-click="edc.otherWaysTextOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                            <li ng-if="!edc.otherWaysTextOpen && edc.otherWaysTextChanged" ng-click="edc.revertEdit('otherWaysText')"><i class="fas fa-undo"></i> Undo Changes</li>
+                            <li ng-if="edc.otherWaysTextOpen" ng-click="edc.saveEdit('otherWaysText')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                            <li ng-if="edc.otherWaysTextOpen" ng-click="edc.cancelEdit('otherWaysText')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="edc.otherWaysTextChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                            </div>
+                        </ul>
+                        <div ng-bind-html="edc.edited.otherWaysText" ng-if="!edc.otherWaysTextOpen"></div>
+                        <div class="ng-ckeditor-container"><ng-ckeditor ng-if="edc.otherWaysTextOpen" ng-config="edc.otherWaysCkeditorConfig" ng-model="edc.edited.otherWaysText"></ng-ckeditor></div>
+                    </div>
+                    <img ng-src="/images/{{edc.edited.image}}">
+                </div>
+            </div>
+            <div class="metaData">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!edc.metaDescriptionOpen" ng-click="edc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                    <li ng-if="!edc.metaDescriptionOpen && edc.metaDescriptionChanged" ng-click="edc.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="edc.metaDescriptionOpen" ng-click="edc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                    <li ng-if="edc.metaDescriptionOpen" ng-click="edc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="edc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!edc.metaDescriptionOpen">{{edc.edited.meta.description}}</div>
+                <textarea ng-model="edc.edited.meta.description" ng-if="edc.metaDescriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!edc.metaTitleOpen" ng-click="edc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                    <li ng-if="!edc.metaTitleOpen && edc.metaTitleChanged" ng-click="edc.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="edc.metaTitleOpen" ng-click="edc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                    <li ng-if="edc.metaTitleOpen" ng-click="edc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="edc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Title: <span ng-if="!edc.metaTitleOpen">{{edc.edited.meta.title}}</span><input ng-if="edc.metaTitleOpen" type="text" ng-model="edc.edited.meta.title"></div>
+                <ul class="toolbar">
+                    <li ng-if="!edc.metaKeywordsOpen" ng-click="edc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                    <li ng-if="!edc.metaKeywordsOpen && edc.metaKeywordsChanged" ng-click="edc.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="edc.metaKeywordsOpen" ng-click="edc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                    <li ng-if="edc.metaKeywordsOpen" ng-click="edc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                        <div class="toolbar-help-notify" ng-if="edc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="editUrl">Keywords: <span ng-if="!edc.metaKeywordsOpen">{{edc.edited.meta.keywords}}</span><input ng-if="edc.metaKeywordsOpen" type="text" ng-model="edc.edited.meta.keywords"></div>        
+                
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="edc.deleteProgramPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Delete the Program<span ng-if="edc.edited.programs[edc.deleteProgramIndex].title">: <strong>{{edc.edited.programs[edc.deleteProgramIndex].title}}</strong></span> from the list?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="edc.deleteProgram()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="edc.cancelDeleteProgram()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

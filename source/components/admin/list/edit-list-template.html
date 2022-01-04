@@ -1,0 +1,175 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image class="program" hero-id="elc.edited.heroId" ng-if="elc.edited.heroId"></hero-image>
+<div class="main-container list-page admin-page" ng-class="elc.edited.heroId ? '' : 'top-border-' + elc.edited.color">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="elc.urlChanged || elc.descriptionChanged || elc.titleChanged || elc.listChanged || elc.heroIdChanged || elc.colorChanged || elc.metaDescriptionChanged || elc.metaTitleChanged || elc.metaKeywordsChanged" ng-click="elc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="elc.urlChanged || elc.descriptionChanged || elc.titleChanged || elc.listChanged || elc.heroIdChanged || elc.colorChanged || elc.metaDescriptionChanged || elc.metaTitleChanged || elc.metaKeywordsChanged" ng-click="elc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <main role="main">
+        <ul class="toolbar">
+            <li ng-if="!elc.heroIdOpen" ng-click="elc.openHeroGallery()"><i class="fas fa-images"></i> Select Image Carousel</li>
+            <li ng-if="elc.heroIdChanged && !elc.heroIdOpen" ng-click="elc.revertEdit('heroId')"><i class="fas fa-undo"></i> Undo Carousel Changes</li>
+            <li ng-if="elc.heroIdOpen" ng-click="elc.heroIdOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <li ng-if="!elc.colorOpen" ng-click="elc.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+            <li ng-if="elc.colorChanged && !elc.colorOpen" ng-click="elc.revertEdit('color')"><i class="fas fa-undo"></i> Undo Color Changes</li>
+            <li ng-if="elc.colorOpen" ng-click="elc.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+            
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify" ng-if="elc.heroIdChanged || elc.colorChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div ng-if="elc.heroIdOpen" class="hero-gallery">
+            <div class="row" ng-repeat="hero in elc.heroes">
+                <div class="col-md-3 hero-gallery-title"><span ng-click="elc.selectHero(hero.id)">{{hero.title}}</span></div>
+                <div class="col-md-9 hero-gallery-image">
+                    <div class="hero-gallery-image-wrapper" ng-repeat="item in hero.items" ng-click="elc.selectHero(hero.id)">
+                        <img ng-src="/thumbs/{{item.image}}">
+                        <div class="hero-gallery-image-wrapper-headline">{{item.headline}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 hero-gallery-title"><span ng-click="elc.selectHero(false)">None</span></div>
+            </div>
+        </div>
+        <div ng-if="elc.colorOpen" class="color-gallery">
+            <div class="color-row bg-red" ng-click="elc.selectColor('red')">Red</div>
+            <div class="color-row bg-purple" ng-click="elc.selectColor('purple')">Purple</div>
+            <div class="color-row bg-green" ng-click="elc.selectColor('green')">Green</div>
+            <div class="color-row bg-orange" ng-click="elc.selectColor('orange')">Orange</div>
+            <div class="color-row bg-teal" ng-click="elc.selectColor('teal')">Teal</div>
+            <div class="color-row bg-blue" ng-click="elc.selectColor('blue')">Blue</div>
+            <div class="color-row bg-gray" ng-click="elc.selectColor('gray')">Gray</div>
+        </div>
+        <div class="results">
+            <ul class="toolbar">
+                <li ng-if="!elc.titleOpen" ng-click="elc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                <li ng-if="elc.titleChanged && !elc.titleOpen" ng-click="elc.revertEdit('title')"><i class="fas fa-undo"></i> Undo Headline Changes</li>
+                <li ng-if="elc.titleOpen" ng-click="elc.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                <li ng-if="elc.titleOpen" ng-click="elc.titleOpen = false"><i class="fas fa-ban"></i> Cancel Editing Headline</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="elc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <h1 ng-if="!elc.titleOpen" ng-class="'color-' + elc.edited.color">{{elc.edited.title}}</h1>
+            <textarea class="headline" ng-if="elc.titleOpen" ng-model="elc.edited.title" ng-class="'color-' + elc.edited.color"></textarea>
+            <ul class="toolbar">
+                <li ng-if="!elc.descriptionOpen" ng-click="elc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                <li ng-if="elc.descriptionChanged && !elc.titleOpen" ng-click="elc.revertEdit('description')"><i class="fas fa-undo"></i> Undo Description Changes</li>
+                <li ng-if="elc.descriptionOpen" ng-click="elc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                <li ng-if="elc.descriptionOpen" ng-click="elc.descriptionOpen = false"><i class="fas fa-ban"></i> Cancel Editing Description</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="elc.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>   
+            <span ng-if="!elc.descriptionOpen" ng-bind-html="elc.edited.description"></span>
+            <ng-ckeditor ng-if="elc.descriptionOpen" ng-config="elc.ckeditorConfig" ng-model="elc.edited.description"></ng-ckeditor>
+            <ul class="toolbar">
+                <li ng-if="!elc.addPageOpen" ng-click="elc.addPageOpen = true"><i class="fas fa-plus-square"></i> Add Page to List</li>
+                <li ng-if="elc.addPageOpen" ng-click="elc.cancelAddPage()"><i class="fas fa-plus-square"></i> Cancel Add Page</li>
+            </ul>
+            <div ng-if="elc.addPageOpen">
+                <label>Select Page</label><br>
+                <select ng-model="elc.selectedAddPage">
+                    <option ng-value="$index" ng-repeat="addPage in elc.pages | orderBy: 'title'">{{addPage.title}} ({{addPage.type}})</option>
+                </select>
+                <button class="btn btn-primary" ng-click="elc.selectNewPage()">Select Page</button>
+            </div>
+            
+            <div ng-repeat="page in elc.edited.items | orderBy: 'pageOrder'" class="results-list-item" ng-if="!page.deleted">
+                <ul class="toolbar">
+                    <li ng-click="elc.deletePageWarning(page.id)"><i class="fas fa-trash"></i> Delete Item</li>
+                    <li ng-if="page.pageOrder !== 0" ng-click="elc.moveItem('up', page.pageOrder, page.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                    <li ng-if="page.pageOrder !== (elc.edited.items.length - 1)" ng-click="elc.moveItem('down', page.pageOrder, page.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                </ul>
+                <div class="results-list-item-inner" ng-class="'border-' + page.color">
+                    <div class="results-list-item-inner-date-box" ng-if="page.type === 'event'">
+                        <div class="results-list-item-inner-date-box-day">{{page.start | amDateFormat: 'D'}}</div>
+                        <div class="results-list-item-inner-date-box-month">{{page.start | amDateFormat: 'MMM'}}</div>
+                    </div>
+                    <div class="results-list-item-inner-image">
+                        <img ng-src="/images/{{page.image}}" class="img-responsive d-block mx-auto">
+                    </div>
+                    <div class="results-list-item-inner-details">
+                        <h2>{{page.title}}</h2>
+                        <div ng-if="page.type === 'event'">
+                            <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{page.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                        </div>
+                        <p>{{page.description}}</p>
+                        <a ng-href="{{page.url}}" class="btn" ng-class="'bg-' + page.color">View <span ng-if="page.type === 'event'">Event</span><span ng-if="page.type !== 'event'">Page</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metaData">
+            <h2>Meta Data</h2>
+            <ul class="toolbar">
+                <li ng-if="!elc.urlOpen" ng-click="elc.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                <li ng-if="!elc.urlOpen && elc.urlChanged" ng-click="elc.revertEdit('url')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="elc.urlOpen" ng-click="elc.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                <li ng-if="elc.urlOpen" ng-click="elc.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This defaults to the headline with dashes instead of spaces.</div>
+                    <div class="toolbar-help-notify" ng-if="elc.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="error" ng-if="elc.urlError">{{elc.urlError}}</div>
+            <div class="editUrl">https://kotm.org/list/<span ng-if="!elc.urlOpen">{{elc.edited.url}}</span><input ng-if="elc.urlOpen" type="text" ng-model="elc.edited.url" ng-change="elc.encodeUrl()"></div>
+            <ul class="toolbar">
+                <li ng-if="!elc.metaDescriptionOpen" ng-click="elc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                <li ng-if="!elc.metaDescriptionOpen && elc.metaDescriptionChanged" ng-click="elc.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="elc.metaDescriptionOpen" ng-click="elc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                <li ng-if="elc.metaDescriptionOpen" ng-click="elc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="elc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="!elc.metaDescriptionOpen">{{elc.edited.meta.description}}</div>
+            <textarea ng-model="elc.edited.meta.description" ng-if="elc.metaDescriptionOpen"></textarea>
+            <ul class="toolbar">
+                <li ng-if="!elc.metaTitleOpen" ng-click="elc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                <li ng-if="!elc.metaTitleOpen && elc.metaTitleChanged" ng-click="elc.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="elc.metaTitleOpen" ng-click="elc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                <li ng-if="elc.metaTitleOpen" ng-click="elc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="elc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Title: <span ng-if="!elc.metaTitleOpen">{{elc.edited.meta.title}}</span><input ng-if="elc.metaTitleOpen" type="text" ng-model="elc.edited.meta.title"></div>
+            <ul class="toolbar">
+                <li ng-if="!elc.metaKeywordsOpen" ng-click="elc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                <li ng-if="!elc.metaKeywordsOpen && elc.metaKeywordsChanged" ng-click="elc.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="elc.metaKeywordsOpen" ng-click="elc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                <li ng-if="elc.metaKeywordsOpen" ng-click="elc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                    <div class="toolbar-help-notify" ng-if="elc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Keywords: <span ng-if="!elc.metaKeywordsOpen">{{elc.edited.meta.keywords}}</span><input ng-if="elc.metaKeywordsOpen" type="text" ng-model="elc.edited.meta.keywords"></div>        
+        </div>
+    </main>
+    <div class="error-popup" ng-if="elc.responseErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh Oh!</div>
+            <div class="error-popup-box-body">{{elc.responseError}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="elc.responseErrorPopup = false">Ok, I'll Fix It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="elc.deletePagePopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the page: <strong>{{elc.edited.items[elc.deletePageIndex].title}}</strong> from this list?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="elc.deletePage(elc.edited.items[elc.deletePageIndex].id)">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="elc.cancelDeletePage()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

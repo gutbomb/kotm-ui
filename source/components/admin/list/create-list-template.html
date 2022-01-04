@@ -1,0 +1,174 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image class="program" hero-id="clc.list.heroId" ng-if="clc.list.heroId"></hero-image>
+<div class="main-container list-page admin-page" ng-class="clc.list.heroId ? '' : 'top-border-' + clc.list.color">
+    <ul class="toolbar main-toolbar">
+        <li ng-if="clc.urlChanged || clc.descriptionChanged || clc.titleChanged || clc.listChanged || clc.heroIdChanged || clc.colorChanged || clc.metaDescriptionChanged || clc.metaTitleChanged || clc.metaKeywordsChanged" ng-click="clc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="clc.urlChanged || clc.descriptionChanged || clc.titleChanged || clc.listChanged || clc.heroIdChanged || clc.colorChanged || clc.metaDescriptionChanged || clc.metaTitleChanged || clc.metaKeywordsChanged" ng-click="clc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <main role="main">
+        <ul class="toolbar">
+            <li ng-if="!clc.heroIdOpen" ng-click="clc.openHeroGallery()"><i class="fas fa-images"></i> Select Image Carousel</li>
+            <li ng-if="clc.heroIdChanged && !clc.heroIdOpen" ng-click="clc.revertEdit('heroId')"><i class="fas fa-undo"></i> Undo Carousel Changes</li>
+            <li ng-if="clc.heroIdOpen" ng-click="clc.heroIdOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <li ng-if="!clc.colorOpen" ng-click="clc.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+            <li ng-if="clc.colorChanged && !clc.colorOpen" ng-click="clc.revertEdit('color')"><i class="fas fa-undo"></i> Undo Color Changes</li>
+            <li ng-if="clc.colorOpen" ng-click="clc.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+            
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify" ng-if="clc.heroIdChanged || clc.colorChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div ng-if="clc.heroIdOpen" class="hero-gallery">
+            <div class="row" ng-repeat="hero in clc.heroes">
+                <div class="col-md-3 hero-gallery-title"><span ng-click="clc.selectHero(hero.id)">{{hero.title}}</span></div>
+                <div class="col-md-9 hero-gallery-image">
+                    <div class="hero-gallery-image-wrapper" ng-repeat="item in hero.items" ng-click="clc.selectHero(hero.id)">
+                        <img ng-src="/thumbs/{{item.image}}">
+                        <div class="hero-gallery-image-wrapper-headline">{{item.headline}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 hero-gallery-title"><span ng-click="clc.selectHero(false)">None</span></div>
+            </div>
+        </div>
+        <div ng-if="clc.colorOpen" class="color-gallery">
+            <div class="color-row bg-red" ng-click="clc.selectColor('red')">Red</div>
+            <div class="color-row bg-purple" ng-click="clc.selectColor('purple')">Purple</div>
+            <div class="color-row bg-green" ng-click="clc.selectColor('green')">Green</div>
+            <div class="color-row bg-orange" ng-click="clc.selectColor('orange')">Orange</div>
+            <div class="color-row bg-teal" ng-click="clc.selectColor('teal')">Teal</div>
+            <div class="color-row bg-blue" ng-click="clc.selectColor('blue')">Blue</div>
+            <div class="color-row bg-gray" ng-click="clc.selectColor('gray')">Gray</div>
+        </div>
+        <div class="results">
+            <ul class="toolbar">
+                <li ng-if="!clc.titleOpen" ng-click="clc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                <li ng-if="clc.titleChanged && !clc.titleOpen" ng-click="clc.revertEdit('title')"><i class="fas fa-undo"></i> Undo Headline Changes</li>
+                <li ng-if="clc.titleOpen" ng-click="clc.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                <li ng-if="clc.titleOpen" ng-click="clc.titleOpen = false"><i class="fas fa-ban"></i> Cancel Editing Headline</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="clc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <h1 ng-if="!clc.titleOpen" ng-class="'color-' + clc.list.color">{{clc.list.title}}</h1>
+            <textarea class="headline" ng-if="clc.titleOpen" ng-model="clc.list.title" ng-class="'color-' + clc.list.color" ng-change="clc.changeTitle()"></textarea>
+            <ul class="toolbar">
+                <li ng-if="!clc.descriptionOpen" ng-click="clc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                <li ng-if="clc.descriptionChanged && !clc.titleOpen" ng-click="clc.revertEdit('description')"><i class="fas fa-undo"></i> Undo Description Changes</li>
+                <li ng-if="clc.descriptionOpen" ng-click="clc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                <li ng-if="clc.descriptionOpen" ng-click="clc.descriptionOpen = false"><i class="fas fa-ban"></i> Cancel Editing Description</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify" ng-if="clc.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>   
+            <span ng-if="!clc.descriptionOpen" ng-bind-html="clc.list.description"></span>
+            <ng-ckeditor ng-if="clc.descriptionOpen" ng-config="clc.ckeditorConfig" ng-model="clc.list.description" ng-change="clc.changeDescription()"></ng-ckeditor>
+            <ul class="toolbar">
+                <li ng-if="!clc.addPageOpen" ng-click="clc.addPageOpen = true"><i class="fas fa-plus-square"></i> Add Page to List</li>
+                <li ng-if="clc.addPageOpen" ng-click="clc.cancelAddPage()"><i class="fas fa-plus-square"></i> Cancel Add Page</li>
+            </ul>
+            <div ng-if="clc.addPageOpen">
+                <label>Select Page</label><br>
+                <select ng-model="clc.selectedAddPage">
+                    <option ng-value="$index" ng-repeat="addPage in clc.pages | orderBy: 'title'">{{addPage.title}} ({{addPage.type}})</option>
+                </select>
+                <button class="btn btn-primary" ng-click="clc.selectNewPage()">Select Page</button>
+            </div>
+            
+            <div ng-repeat="page in clc.list.items | orderBy: 'pageOrder'" class="results-list-item" ng-if="!page.deleted">
+                <ul class="toolbar">
+                    <li ng-click="clc.deletePageWarning(page.id)"><i class="fas fa-trash"></i> Delete Item</li>
+                    <li ng-if="page.pageOrder !== 0" ng-click="clc.moveItem('up', page.pageOrder, page.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                    <li ng-if="page.pageOrder !== (clc.list.items.length - 1)" ng-click="clc.moveItem('down', page.pageOrder, page.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                </ul>
+                <div class="results-list-item-inner" ng-class="'border-' + page.color">
+                    <div class="results-list-item-inner-date-box" ng-if="page.type === 'event'">
+                        <div class="results-list-item-inner-date-box-day">{{page.start | amDateFormat: 'D'}}</div>
+                        <div class="results-list-item-inner-date-box-month">{{page.start | amDateFormat: 'MMM'}}</div>
+                    </div>
+                    <div class="results-list-item-inner-image">
+                        <img ng-src="/images/{{page.image}}" class="img-responsive d-block mx-auto">
+                    </div>
+                    <div class="results-list-item-inner-details">
+                        <h2>{{page.title}}</h2>
+                        <div ng-if="page.type === 'event'">
+                            <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{page.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                        </div>
+                        <p>{{page.description}}</p>
+                        <a ng-href="{{page.url}}" class="btn" ng-class="'bg-' + page.color">View <span ng-if="page.type === 'event'">Event</span><span ng-if="page.type !== 'event'">Page</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metaData">
+            <h2>Meta Data</h2>
+            <ul class="toolbar">
+                <li ng-if="!clc.urlOpen" ng-click="clc.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                <li ng-if="!clc.urlOpen && clc.urlChanged" ng-click="clc.revertEdit('url')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="clc.urlOpen" ng-click="clc.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                <li ng-if="clc.urlOpen" ng-click="clc.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This defaults to the headline with dashes instead of spaces.</div>
+                    <div class="toolbar-help-notify" ng-if="clc.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="error" ng-if="clc.urlError">{{clc.urlError}}</div>
+            <div class="editUrl">https://kotm.org/list/<span ng-if="!clc.urlOpen">{{clc.list.url}}</span><input ng-if="clc.urlOpen" type="text" ng-model="clc.list.url" ng-change="clc.encodeUrl()"></div>
+            <ul class="toolbar">
+                <li ng-if="!clc.metaDescriptionOpen" ng-click="clc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                <li ng-if="!clc.metaDescriptionOpen && clc.metaDescriptionChanged" ng-click="clc.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="clc.metaDescriptionOpen" ng-click="clc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                <li ng-if="clc.metaDescriptionOpen" ng-click="clc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="clc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="!clc.metaDescriptionOpen">{{clc.list.meta.description}}</div>
+            <textarea ng-model="clc.list.meta.description" ng-if="clc.metaDescriptionOpen"></textarea>
+            <ul class="toolbar">
+                <li ng-if="!clc.metaTitleOpen" ng-click="clc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                <li ng-if="!clc.metaTitleOpen && clc.metaTitleChanged" ng-click="clc.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="clc.metaTitleOpen" ng-click="clc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                <li ng-if="clc.metaTitleOpen" ng-click="clc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="clc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Title: <span ng-if="!clc.metaTitleOpen">{{clc.list.meta.title}}</span><input ng-if="clc.metaTitleOpen" type="text" ng-model="clc.list.meta.title"></div>
+            <ul class="toolbar">
+                <li ng-if="!clc.metaKeywordsOpen" ng-click="clc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                <li ng-if="!clc.metaKeywordsOpen && clc.metaKeywordsChanged" ng-click="clc.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="clc.metaKeywordsOpen" ng-click="clc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                <li ng-if="clc.metaKeywordsOpen" ng-click="clc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                    <div class="toolbar-help-notify" ng-if="clc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Keywords: <span ng-if="!clc.metaKeywordsOpen">{{clc.list.meta.keywords}}</span><input ng-if="clc.metaKeywordsOpen" type="text" ng-model="clc.list.meta.keywords"></div>        
+        </div>
+    </main>
+    <div class="error-popup" ng-if="clc.responseErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh Oh!</div>
+            <div class="error-popup-box-body">{{clc.responseError}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="clc.responseErrorPopup = false">Ok, I'll Fix It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="clc.deletePagePopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the page: <strong>{{clc.list.items[clc.deletePageIndex].title}}</strong> from this list?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="clc.deletePage(clc.list.items[clc.deletePageIndex].id)">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="clc.cancelDeletePage()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>

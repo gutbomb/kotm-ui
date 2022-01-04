@@ -1,0 +1,230 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image class="program" hero-id="eac.edited.heroId" ng-if="eac.edited.heroId && eac.edited.layout==='page'"></hero-image>
+<div class="main-container article-page admin-page" ng-class="['accent-' + eac.edited.color, !eac.edited.heroId && eac.edited.layout==='page' ? 'top-border' : '']">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help" ng-if="eac.staged && $root.user.role === 'editor'">Page submitted for approval {{eac.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}}</span>
+        <span class="toolbar-help" ng-if="eac.staged && $root.user.role === 'admin'">Page submitted for approval {{eac.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}} by {{eac.stagedFirstName}} {{eac.stagedLastName}}</span>
+        <span class="toolbar-help" ng-if="!eac.staged">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="eac.staged && $root.user.role === 'editor' && !eac.layoutChanged && !eac.colorChanged && !eac.heroIdChanged && !eac.descriptionChanged && !eac.urlChanged && !eac.textChanged && !eac.imageChanged && !eac.titleChanged && !eac.newsChanged && !eac.metaDescriptionChanged && !eac.metaTitleChanged && !eac.metaKeywordsChanged" ng-click="eac.removeStaged()"><i class="fas fa-ban"></i> Remove Approval Request</li>
+        <li ng-if="eac.staged && $root.user.role === 'admin' && !eac.stagedApproved && !eac.layoutChanged && !eac.colorChanged && !eac.heroIdChanged && !eac.descriptionChanged && !eac.urlChanged && !eac.textChanged && !eac.imageChanged && !eac.titleChanged && !eac.newsChanged && !eac.metaDescriptionChanged && !eac.metaTitleChanged && !eac.metaKeywordsChanged" ng-click="eac.rejectRevision()"><i class="fas fa-ban"></i> Reject Approval</li>
+        <li ng-if="eac.staged && $root.user.role === 'admin' && !eac.layoutChanged && !eac.colorChanged && !eac.heroIdChanged && !eac.descriptionChanged && !eac.urlChanged && !eac.textChanged && !eac.imageChanged && !eac.titleChanged && !eac.newsChanged && !eac.metaDescriptionChanged && !eac.metaTitleChanged && !eac.metaKeywordsChanged" ng-click="eac.approveRevision()"><i class="fas fa-check"></i> <span ng-if="eac.stagedApproved === 0">Approve and </span>Publish Changes</li>
+        <li ng-if="eac.layoutChanged || eac.colorChanged || eac.heroIdChanged || eac.descriptionChanged || eac.urlChanged || eac.textChanged || eac.imageChanged || eac.titleChanged || eac.newsChanged || eac.metaDescriptionChanged || eac.metaTitleChanged || eac.metaKeywordsChanged" ng-click="eac.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="eac.layoutChanged || eac.colorChanged || eac.heroIdChanged || eac.descriptionChanged || eac.urlChanged || eac.textChanged || eac.imageChanged || eac.titleChanged || eac.newsChanged || eac.metaDescriptionChanged || eac.metaTitleChanged || eac.metaKeywordsChanged" ng-click="eac.newRevisionDescriptionOpen = true"><i class="fas fa-check"></i> <span ng-if="$root.user.role === 'admin'">Publish Changes</span><span ng-if="$root.user.role === 'editor'">Submit Changes for Approval</span></li>
+    </ul>
+    <ul class="toolbar" ng-if="$root.user.role === 'admin'">
+        <span>Revision:
+            <select ng-change="eac.changeRevision()" ng-model="eac.selectedRevision">
+                <option ng-value="0">Live: {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</option>
+                <option ng-repeat="revision in eac.revisions" ng-value="revision.id">{{revision.approved ? 'Published': 'Awaiting Approval'}} : {{revision.created | amDateFormat: 'MMM D YYYY h:mm a'}} by {{revision.firstname}} {{revision.lastname}}</option>
+            </select>
+        </span>
+        <span ng-click="eac.revisionDescriptionOpen = true" class="toolbar-help link" ng-if="eac.revisionDescription">View Description</span>
+    </ul>
+    <div class="error-popup" ng-if="eac.revisionDescriptionOpen">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"></div>
+            <div class="error-popup-box-body">{{eac.revisionDescription}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-green" ng-click="eac.revisionDescriptionOpen = false">Okay</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="eac.newRevisionDescriptionOpen">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header">Description</div>
+            <div class="error-popup-box-body">
+                <p>Please provide a brief description of the changes you are submitting</p>
+                <textarea ng-model="eac.edited.revisionDescription"></textarea></div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-green" ng-click="eac.newRevisionDescriptionOpen = false">Cancel</button>
+                <button class="btn bg-green" ng-click="eac.submitEdit()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <ul class="toolbar">
+        <li ng-if="!eac.heroIdOpen && eac.edited.layout === 'page'" ng-click="eac.heroIdOpen = true"><i class="fas fa-images"></i> Select Image Carousel</li>
+        <li ng-if="eac.heroIdChanged && !eac.heroIdOpen" ng-click="eac.revertEdit('heroId')"><i class="fas fa-undo"></i> Undo Carousel Changes</li>
+        <li ng-if="eac.heroIdOpen" ng-click="eac.heroIdOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <li ng-if="!eac.layoutOpen" ng-click="eac.layoutOpen = true"><i class="fas fa-swatchbook"></i> Choose Page Layout</li>
+        <li ng-if="eac.layoutOpen" ng-click="eac.cancelEdit('layout')"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <li ng-if="!eac.colorOpen" ng-click="eac.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+        <li ng-if="eac.colorOpen" ng-click="eac.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+        <div class="toolbar-help">
+            <div class="toolbar-help-notify" ng-if="eac.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+        </div>
+    </ul>
+    <div ng-if="eac.heroIdOpen" class="hero-gallery">
+        <div class="row" ng-repeat="hero in eac.heroes">
+            <div class="col-md-3 hero-gallery-title"><span ng-click="eac.selectHero(hero.id)">{{hero.title}}</span></div>
+            <div class="col-md-9 hero-gallery-image">
+                <div class="hero-gallery-image-wrapper" ng-repeat="item in hero.items" ng-click="eac.selectHero(hero.id)">
+                    <img ng-src="/thumbs/{{item.image}}">
+                    <div class="hero-gallery-image-wrapper-headline">{{item.headline}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 hero-gallery-title"><span ng-click="eac.selectHero(false)">None</span></div>
+        </div>
+    </div>
+    <div ng-if="eac.layoutOpen" class="color-gallery">
+        <div class="color-row" ng-click="eac.selectLayout('page')">Page</div>
+        <div class="color-row" ng-click="eac.selectLayout('article')">Article</div>
+    </div>
+    <div ng-if="eac.colorOpen" class="color-gallery">
+        <div class="color-row bg-red" ng-click="eac.selectColor('red')">Red</div>
+        <div class="color-row bg-purple" ng-click="eac.selectColor('purple')">Purple</div>
+        <div class="color-row bg-green" ng-click="eac.selectColor('green')">Green</div>
+        <div class="color-row bg-orange" ng-click="eac.selectColor('orange')">Orange</div>
+        <div class="color-row bg-teal" ng-click="eac.selectColor('teal')">Teal</div>
+        <div class="color-row bg-blue" ng-click="eac.selectColor('blue')">Blue</div>
+        <div class="color-row bg-gray" ng-click="eac.selectColor('gray')">Gray</div>
+    </div>
+    <div class="row flex-xl-nowrap">
+        
+        <main class="col-12 bd-content article" role="main">
+            
+            <div class="article-bg" ng-if="eac.edited.layout==='article'">
+                <div class="article-bg-left" ng-class="'bg-'+eac.edited.color"></div>
+                <div class="article-bg-middle" ng-class="'bg-'+eac.edited.color"></div>
+                <div class="article-bg-right" ng-class="'bg-'+eac.edited.color"></div>
+            </div>
+            <div class="article-wrapper">
+                <span class="article-wrapper-date" ng-if="eac.edited.layout==='article'">{{eac.edited.posted | amDateFormat: 'LL'}}</span>
+                <ul class="toolbar" ng-if="eac.edited.layout==='article'">
+                    <li ng-if="!eac.imageOpen" ng-click="eac.openGallery()"><i class="fas fa-images"></i> Select New Image</li>
+                    <li ng-if="eac.imageOpen" ng-click="eac.cancelEdit('image')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <li ng-if="eac.imageChanged" ng-click="eac.revertEdit('image')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-hide="eac.edited.image==='logo.png'" ng-if="eac.edited.image && !eac.imageOpen" ng-click="eac.removeImage()"><i class="fas fa-trash"></i> Remove Image</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="eac.imageChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <img ng-hide="eac.edited.image==='logo.png'" ng-if="!eac.imageOpen && eac.edited.layout==='article' && eac.edited.image" class="article-wrapper-image" ng-src="/images/{{eac.edited.image}}">
+                
+                <div ng-if="eac.imageOpen" class="image-gallery">
+                    <div class="row image-gallery-controls">
+                        <div class="col-2 image-gallery-controls-prev"><span ng-if="eac.galleryPage !== 0" ng-click="eac.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                        <div class="col-8 image-gallery-controls-page">Page: {{(eac.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                        <div class="col-2 image-gallery-controls-next"><span ng-hide="(eac.galleryPage + 30) > filteredGallery.length" ng-click="eac.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                        <div class="col-12"><input type="text" ng-model="eac.gallerySearchTerm" ng-change="eac.gallerySearch()" placeholder="Search"></div>
+                    </div>
+                    <div class="row image-gallery-items">
+                        <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (eac.images | filter:eac.gallerySearchTerm)) | limitTo: 30:eac.galleryPage">
+                            <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="eac.selectImage(image.filename)">
+                            <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                        </div>
+                    </div>
+                    <div class="row image-gallery-upload">
+                        Upload new file: <input type="file" media-upload="eac.uploadFile"><i ng-if="eac.uploadFile" class="fas fa-upload" ng-click="eac.uploadImage()"></i>
+                        <div class="file-error" ng-if="eac.fileError">{{eac.fileError}}</div>
+                    </div>
+                </div>
+                <ul class="toolbar">
+                    <li ng-if="!eac.titleOpen" ng-click="eac.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+                    <li ng-if="!eac.titleOpen && eac.titleChanged" ng-click="eac.revertEdit('title')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.titleOpen" ng-click="eac.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                    <li ng-if="eac.titleOpen" ng-click="eac.cancelEdit('title')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify" ng-if="eac.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <h1 ng-if="!eac.titleOpen" ng-class="eac.edited.layout === 'article' ? 'article-wrapper-headline' : 'page-headline'">{{eac.edited.title}}</h1>
+                <textarea ng-if="eac.titleOpen" ng-model="eac.edited.title" ng-class="[eac.edited.layout === 'article' ? 'article-wrapper-headline' : 'headline',eac.edited.layout === 'article' ? 'article-wrapper-headline' : 'color-' + eac.edited.color]"></textarea>
+                
+                <div ng-class="eac.edited.layout === 'article' ? 'article-wrapper-content' : ''">
+                    <span ng-if="eac.edited.layout === 'article'" class="article-wrapper-content-date">Posted {{eac.edited.posted | amDateFormat: 'LL'}}</span>
+                    <ul class="toolbar">
+                        <li ng-if="!eac.textOpen" ng-click="eac.textOpen = true"><i class="fas fa-pencil-alt"></i> Edit Text</li>
+                        <li ng-if="!eac.textOpen && eac.textChanged" ng-click="eac.revertEdit('text')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="eac.textOpen" ng-click="eac.saveEdit('text')"><i class="fas fa-check"></i> Finish Editing Text</li>
+                        <li ng-if="eac.textOpen" ng-click="eac.cancelEdit('text')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="eac.textChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                        </div>
+                    </ul>
+                    <div ng-if="!eac.textOpen" class="article-wrapper-content-text" ng-bind-html="eac.edited.text"></div>
+                    <ng-ckeditor ng-if="eac.textOpen" ng-config="eac.ckeditorConfig" ng-model="eac.edited.text"></ng-ckeditor>
+                </div>
+            </div>
+            <div class="metaData" ng-show="$root.user.role === 'admin'">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!eac.descriptionOpen" ng-click="eac.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Article Description</li>
+                    <li ng-if="!eac.descriptionOpen && eac.descriptionChanged" ng-click="eac.revertEdit('description')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.descriptionOpen" ng-click="eac.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                    <li ng-if="eac.descriptionOpen" ng-click="eac.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton appears on the homepage and other places articles are listed.</div>
+                        <div class="toolbar-help-notify" ng-if="eac.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div ng-if="!eac.descriptionOpen">{{eac.edited.description}}</div>
+                <textarea ng-model="eac.edited.description" ng-if="eac.descriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!eac.urlOpen" ng-click="eac.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                    <li ng-if="!eac.urlOpen && eac.urlChanged" ng-click="eac.revertEdit('url')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.urlOpen" ng-click="eac.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                    <li ng-if="eac.urlOpen" ng-click="eac.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to the headline with dashes instead of spaces.</div>
+                        <div class="toolbar-help-notify" ng-if="eac.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div class="error" ng-if="eac.urlError">{{eac.urlError}}</div>
+                <div class="editUrl">https://kotm.org/article/<span ng-if="!eac.urlOpen">{{eac.edited.url}}</span><input ng-if="eac.urlOpen" type="text" ng-model="eac.edited.url" ng-change="eac.encodeUrl()"></div>
+                <ul class="toolbar">
+                    <li ng-if="!eac.newsOpen && eac.newsChanged" ng-click="eac.revertEdit('news')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.newsOpen" ng-click="eac.cancelEdit('news')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to off.</div>
+                        <div class="toolbar-help-notify" ng-if="eac.newsChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div class="editUrl"><label><input type="checkbox" ng-model="eac.edited.news" ng-true-value="1" ng-false-value="0" ng-change="eac.saveEdit('news')"> Display in News and Events section on homepage</label></div>
+                <ul class="toolbar">
+                    <li ng-if="!eac.metaDescriptionOpen" ng-click="eac.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                    <li ng-if="!eac.metaDescriptionOpen && eac.metaDescriptionChanged" ng-click="eac.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.metaDescriptionOpen" ng-click="eac.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                    <li ng-if="eac.metaDescriptionOpen" ng-click="eac.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="eac.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div ng-if="!eac.metaDescriptionOpen">{{eac.edited.meta.description}}</div>
+                <textarea ng-model="eac.edited.meta.description" ng-if="eac.metaDescriptionOpen"></textarea>
+                <ul class="toolbar">
+                    <li ng-if="!eac.metaTitleOpen" ng-click="eac.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                    <li ng-if="!eac.metaTitleOpen && eac.metaTitleChanged" ng-click="eac.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.metaTitleOpen" ng-click="eac.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                    <li ng-if="eac.metaTitleOpen" ng-click="eac.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                        <div class="toolbar-help-notify" ng-if="eac.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div class="editUrl">Title: <span ng-if="!eac.metaTitleOpen">{{eac.edited.meta.title}}</span><input ng-if="eac.metaTitleOpen" type="text" ng-model="eac.edited.meta.title"></div>
+                <ul class="toolbar">
+                    <li ng-if="!eac.metaKeywordsOpen" ng-click="eac.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                    <li ng-if="!eac.metaKeywordsOpen && eac.metaKeywordsChanged" ng-click="eac.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="eac.metaKeywordsOpen" ng-click="eac.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                    <li ng-if="eac.metaKeywordsOpen" ng-click="eac.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                        <div class="toolbar-help-notify" ng-if="eac.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                    </div>
+                </ul>
+                <div class="editUrl">Keywords: <span ng-if="!eac.metaKeywordsOpen">{{eac.edited.meta.keywords}}</span><input ng-if="eac.metaKeywordsOpen" type="text" ng-model="eac.edited.meta.keywords"></div>        
+                
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="eac.urlError && eac.displayErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh oh!</div>
+            <div class="error-popup-box-body">{{eac.urlError}}</div>
+            <div class="error-popup-box-footer"><button class="btn" ng-click="eac.displayErrorPopup = false">Ok, I'll fix it</button></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="main-container event-page top-border" ng-class="'accent-' + ec.event.color">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content event" role="main">
+            <a class="back-link" href="/events">&lsaquo; Back to Events</a>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 event-details">
+                    <div class="event-details-row">
+                        <div><h1 ng-class="'color-' + ec.event.color">{{ec.event.title}}</h1></div>
+                        <div class="event-details-row-date">
+                            <div class="event-details-row-date-box">
+                                <div class="event-details-row-date-box-day">{{ec.event.start | amDateFormat: 'D'}}</div>
+                                <div class="event-details-row-date-box-month">{{ec.event.start | amDateFormat: 'MMM'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div ng-bind-html="ec.event.description"></div>
+                    <a ng-if="ec.event.link" class="btn" ng-href="{{ec.event.link}}" ng-class="'bg-' + ec.event.color" target="_blank">{{ec.event.linkTitle}}</a>
+                    <div ng-if="ec.rsvpEnabled && ec.event.attendees > ec.event.responses && !ec.rsvpComplete" class="rsvp">
+                        <h3>{{ec.event.rsvpTitle}}</h3>
+                        <div>{{ec.event.rsvpDescription}}</div>
+                        <div ng-form="rsvpForm" class="rsvp-form">
+                            <input type="text" ng-model="ec.rsvp.name" placeholder="Name (Required)" required>
+                            <input type="email" ng-model="ec.rsvp.email" placeholder="Email Address (Required)" required>
+                            <textarea ng-model="ec.rsvp.notes" placeholder="Notes (optional)"></textarea>
+                            <label>How many people (including yourself) will be coming?</label>
+                            <select ng-model="ec.rsvp.attendingNum">
+                                <option value="1">1</option>
+                                <option value="2" ng-if="(ec.event.attendees - ec.event.responses) >= 2">2</option>
+                                <option value="3" ng-if="(ec.event.attendees - ec.event.responses) >= 3">3</option>
+                                <option value="4" ng-if="(ec.event.attendees - ec.event.responses) >= 4">4</option>
+                                <option value="5" ng-if="(ec.event.attendees - ec.event.responses) >= 5">5</option>
+                                <option value="6" ng-if="(ec.event.attendees - ec.event.responses) >= 6">6</option>
+                                <option value="7" ng-if="(ec.event.attendees - ec.event.responses) >= 7">7</option>
+                                <option value="8" ng-if="(ec.event.attendees - ec.event.responses) >= 8">8</option>
+                                <option value="9" ng-if="(ec.event.attendees - ec.event.responses) >= 9">9</option>
+                                <option value="10" ng-if="(ec.event.attendees - ec.event.responses) >= 10">10</option>
+                            </select>
+                            <button class="btn bg-red" ng-click="ec.sendRsvp(0)" ng-disabled="rsvpForm.$invalid">I can't make it</button><button class="btn bg-green" ng-click="ec.sendRsvp(1)" ng-disabled="rsvpForm.$invalid">I'll be there!</button>
+                        </div>
+                    </div>
+                    <div ng-if="ec.rsvpEnabled && ec.event.attendees <= ec.event.responses && !ec.rsvpComplete" class="rsvp">
+                        <h3>Sorry, this event is fully booked</h3>
+                    </div>
+                    <div ng-if="ec.rsvpComplete" class="rsvp">
+                        <h3 ng-if="ec.attending">See you there!</h3>
+                        <h3 ng-if="!ec.attending">Sorry, we'll miss you!</h3>
+                    </div>
+                </div>
+                <div class="col-sm-6 event-image">
+                    <img class="img-responsive" ng-src="/images/{{ec.event.image}}">
+                </div>
+            </div>
+            <div class="row event-location">
+                <div class="col-sm-12 col-md-6">
+                    <div class="event-location-label" ng-if="ec.event.end">Start</div>
+                    <div class="event-location-date"><i class="far fa-calendar-alt"></i>{{ec.event.start | amDateFormat: 'dddd, MMMM D'}} <span ng-if="!ec.event.allDay" class="event-location-date-time">{{ec.event.start | amDateFormat: '@ h:mm A'}}</span></div>
+                    <div class="event-location-label" ng-if="ec.event.end">End</div>
+                    <div class="event-location-date" ng-if="ec.event.end"><i class="far fa-calendar-alt"></i>{{ec.event.end | amDateFormat: 'dddd, MMMM D'}} <span ng-if="!ec.event.allDay" class="event-location-date-time">{{ec.event.end | amDateFormat: '@ h:mm A'}}</span></div>
+                    <div class="event-location-address" ng-if="ec.event.locationTitle"><i class="fas fa-map-marker-alt"></i>{{ec.event.locationTitle}}
+                        <span>{{ec.event.street1}}</span>
+                        <span ng-if="location.street2">{{ec.event.street1}}</span>
+                        <span>{{ec.event.city}}, {{ec.event.state}} {{ec.event.zip}}</span>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="event-location-description">{{ec.event.locationDescription}}</div>
+                </div>
+            </div>
+            <div class="row event-map">
+                <iframe
+                    width="100%"
+                    height="600"
+                    frameborder="0" style="border:0"
+                    ng-src="{{ec.googleMapsUrl}}" allowfullscreen>
+                </iframe>
+            </div>
+            <div></div>
+            <div></div>
+        </main>
+    </div>
+</div>

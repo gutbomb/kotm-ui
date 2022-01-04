@@ -1,0 +1,3 @@
+Sitemap: https://kotm.org/sitemap.xml
+User-agent: *
+Disallow:

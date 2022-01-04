@@ -1,0 +1,33 @@
+<div class="footer-container">
+    <div class="footer-top">
+        <div class="footer-group" ng-repeat="menu in $root.footer | orderBy: 'footerOrder'">
+            <h2>{{menu.title}}</h2>
+            <ul>
+                <li ng-repeat="item in menu.items | orderBy: 'itemOrder'"><a ng-href="{{item.url}}">{{item.title}}</a></li>
+            </ul>
+        </div>
+        <div class="footer-logo">
+            <img src="/images/footer-logo.png">
+            <div class="footer-social">
+                <a href="https://www.facebook.com/Kidsonthemove" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/kotm_utah/" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="http://www.youtube.com/user/kotmutah" class="main-nav-bottom-search-social-item" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="mailto:kids@kotm.org" class="main-nav-bottom-search-social-item"><i class="fas fa-envelope"></i></a>
+            </div>
+            <div class="footer-contact">
+                475 West 260 North<br>
+                Orem, UT 84057<br><br>
+                phone: 801.221.9930 ext 0<br>
+                fax: 801.221.0649<br>
+                email: <a href="mailto:kids@kotm.org">kids@kotm.org</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="copyright">&copy; {{pfc.copyrightYear}} Kids On The Move</div>
+        <div class="legal">
+            <a href="/article/privacy-policy">Privacy Policy</a> |
+            <a href="/article/legal">Legal</a>
+        </div>
+    </div>
+</div>

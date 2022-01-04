@@ -1,0 +1,35 @@
+<div class="main-container event-page top-border">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content event" role="main">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 event-details">
+                    <div class="event-details-row">
+                        <div><h1 ng-class="'color-' + ec.event.color">{{loc.location.title}}</h1></div>
+                    </div>
+                    <hr>
+                    <div ng-bind-html="loc.location.description"></div>
+                </div>
+                <div class="col-sm-6 event-image" ng-if="loc.location.image">
+                    <img class="img-responsive" ng-src="/images/{{loc.location.image}}">
+                </div>
+            </div>
+            <div class="row event-location" ng-if="loc.location.street1 || loc.location.city || loc.location.state">
+                <div class="col-sm-12 col-md-6">
+                    <div class="event-location-address"><i class="fas fa-map-marker-alt"></i>
+                        <span ng-if="loc.location.street1">{{loc.location.street1}}</span>
+                        <span ng-if="location.street2">{{loc.location.street1}}</span>
+                        <span ng-if="loc.location.city || loc.location.state">{{loc.location.city}}, {{loc.location.state}} {{loc.location.zip}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row event-map" ng-if="loc.location.street1">
+                <iframe
+                    width="100%"
+                    height="600"
+                    frameborder="0" style="border:0"
+                    ng-src="{{loc.googleMapsUrl}}" allowfullscreen>
+                </iframe>
+            </div>
+        </main>
+    </div>
+</div>

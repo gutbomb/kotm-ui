@@ -1,0 +1,78 @@
+.main-container.board-page {
+    border-top: 30px solid $green;
+    margin-bottom: 60px;
+    
+    .member, .member-mobile {
+        display: flex;
+        margin-top: 60px;
+
+        @media screen and (max-width: $phone) {
+            flex-direction: column;
+        }
+
+        &-text {
+
+            &.left {
+                text-align: left;
+                margin-left: 20px;
+
+                @media screen and (max-width: $phone) {
+                    text-align: initial;
+                    margin-left: 0;
+                }
+            }
+
+            &.right {
+                text-align: right;
+                margin-right: 20px;
+
+                @media screen and (max-width: $phone) {
+                    text-align: initial;
+                    margin-left: 0;
+                }
+            }
+            
+            &-title, &-subtitle {
+                text-transform: uppercase;
+                font-style: italic;
+            }
+    
+            &-subtitle {
+                color: $lightgray;
+            }
+    
+            &-description {
+                margin-top: 10px;
+            }
+        }
+        
+        &-image {
+            width: 200px;
+            img {
+                object-fit: cover;
+                width:200px;
+                height:200px;
+    
+                border-radius: 50%;
+
+                @media screen and (max-width: $phone) {
+                    margin-bottom: 10px;
+                }
+            }
+
+
+        }
+    }
+
+    .member {
+        @media screen and (max-width: $phone) {
+            display: none;
+        }
+    }
+
+    .member-mobile {
+        @media screen and (min-width: $phone) {
+            display: none;
+        }
+    }
+}

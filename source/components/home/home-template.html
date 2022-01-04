@@ -1,0 +1,45 @@
+<hero-image hero-id="1"></hero-image>
+<div class="main-container home-page">
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <div class="emergency-contact" ng-if="hc.homeContent.emergencyHeadline!==''">
+                <div class="emergency-contact">
+                    <h1 class="emergency-contact-header">{{hc.homeContent.emergencyHeadline}}</h1>
+                    <div class="emergency-contact-content" ng-bind-html="hc.homeContent.emergencyText"></div>
+                </div>
+            </div>
+            <h1>Our Programs</h1>
+            <div class="programs-grid">
+                <div class="programs-grid-item" ng-repeat="program in hc.programs" ng-class="{'active-program' : program.active}" ng-mouseenter="program.active = true" ng-mouseleave="program.active = false">
+                    <img ng-src="/images/{{program.homeImage}}">
+                    <span class="programs-grid-item-title" ng-class="'bg-' + program.color">{{program.name}}</span>
+                    <div class="programs-grid-item-content">
+                        <p>{{program.shortDescription}}</p>
+                        <a ng-href="/programs/{{program.link}}" class="btn" ng-class="'bg-' + program.color">Learn More</a> 
+                    </div>
+                </div>
+            </div>
+            <h1>News & Events</h1>
+            <div class="news-preview" ng-mouseenter="hc.mouseOnNews = true" ng-mouseleave="hc.mouseOnNews = false">
+                <div class="news-preview-inner" ng-repeat="news in hc.news" ng-show="news.active">
+                    <div class="news-preview-inner-image">
+                        <div class="img-wrap">
+                            <img ng-src="/images/{{news.image}}">
+                        </div>
+                        <!-- <div class="news-preview-inner-image-border"></div> -->
+                    </div>
+                    <div class="news-preview-inner-content">
+                        <span class="news-preview-inner-content-type">Featured Posts</span>
+                        <h2 class="news-preview-inner-content-headline">{{news.title}}</h2>
+                        <p class="news-preview-inner-content-text">{{news.description | limitTo: 400}}<span ng-if="news.description.length > 400">...</span></p>
+                        <a ng-href="/article/{{news.url}}" class="btn bg-red">Read More</a>
+                    </div>
+                    <div class="news-preview-inner-content-controls">
+                        <a href="#" ng-click="hc.changeNews('previous')" class="btn bg-green"><i class="fas fa-arrow-left"></i> Previous</a>
+                        <a href="#" ng-click="hc.changeNews('next')" class="btn bg-green">Next <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

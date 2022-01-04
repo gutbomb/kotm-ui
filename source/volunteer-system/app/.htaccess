@@ -1,0 +1,14 @@
+# disable directory browsing
+Options All -Indexes
+DirectoryIndex index.php
+# block access to all files but the main index.php files
+# i.e. funnel all traffic through the primary index files
+<Files ~ "\.php$">
+	Deny from all
+</Files>
+<Files ~ "index.php">
+	Allow from all
+</Files>
+<Files ~ "dbmigrate.php">
+	Allow from all
+</Files>

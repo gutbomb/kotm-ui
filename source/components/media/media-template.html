@@ -1,0 +1,37 @@
+<div class="main-container media-page top-border-green">
+    <main role="main">
+        <div class="results">
+            <h1>Media & Publications</h1>
+            <div class="search">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search" ng-model="mc.searchTerm" ng-change="mc.search()"><i class="search-bar-button icon-search" ng-if="mc.searchTerm === ''"></i><i class="search-bar-button close fas fa-times" ng-if="mc.searchTerm !== ''" ng-click="mc.closeSearch()"></i>
+                </div>
+            </div>
+            
+            <div class="results-list">
+                <div ng-repeat="category in mc.media" class="results-list-item">
+                    <div class="results-list-item-inner border-green">
+                        <div class="results-list-item-inner-image">
+                            <img ng-src="/images/{{category.image}}" class="img-responsive d-block mx-auto">
+                        </div>
+                        <div class="results-list-item-inner-details">
+                            <h2>{{category.headline}}</h2>
+                            <p>{{category.description}}</p>
+                            <button ng-click="category.archiveOpen = !category.archiveOpen" class="btn bg-green"><span  ng-if="!category.archiveOpen">View Archive</span><span  ng-if="category.archiveOpen">Close Archive</span></button>
+                            <div ng-repeat="file in (filteredData = (category.items | filter:mc.searchTerm)) | orderBy: '-date'" ng-if="category.archiveOpen">
+                                <div class="row document-list-item-year" ng-if="!mc.isYearSame(file.date, filteredData[$index-1].date)">
+                                    <div class="col-12">{{file.date | amDateFormat: 'YYYY'}}</div>
+                                </div>
+                                <div class="row document-list-item"  ng-click="mc.openDocument(file.filename)">
+                                    <div class="col-6 col-xl-7 document-list-item-title">{{file.title}}</div>
+                                    <div class="col-3 document-list-item-date">{{file.date | amDateFormat: 'MMMM D, YYYY'}}</div>
+                                    <div class="col-3 col-xl-2 document-list-item-action"><a href="/media/{{file.filename}}" class="btn bg-green" target="_blank">View</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

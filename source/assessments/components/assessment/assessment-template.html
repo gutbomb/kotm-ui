@@ -1,0 +1,154 @@
+<div ng-if="ac.message">
+    {{ac.message}}
+</div>
+<div ng-if="ac.error">
+    {{ac.error}}
+</div>
+<div class="row pt-3 pb-3">
+    <div class="col-sm-10">
+
+    </div>
+    <div class="col-sm-2">
+        <select ng-model="ac.homeResponse.client.language" class="form-control float-right" ng-change="ac.changeLanguage()">
+            <option value="en">English</option>
+            <option value="es">Espa&ntilde;ol</option>
+        </select>
+    </div>
+    
+</div>
+<div ng-if="!ac.error && !ac.message">
+    <div ng-if="ac.homeResponse.client.language==='en'">
+        <h2>Kids On The Move Official Health Questionnaire</h2>
+        <p><strong>{{ac.homeResponse.client.firstName}} {{ac.homeResponse.client.lastName}}</strong>, In regards to your in-home appointment with <strong>{{ac.homeResponse.staff.firstName}} {{ac.homeResponse.staff.lastName}}</strong> scheduled for <strong>{{ac.homeResponse.sessionDate | amDateFormat:ac.dateFormat}}</strong></p>
+        <p>For <strong><u>any</u></strong> person currently residing in or visiting your residence:</p>
+        <div class="row">
+            <div class="col-sm-12">
+                <ol>
+                    <li>
+                        <strong>Symptoms -</strong> I confirm that no one is currently exhibiting one or more of the following symptoms:
+                        <ul>
+                            <li>Fever (greater than 100F or 37.8C)</li>
+                            <li>Cough</li>
+                            <li>Shortness of breath or difficulty breathing</li>
+                            <li>New or unexplained body aches</li>
+                            <li>Sore throat</li>
+                            <li>Unexplained loss of taste or smell</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Close Contact -</strong> I confirm that no one has knowingly come into close contact (within 6 feet) with someone who has tested positive for COVID-19 in the past 10 days.
+                    </li>
+                    <li>
+                        <strong>Official Notification -</strong> l confirm that no one has been notified by a public health official in the past 10 days regarding diagnosis or possible exposure to COVID-19.
+                    </li>
+                    <li>
+                        <strong>I will monitor for 48 hrs -</strong> I confirm that I will notify my KOTM provider immediately if anyone in my household exhibits any of the six symptoms above over the next 48 hours.
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <p>These statements are true and correct to the best of my knowledge.</p>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="nodisc">
+                    <li><label><input type="radio" name="options" id="option1" ng-model="ac.affirm" autocomplete="off" ng-value="true" ng-change="ac.noAffirm=false"> True</label></li>
+                    <li><label><input type="radio" name="options" id="option2" ng-model="ac.affirm" autocomplete="off" ng-value="false" ng-change="ac.noAffirm=false"> False</label></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row pb-3 assessment">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" ng-disabled="ac.noAffirm" ng-click="ac.submit()" ng-if="ac.affirm"><span ng-class="ac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ac.loading">Submit</span></button>
+                <button class="btn btn-primary" ng-disabled="ac.noAffirm" ng-click="ac.submit()" ng-if="!ac.affirm" data-toggle="modal" data-target="#warning-modal"><span ng-class="ac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ac.loading">Submit</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div ng-if="ac.homeResponse.client.language==='es'">
+        <h2>Declaración del testimonio oficial de Kids On The Move</h2>
+        <p><strong>{{ac.homeResponse.client.firstName}} {{ac.homeResponse.client.lastName}}</strong>, con respecto a su cita en el hogar con <strong>{{ac.homeResponse.staff.firstName}} {{ac.homeResponse.staff.lastName}}</strong> planificada para el <strong>{{ac.displayDate | amDateFormat:ac.dateFormat}}</strong></p>
+        <p>Para  <strong><u>cualquier</u></strong> persona que actualmente viva en su residencia o la visite:</p>
+        <div class="row">
+          <div class="col-sm-12">
+              <ol>
+                  <li>
+                      <strong>Síntomas -</strong> confirmo que nadie presenta uno o más de los siguientes síntomas actualmente:
+                      <ul>
+                          <li>Fiebre (más de 100 °F o 37.8 °C)</li>
+                          <li>Tos</li>
+                          <li>Falta de aire o dificultad para respirar</li>
+                          <li>Dolores nuevos o sin explicación</li>
+                          <li>Dolor de garganta</li>
+                          <li>Pérdida inexplicable del sabor o del olor</li>
+                      </ul>
+                  </li>
+                  <li>
+                      <strong>Contacto cercano -</strong> confirmo que nadie ha estado en contacto cercano (dentro de 6 pies) con alguien que ha obtenido un resultado positivo por COVID-19 en los últimos 10 días.
+                  </li>
+                  <li>
+                      <strong>Aviso oficial -</strong> confirmo que nadie ha recibido una notificación de un oficial de salud pública en los últimos 10 días con respecto a un diagnóstico o a una posible exposición a la COVID-19.
+                  </li>
+                  <li>
+                      <strong>Voy a realizar un control por 48 horas -</strong> Confirmo que notificaré a mi proveedor de KOTM de inmediato si alguna persona de mi hogar presenta alguno de los seis síntomas mencionados en las próximas 48 horas.
+                  </li>
+              </ol>
+          </div>
+        </div>
+        <p>Estas declaraciones son verdaderas y correctas a mi leal saber y entender.</p>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="nodisc">
+                    <li><label><input type="radio" name="options" id="option1" ng-model="ac.affirm" autocomplete="off" ng-value="true" ng-change="ac.noAffirm=false"> verdadero</label></li>
+                    <li><label><input type="radio" name="options" id="option2" ng-model="ac.affirm" autocomplete="off" ng-value="false" ng-change="ac.noAffirm=false"> falso</label></li>
+                </ul>
+            </div>  
+        </div>
+        <div class="row pb-3 assessment">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" ng-disabled="ac.noAffirm" ng-click="ac.submit()" ng-if="ac.affirm"><span ng-class="ac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ac.loading">enviar</span></button>
+                <button class="btn btn-primary" ng-disabled="ac.noAffirm" ng-click="ac.submit()" ng-if="!ac.affirm" data-toggle="modal" data-target="#warning-modal"><span ng-class="ac.loading ? ['fa', 'fa-spinner', 'fa-spin'] : ''"></span><span ng-if="!ac.loading">enviar</span></button> 
+            </div>            
+        </div>
+    </div>
+    
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="warning-modal" ng-if="ac.homeResponse.client.language==='en'">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>You have selected false which means this appointment will be cancelled.  Are you sure?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ac.doSubmit()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" role="dialog" id="warning-modal" ng-if="ac.homeResponse.client.language==='es'">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">advertencia</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Seleccionó "falso", por lo que esta cita se cancelará.  ¿Está seguro?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">no</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="ac.doSubmit()">sí</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    

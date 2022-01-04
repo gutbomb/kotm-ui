@@ -1,0 +1,40 @@
+<h3>View Appointments<span ng-if="vac.staffView"> for {{vac.staff.firstName}} {{vac.staff.lastName}}</span></h3>
+<section class="appointments">
+    <div class="row table-header appheader">
+        <div ng-class="vac.staffView ? 'col-sm-3' : 'col-sm-2'">Time</div>
+        <div ng-if="!vac.staffView" class="col-sm-1">Staff</div> 
+        <div class="col-sm-2">Client</div>
+        <div class="col-sm-3">Response</div>
+        <div class="col-sm-3">Notes</div>
+        <div class="col-sm-1"><span class="float-right">Edit</span></div>
+    </div>
+    <div class="row pb-3">
+        <div class="alert alert-success col-sm-12 dissolve" ng-show="vac.success!==''">{{vac.success}}</div>
+        <div class="alert alert-danger col-sm-12 dissolve" ng-show="vac.error!==''">{{vac.error}}</div>
+    </div>
+    <div class="row session" ng-repeat="response in vac.homeResponses">
+        <div ng-class="vac.staffView ? 'col-sm-3' : 'col-sm-2'">{{response.sessionDate | amDateFormat:vac.dateFormat}}</div>
+        <div ng-if="!vac.staffView" class="col-sm-1">{{response.staff.firstName}} {{response.staff.lastName}}</div>
+        <div class="col-sm-2">{{response.client.firstName}} {{response.client.lastName}}</div>
+        <div class="col-sm-3">
+            <span ng-if="!vac.homeResponses[$index].edit">
+                <i ng-if="response.responseDate" ng-class="!response.affirm ? ['text-danger', 'fa', 'fa-times-circle'] : ['text-success', 'fa', 'fa-check-circle']"></i>
+                <span>{{response.responseDate | amDateFormat:vac.dateFormat}}</span>
+            </span>
+            <select class="form-control" ng-model="vac.editAffirm" ng-if="vac.homeResponses[$index].edit">
+                <option ng-value="''" value="">No Change</option>
+                <option ng-value="true" value="true">True</option>
+                <option ng-value="false" value="false">False</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <span ng-if="!vac.homeResponses[$index].edit">{{response.notes}}</span>
+            <textarea ng-if="vac.homeResponses[$index].edit" ng-model="vac.editNotes" class="form-control">{{response.notes}}</textarea>
+        </div>
+        <div class="col-sm-1 float-right"><span class="editbutton float-right">
+            <i class="fa fa-pencil" ng-if="!vac.homeResponses[$index].edit" ng-click="vac.startEdit($index)"></i>
+            <i class="fa" ng-class="vac.sessionLoading ? ['fa-spinner', 'fa-spin'] : 'fa-save'" ng-if="vac.homeResponses[$index].edit" ng-click="vac.saveEdit($index)"></i>
+            <i class="fa fa-times" ng-if="vac.homeResponses[$index].edit" ng-click="vac.cancelEdit($index)"></i>
+        </span></div>
+    </div>
+</section>

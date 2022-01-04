@@ -1,0 +1,30 @@
+<hero-image class="program" hero-id="26"></hero-image>
+<div class="main-container board-page">
+    <main>
+        <h1 class="color-green">{{bc.board.headline}}</h1>
+        <div class="board-description" ng-bind-html="bc.board.description"></div>
+        <div class="member" ng-repeat="member in bc.board.members | orderBy:'memberOrder'">
+            <div class="member-image"  ng-if="$index % 2 === 1">
+                <img ng-src="/images/{{member.image}}" ng-if="member.image">
+            </div>
+            <div class="member-text" ng-class="$index % 2 ? 'left': 'right'">
+                <h3>{{member.name}}</h3>
+                <span class="member-text-title" ng-if="member.title">{{member.title}} - </span><span class="member-text-subtitle">{{member.subtitle}}</span>
+                <div class="member-text-description" ng-bind-html="member.description"></div>
+            </div>
+            <div class="member-image" ng-if="$index % 2 !== 1">
+                <img ng-src="/images/{{member.image}}" ng-if="member.image">
+            </div>
+        </div>
+        <div class="member-mobile" ng-repeat="member in bc.board.members | orderBy:'memberOrder'">
+            <div class="member-image">
+                <img ng-src="/images/{{member.image}}" ng-if="member.image">
+            </div>
+            <div class="member-text">
+                <h3>{{member.name}}</h3>
+                <span class="member-text-title" ng-if="member.title">{{member.title}} - </span><span class="member-text-subtitle">{{member.subtitle}}</span>
+                <div class="member-text-description" ng-bind-html="member.description"></div>
+            </div>
+        </div>
+    </main>
+</div>

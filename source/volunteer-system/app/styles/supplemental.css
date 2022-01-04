@@ -1,0 +1,360 @@
+/* --------------- PAGE SPECIFIC STYLES --------------- */
+
+table.account {
+	text-align: left;
+	border-width: 1px;
+	border-spacing: 5px;
+	border-style: solid;
+	width: 618px;
+	padding-left: 23px;
+	padding-right: 23px;
+}
+
+table.accountAgreements {
+	text-align: left;
+	border-width: 1px;
+	border-spacing: 5px;
+	border-style: solid;
+	width: 618px;
+	padding-top: 10px;
+}
+
+table.accountAgreements td.narrow{
+	width: 21px;
+	padding-left: 20px;
+}
+
+table.accountAgreements td.wide{
+	padding-left: 5px;
+	padding-right: 20px;
+	padding-top: 0px;
+	padding-bottom: 10px;
+}
+
+table.account-top {
+	border-bottom: none;
+	padding-top: 20px;
+}
+
+table.account-mid {
+	border-top: none;
+	border-bottom: none;
+	padding-top: 18px;
+}
+
+table.account-bottom {
+	border-top: none;
+	padding-top: 18px;
+	padding-bottom: 20px;
+}
+
+td.accountLeft {
+	width: 123px;
+	padding-right: 15px;
+}
+
+table.accountSubmit {
+	text-align: left;
+	border-width: 1px;
+	border-spacing: 5px;
+	border-style: none;
+	width: 618px;
+}
+
+table.accountSubmit td.accountLeft {
+	width: 150px;
+	padding-left: 25px;
+}
+
+table.passwdReset th {
+	padding: 4px;
+}
+
+table.passwdReset td {
+	padding: 4px;
+}
+
+table.changeUsername th {
+	padding: 4px;
+}
+
+table.changeUsername td {
+	padding: 4px;
+}
+
+table.changePassword th {
+	padding: 4px;
+}
+
+table.changePassword td {
+	padding: 4px;
+}
+
+table.adminManageAccts {
+	border-width: 1px;
+	border-spacing: 0px;
+	border-style: solid;
+	border-collapse: collapse;
+	background-color: white;
+	width: 618px;
+}
+
+table.adminManageAccts th {
+	border-width: 1px;
+	padding: 4px 10px 4px 10px;
+	border-style: solid;
+	background-color: white;
+	-moz-border-radius: 0px;
+}
+
+table.adminManageAccts td {
+	border-width: 1px;
+	padding: 4px 10px 4px 10px;
+	border-style: solid;
+	background-color: white;
+	-moz-border-radius: 0px;
+}
+
+table.adminManageAcctsSearch th {
+	padding: 4px;
+}
+
+table.adminManageAcctsSearch td {
+	padding: 4px;
+}
+
+table.adminManageVolunteerDates {
+	border-collapse: collapse;
+	background-color: white;
+	width: 618px;
+}
+
+table.adminManageVolunteerDates tr {
+	border-width: 1px;
+	border-style: solid;
+	-moz-border-radius: 0px;
+	text-align: center;
+}
+
+table.adminManageVolunteerDates th {
+	padding: 4px;
+}
+
+table.adminManageVolunteerDates td {
+	padding: 4px;
+}
+
+table.adminVolunteerDateWrapper {
+	border-collapse: collapse;
+}
+
+table.adminVolunteerDateWrapper td {
+	vertical-align: top;
+}
+
+table.adminAddVolunteerDate {
+	border-collapse: collapse;
+}
+
+table.adminAddVolunteerDate th {
+	padding: 4px 4px 4px 0px;
+}
+
+table.adminAddVolunteerDate td {
+	padding: 4px 4px 4px 0px;
+}
+
+table.adminManageVolunteerDate {
+	text-align: left;
+	border-width: 1px;
+	border-spacing: 5px;
+	border-style: solid;
+	width: 618px;
+	padding-left: 25px;
+	padding-right: 25px;
+}
+
+table.adminManageVolunteerDate td {
+	vertical-align: top;
+}
+
+td.adminManageVolunteerDateLeft {
+	width: 150px;
+}
+
+table.adminServicesInformation {
+	text-align: left;
+	border-width: 1px;
+	border-spacing: 5px;
+	border-style: solid;
+	width: 330px;
+}
+
+table.adminUpdateVolunteers th {
+	text-align: left;
+	padding: 4px;
+}
+
+table.adminUpdateVolunteers td {
+	text-align: left;
+	padding: 4px;
+}
+
+table.myVolunteerSchedule, table.adminManageVolunteers {
+	border-spacing: 0px;
+	border-collapse: collapse;
+	background-color: white;
+	width: 618px;
+}
+
+table.myVolunteerSchedule tr, table.adminManageVolunteers tr {
+	border-width: 1px;
+	border-style: solid;
+}
+
+table.myVolunteerSchedule th, table.myVolunteerSchedule td, table.adminManageVolunteers th, table.adminManageVolunteers td {
+	padding: 8px 10px 8px 10px;
+	background-color: white;
+	-moz-border-radius: 0px;
+	text-align: center;
+}
+
+table.adminOrgParticipationReportsSelect td {
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+input.signup-button {
+	padding: 8px 14px;
+	font-size: 13px;
+	border-radius: 4px;
+	width: 80px;
+}
+
+input.signup-button-disabled, input.signup-button-disabled:focus, input.signup-button-disabled:hover, input.signup-button-disabled:active {
+	background-color: #c0e2f6;
+	cursor: auto;
+}
+
+td.signup-left-col {
+	padding-left: 15px !important;
+}
+
+td.signup-right-col {
+	padding-right: 20px !important;
+}
+
+tr.signup-event-row > td {
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+
+tr.signup-special-event-row {
+	border-bottom: 0px !important;
+}
+
+tr.signup-special-event-row > td {
+	padding-top: 15px;
+	padding-bottom: 0px;
+	border-bottom: 0px !important;
+}
+
+tr.special-event-details-row {
+	border-top: 0px !important;
+}
+
+tr.special-event-details-row > td {
+	padding: 0px 18px 15px 18px;
+	margin-top: 0px;
+}
+
+tr.special-event-details-row > td > div {
+	width: 100%;
+}
+
+tr.special-event-details-row > td > div > div {
+	text-align: left;
+	vertical-align: top;
+	background-color: #f6fbfe;
+	display: table-cell;
+	border-left: 2px solid #ffffff;
+	border-right: 2px solid #ffffff;
+	border-top: 10px solid #fff;
+	padding: 10px;
+}
+
+span.signup-table-sort-header {
+	position: relative;
+	top: -2px;
+	left: 9px;
+}
+
+span.signup-table-sort-header-icon {
+	position: relative;
+	top: -1px;
+	left: -3px;
+	padding: 0px 9px 8px 8px;
+	font-size: 21px;
+	color: #fcb043;
+}
+
+span.signup-table-sort-header-clickable {
+	cursor: pointer;
+	color: #636363;
+}
+
+span.signup-table-sort-header-clickable:hover {
+	color: #fcb043;
+}
+
+span.signup-table-sort-header-clickable:active {
+	color: #fdce8b;
+}
+
+span.signup-min-age-note {
+	font-size: 12px;
+	font-weight: normal;
+	font-style: italic;
+}
+
+span.agreements-table-bullet-icon {
+	margin-right: 1px;
+	margin-top: -1px;
+	font-size: 16px;
+}
+
+table.se-details-options td {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.error {
+	color: red;
+}
+
+.error a {
+	font-size: inherit;
+}
+
+input[type=submit].disabled {
+	background-color: lightgrey;
+	cursor: initial;
+	color: grey;
+}
+
+input[type=tel] {
+	width: 80px;
+}
+
+.faqQuestionBlock {
+	margin-bottom: 28px;
+}
+
+.faqQuestion {
+	font-family: "Memphis";
+	font-weight: 800;
+}
+
+.faqAnswer p {
+	margin: 0 0 10px 0;
+}

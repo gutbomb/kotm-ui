@@ -1,0 +1,235 @@
+.my-kotm {
+    &-header {
+        height: 80px;
+        background-color: $accent;
+        padding: 24px 30px;
+
+        &-title {
+            font-size: 24px;
+            font-weight: bold;
+            float: left;
+            text-transform: uppercase;
+
+            @media screen and (max-width: $phone) {
+                font-size: 18px;
+            }
+        }
+
+        &-icons {
+            font-size: 24px;
+            text-align: right;
+            list-style: none;
+
+            li {
+                display: inline;
+                margin-left: 15px;
+                position: relative;
+
+                a {
+                    text-decoration: none;
+                    color: $black;
+                    
+
+                    &:hover {
+                        color: $gray;
+                    }
+
+                    
+                }
+
+                .notification-badge {
+                    top: -5px;
+                    right: -5px;
+                }
+            }
+
+            @media screen and (max-width: $phone) {
+                font-size: 18px;
+            }
+        }
+
+        @media screen and (max-width: $phone) {
+            height: 40px;
+            padding: 8px 15px;
+        }
+    }
+
+    &-main {
+        padding: 0;
+        display: flex;
+
+        &-sidebar {
+            background-color: $lightgray;
+            width: 20%;
+            text-align: center;
+            font-size: 14px;
+            padding: 30px;
+
+            span {
+                margin: 3px 0;
+                display: block;
+            }
+
+            &-icon {
+                font-size: 80px;
+                margin-bottom: 8px;
+
+                @media screen and (max-width: $phone) {
+                    float: left;
+                    margin-right: 20px;
+                }
+            }
+
+            &-name {
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            &-notifications {
+                padding-top: 10px;
+
+                &-item {
+                    margin: 10px;
+                    font-style: italic;
+
+                    &-text {
+                        color: $red;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            @media screen and (max-width: $phone) {
+                width: 100%;
+                text-align: left;
+            }
+        }
+
+        &-body {
+            width: 80%;
+            padding: 0;
+
+            &-search {
+                padding: 30px 30px 0 30px;
+                text-align: right;
+                position: relative;
+                font-size: 18px;
+
+                &-button {
+                    position: absolute;
+                    top: 32px;
+                    right: 30px;
+                    color: $gray;
+                }
+
+                input[type=text] {
+                    background-color: white;
+                    @media screen and (max-width: $phone) {
+                        width: 100%;
+                    }
+                }
+
+                @media screen and (max-width: $phone) {
+                    padding: 30px 15px 15px 15px;
+                }
+            }
+
+            &-tiles {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 0;
+    
+                &-item {
+                    border: 1px solid $lightgray;
+                    border-bottom: 16px solid;
+                    position: relative;
+                    flex-basis: calc(50% - 45px);
+                    height: 200px;
+                    margin: 30px;
+                    overflow: hidden;
+                    cursor: pointer;
+                    text-align: center;
+                    padding: 30px;
+                    font-size: 40px;
+
+                    &-icon {
+                        position: relative;
+                        text-align: center;
+
+                        .notification-badge {
+                            top: 4px;
+                            right: calc(50% - 30px);
+                        }
+                    }
+
+                    
+
+                    &.inboxtile {
+                        border-bottom-color: $orange;
+                        margin-right: 15px;
+                        margin-bottom: 15px;
+
+                        i {
+                            color: $orange;
+                        }
+                    }
+
+                    &.billingtile {
+                        border-bottom-color: $green;
+                        margin-left: 15px;
+                        margin-bottom: 15px;
+
+                        i {
+                            color: $green;
+                        }
+                    }
+
+                    &.scheduletile {
+                        border-bottom-color: $blue;
+                        margin-right: 15px;
+                        margin-top: 15px;
+
+                        i {
+                            color: $blue;
+                        }
+                    }
+
+                    &.accounttile {
+                        border-bottom-color: $red;
+                        margin-left: 15px;
+                        margin-top: 15px;
+
+                        i {
+                            color: $red;
+                        }
+                    }
+
+                    &-title {
+                        display: block;
+                        font-weight: bold;
+                        margin-top: -16px;
+                    }
+
+                    &-links {
+                        font-size: 16px;
+                    }
+                    
+                    @media screen and (max-width: $phone) {
+                        &.inboxtile, &.billingtile, &.scheduletile, &.accounttile {
+                            margin: 15px;
+                        }
+
+                        flex-basis: 100%;
+                    }
+                }
+            }
+            
+            @media screen and (max-width: $phone) {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: $phone) {
+            flex-direction: column;
+        }
+    }
+}

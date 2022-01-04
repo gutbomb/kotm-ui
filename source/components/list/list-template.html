@@ -1,0 +1,30 @@
+<hero-image class="program" hero-id="lic.list.heroId" ng-if="lic.list.heroId"></hero-image>
+<div class="main-container list-page" ng-class="lic.list.heroId ? '' : 'top-border-' + lic.list.color">
+    <main role="main">
+        <div class="results">
+            <h1>{{lic.list.title}}</h1>
+            <p ng-bind-html="lic.list.description"></p>
+            <div class="results-list">
+                <div ng-repeat="page in lic.list.items" class="results-list-item">
+                    <div class="results-list-item-inner" ng-class="'border-' + page.color">
+                        <div class="results-list-item-inner-date-box" ng-if="page.type === 'event'">
+                            <div class="results-list-item-inner-date-box-day">{{page.start | amDateFormat: 'D'}}</div>
+                            <div class="results-list-item-inner-date-box-month">{{page.start | amDateFormat: 'MMM'}}</div>
+                        </div>
+                        <div class="results-list-item-inner-image">
+                            <img ng-src="/images/{{page.image}}" class="img-responsive d-block mx-auto">
+                        </div>
+                        <div class="results-list-item-inner-details">
+                            <h2>{{page.title}}</h2>
+                            <div ng-if="page.type === 'event'">
+                                <i class="far fa-calendar-alt"></i> <span class="results-list-item-inner-details-date">{{page.start | amDateFormat: 'dddd, MMMM D @ h:mm A'}}</span>
+                            </div>
+                            <p>{{page.description}}</p>
+                            <a ng-href="{{page.url}}" class="btn" ng-class="'bg-' + page.color">View <span ng-if="page.type === 'event'">Event</span><span ng-if="page.type !== 'event'">Page</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,265 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<div class="main-container form-page top-border admin-page" ng-class="'accent-' + efc.edited.color">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help" ng-if="efc.staged && $root.user.role === 'editor'">Page submitted for approval {{efc.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}}</span>
+        <span class="toolbar-help" ng-if="efc.staged && $root.user.role === 'admin'">Page submitted for approval {{efc.stagedDate | amDateFormat: 'MMM D YYYY h:mm a'}} by {{efc.stagedFirstName}} {{efc.stagedLastName}}</span>
+        <li ng-if="efc.emailSubjectChanged || efc.recipientsChanged || efc.successMessageChanged || efc.successTitleChanged || efc.submitChanged || efc.formChanged || efc.colorChanged || efc.descriptionChanged || efc.urlChanged || efc.titleChanged" ng-click="efc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="efc.emailSubjectChanged || efc.recipientsChanged || efc.successMessageChanged || efc.successTitleChanged || efc.submitChanged || efc.formChanged || efc.colorChanged || efc.descriptionChanged || efc.urlChanged || efc.titleChanged" ng-click="efc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="row flex-xl-nowrap form-body">
+        <main class="col-12 bd-content" role="main">
+            <form name="mainForm" class="form" ng-if="!efc.success && !efc.error">
+                <div class="form-header">
+                    <ul class="toolbar">
+                        <li ng-if="!efc.colorOpen" ng-click="efc.colorOpen = true"><i class="fas fa-palette"></i> Select Accent Color</li>
+                        <li ng-if="efc.colorOpen" ng-click="efc.colorOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-if="!efc.titleOpen" ng-click="efc.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Title</li>
+                        <li ng-if="!efc.titleOpen && efc.titleChanged" ng-click="efc.cancelEdit('title')"><i class="fas fa-undo"></i> Undo Title Changes</li>
+                        <li ng-if="!efc.descriptionOpen" ng-click="efc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                        <li ng-if="!efc.descriptionOpen && efc.descriptionChanged" ng-click="efc.cancelEdit('description')"><i class="fas fa-undo"></i> Undo Description Changes</li>
+                        <li ng-if="efc.titleOpen" ng-click="efc.saveEdit('title')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+                        <li ng-if="efc.titleOpen" ng-click="efc.cancelEdit('title')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-if="efc.descriptionOpen" ng-click="efc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+                        <li ng-if="efc.descriptionOpen" ng-click="efc.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        <li ng-click="efc.addSection()"><i class="fas fa-plus"></i> Add Section</li>
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="efc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                        </div>
+                    </ul>
+                    <div ng-if="efc.colorOpen" class="color-gallery">
+                        <div class="color-row bg-red" ng-click="efc.selectColor('red')">Red</div>
+                        <div class="color-row bg-purple" ng-click="efc.selectColor('purple')">Purple</div>
+                        <div class="color-row bg-green" ng-click="efc.selectColor('green')">Green</div>
+                        <div class="color-row bg-orange" ng-click="efc.selectColor('orange')">Orange</div>
+                        <div class="color-row bg-teal" ng-click="efc.selectColor('teal')">Teal</div>
+                        <div class="color-row bg-blue" ng-click="efc.selectColor('blue')">Blue</div>
+                        <div class="color-row bg-gray" ng-click="efc.selectColor('gray')">Gray</div>
+                    </div>
+                    <h1 ng-if="!efc.titleOpen">{{efc.edited.title}}</h1>
+                    <input ng-class="'accent-' + efc.edited.color" ng-if="efc.titleOpen" type="text" ng-model="efc.edited.title">
+                </div>
+                <div class="form-body">
+                    <div ng-bind-html="efc.edited.description" ng-if="!efc.descriptionOpen"></div>
+                    <ng-ckeditor ng-if="efc.descriptionOpen" ng-config="efc.ckeditorConfig" ng-model="efc.edited.description"></ng-ckeditor>
+                    <div class="edit-section" ng-repeat="section in efc.edited.sections | orderBy: 'order'" ng-if="!section.deleted">
+                        <hr>
+                        <div class="spacer" id="S{{section.id}}"></div>
+                        <ul class="toolbar section">
+                            <li ng-if="!section.titleOpen" ng-click="section.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Section Title</li>
+                            <li ng-if="!section.titleOpen && section.titleChanged" ng-click="efc.cancelEdit('sectionTitle', section.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                            <li ng-if="section.titleOpen" ng-click="efc.saveEdit('sectionTitle', section.id)"><i class="fas fa-check"></i> Finish Editing Section Title</li>
+                            <li ng-if="section.titleOpen" ng-click="efc.cancelEdit('sectionTitle', section.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                            <li ng-click="efc.deleteSectionWarning(section.id)"><i class="fas fa-trash"></i> Delete Section</li>
+                            <li ng-click="efc.addField(section.id)"><i class="fas fa-plus"></i> Add Field</li>
+                            <li ng-if="section.order !== 0" ng-click="efc.moveSection('up', section.order, section.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                            <li ng-if="section.order !== (efc.edited.sections.length - 1)" ng-click="efc.moveSection('down', section.order, section.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                            
+                            <div class="toolbar-help">
+                                <div class="toolbar-help-notify" ng-if="efc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                            </div>
+                        </ul>
+                        <h2 ng-if="section.title && !section.titleOpen">{{section.title}}</h2>
+                        <h2 ng-if="!section.title && !section.titleOpen">(No Title - will display as blank on live form)</h2>
+                        <input type="text" ng-if="section.titleOpen" ng-model="section.title">
+                        <div class="edit-field" ng-repeat="field in section.fields | orderBy: 'order'" ng-if="!field.deleted">
+                            <div class="spacer" id="F{{field.id}}"></div>
+                            <ul class="toolbar">
+                                <li ng-if="!field.titleOpen" ng-click="field.titleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Field Title</li>
+                                <li ng-if="!field.titleOpen && field.titleChanged" ng-click="efc.cancelEdit('fieldTitle', section.id, field.id)"><i class="fas fa-undo"></i> Undo Changes</li>
+                                <li ng-if="field.titleOpen" ng-click="efc.saveEdit('fieldTitle', section.id, field.id)"><i class="fas fa-check"></i> Finish Editing Field Title</li>
+                                <li ng-if="field.titleOpen" ng-click="efc.cancelEdit('fieldTitle', section.id, field.id)"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-if="!field.typeOpen" ng-click="field.typeOpen = true"><i class="fas fa-keyboard"></i> Edit Field Type</li>
+                                <li ng-if="field.typeOpen" ng-click="efc.saveEdit('fieldType', section.id, field.id)"><i class="fas fa-check"></i> Finish Editing Field Type</li>
+                                <li ng-if="field.typeOpen" ng-click="field.typeOpen = false"><i class="fas fa-ban"></i> Cancel Editing</li>
+                                <li ng-click="efc.deleteFieldWarning(section.id, field.id)"><i class="fas fa-trash"></i> Delete Field</li>
+                                <li ng-if="field.order !== 0" ng-click="efc.moveField('up', field.order, section.id, field.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                                <li ng-if="field.order !== (section.fields.length - 1)" ng-click="efc.moveField('down', field.order, section.id, field.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                                
+                                <div class="toolbar-help">
+                                    <div class="toolbar-help-notify" ng-if="efc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                                </div>
+                            </ul>
+                            <div ng-if="field.typeOpen" class="color-gallery">
+                                <div class="color-row" ng-click="efc.selectType('text', section.id, field.id)"><i class="far fa-keyboard"></i> Text Input</div>
+                                <div class="color-row" ng-click="efc.selectType('textarea', section.id, field.id)"><i class="far fa-keyboard"></i> Large Text Input</div>
+                                <div class="color-row" ng-click="efc.selectType('tel', section.id, field.id)"><i class="fas fa-phone-alt"></i> Phone Input</div>
+                                <div class="color-row" ng-click="efc.selectType('email', section.id, field.id)"><i class="far fa-envelope"></i> Email Input</div>
+                                <div class="color-row" ng-click="efc.selectType('radio', section.id, field.id)"><i class="far fa-check-circle"></i> Single Choice Checkbox</div>
+                                <div class="color-row" ng-click="efc.selectType('checkbox', section.id, field.id)"><i class="far fa-check-square"></i> Multiple Choice Checkbox</div>
+                                <div class="color-row" ng-click="efc.selectType('select', section.id, field.id)"><i class="far fa-caret-square-down"></i> Dropdown</div>
+                                <div class="color-row" ng-click="efc.selectType('date', section.id, field.id)"><i class="far fa-calendar"></i> Datepicker</div>
+                                <div class="color-row" ng-click="efc.selectType('file', section.id, field.id)"><i class="far fa-file"></i> File Upload</div>
+                            </div>
+                            <label ng-if="!field.titleOpen">{{field.title}}</label>
+                            <input type="text" ng-if="field.titleOpen" ng-model="field.title">
+                            <span class="edit-required">Required? <input type="checkbox" ng-model="field.required" ng-checked="field.required" ng-change="efc.formChanged = true"></span>
+                            <ul class="toolbar item" ng-if="field.type === 'radio' || field.type === 'checkbox' || field.type === 'select'">
+                                <li ng-click="efc.addItem(section.id, field.id)"><i class="fas fa-plus"></i> Add Option</li>
+                            </ul>
+                            <input type="text" ng-model="field.value" ng-if="field.type==='text'" ng-required="field.required" placeholder="text input">
+                            <input type="tel" ng-model="field.value" ng-if="field.type==='tel'" ng-required="field.required" placeholder="telephone number input">
+                            <input type="email" ng-model="field.value" ng-if="field.type==='email'" ng-required="field.required" placeholder="email input">
+                            <div class="edit-options" ng-if="field.type==='radio' || field.type==='checkbox' || field.type==='select'" ng-class="field.type==='select' ? 'edit-options-dropdown' : ''">
+                                <div ng-repeat="item in field.items | orderBy: 'order'" ng-class="field.type==='select' ? 'edit-options-dropdown-item' : ''" ng-if="!item.deleted">
+                                    <input ng-if="field.type==='radio'" type="radio" ng-model="field.value" ng-value="item" ng-required="field.required && !field.value">
+                                    <input ng-if="field.type==='checkbox'" type="checkbox" ng-model="item.value" ng-value="item.value">
+                                    <span ng-if="!item.titleOpen">{{item.title}}</span>
+                                    <input type="text" ng-if="item.titleOpen" ng-model="item.title">
+                                    <i ng-if="!item.titleOpen" class="fas fa-pencil-alt" ng-click="item.titleOpen = true"></i>
+                                    <i ng-if="item.titleOpen" class="fas fa-check" ng-click="efc.saveEdit('itemTitle', section.id, field.id, item.id)"></i>
+                                    <i ng-if="item.titleOpen" class="fas fa-ban" ng-click="efc.cancelEdit('itemTitle', section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen" class="fas fa-trash" ng-click="efc.deleteItemWarning(section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen && item.order !== 0" class="fas fa-arrow-up" ng-click="efc.moveItem('up', item.order, section.id, field.id, item.id)"></i>
+                                    <i ng-if="!item.titleOpen && item.order !== (field.items.length - 1)" class="fas fa-arrow-down" ng-click="efc.moveItem('down', item.order, section.id, field.id, item.id)"></i>
+                                </div>
+                            </div>
+                            <div moment-picker="field.value" max-view="day" format="MM/DD/YYYY" today="true" locale="en-US" ng-if="field.type==='date'">datepicker {{field.value | amDateFormat: 'MM/DD/YYYY'}}</div>
+                            <div ng-if="field.type==='file'"><input type="file" ng-model="field.value" form-upload ng-change="efc.uploadFile(section.id, field.id)"> <i class="fas fa-spinner fa-spin" ng-if="efc.uploading"></i></div>
+                            <div ng-if="field.type==='uploadFile'">{{field.value}} <i class="fas fa-trash" ng-click="efc.removeFile(section.id, field.id)"></i></div>
+                            <textarea ng-if="field.type==='textarea'" ng-model="field.value"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <ul class="toolbar">
+                        <li ng-if="!efc.submitOpen" ng-click="efc.submitOpen = true"><i class="fas fa-pencil-alt"></i> Edit Submit Button</li>
+                        <li ng-if="!efc.submitOpen && efc.submitChanged" ng-click="efc.cancelEdit('submit')"><i class="fas fa-undo"></i> Undo Changes</li>
+                        <li ng-if="efc.submitOpen" ng-click="efc.saveEdit('submit')"><i class="fas fa-check"></i> Finish Editing Submit Button</li>
+                        <li ng-if="efc.submitOpen" ng-click="efc.cancelEdit('submit')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                        
+                        <div class="toolbar-help">
+                            <div class="toolbar-help-notify" ng-if="efc.titleChanged"><i class="fas fa-check"></i> Changes saved and ready to <span ng-if="$root.user.role === 'admin'">publish</span><span ng-if="$root.user.role === 'editor'">submit for approval</span></div>
+                        </div>
+                    </ul>
+                    <button ng-if="!efc.submitOpen" class="btn" ng-click="efc.submitForm()" ng-disabled="mainForm.$invalid"><span ng-if="!efc.submitting">{{efc.edited.submit}}</span><span ng-if="efc.submitting"><i class="fas fa-spinner fa-spin"></i></span></button>
+                    <div ng-if="efc.submitOpen" class="btn"><input type="text" ng-model="efc.edited.submit"></div>
+                </div>
+            </form>
+
+            <div class="metaData">
+                <h2>Meta Data</h2>
+                <ul class="toolbar">
+                    <li ng-if="!efc.urlOpen" ng-click="efc.urlOpen = true"><i class="fas fa-pencil-alt"></i> Edit URL</li>
+                    <li ng-if="!efc.urlOpen && efc.urlChanged" ng-click="efc.cancelEdit('url')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="efc.urlOpen" ng-click="efc.saveEdit('url')"><i class="fas fa-check"></i> Finish Editing URL</li>
+                    <li ng-if="efc.urlOpen" ng-click="efc.cancelEdit('url')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This defaults to the form title with dashes instead of spaces.</div>
+                        <div class="toolbar-help-notify" ng-if="efc.urlChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="error" ng-if="efc.urlError">{{efc.urlError}}</div>
+                <div class="editUrl">https://kotm.org/form/<span ng-if="!efc.urlOpen">{{efc.edited.url}}</span><input ng-if="efc.urlOpen" type="text" ng-model="efc.edited.url" ng-change="efc.encodeUrl()"></div>
+
+                <ul class="toolbar">
+                    <li ng-if="!efc.emailSubjectOpen" ng-click="efc.emailSubjectOpen = true"><i class="fas fa-pencil-alt"></i> Edit Email Subject</li>
+                    <li ng-if="!efc.emailSubjectOpen && efc.emailSubjectChanged" ng-click="efc.cancelEdit('emailSubject')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="efc.emailSubjectOpen" ng-click="efc.saveEdit('emailSubject')"><i class="fas fa-check"></i> Finish Editing Email Subject</li>
+                    <li ng-if="efc.emailSubjectOpen" ng-click="efc.cancelEdit('emailSubject')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">The subject line for the email sent to KOTM when a form is submitted</div>
+                        <div class="toolbar-help-notify" ng-if="efc.emailSubjectChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!efc.emailSubjectOpen">{{efc.edited.emailSubject}}</span>
+                <input type="text" ng-model="efc.edited.emailSubject" ng-if="efc.emailSubjectOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!efc.recipientsOpen" ng-click="efc.recipientsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Email Recipient(s)</li>
+                    <li ng-if="!efc.recipientsOpen && efc.recipientsChanged" ng-click="efc.cancelEdit('recipients')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="efc.recipientsOpen" ng-click="efc.saveEdit('recipients')"><i class="fas fa-check"></i> Finish Editing Email Recipient(s)</li>
+                    <li ng-if="efc.recipientsOpen" ng-click="efc.cancelEdit('recipients')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">Recipient(s) for the email sent to KOTM when a form is submitted.  Separated by semicolons (;)</div>
+                        <div class="toolbar-help-notify" ng-if="efc.recipientsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!efc.recipientsOpen">{{efc.edited.recipients}}</span>
+                <input type="text" ng-model="efc.edited.recipients" ng-if="efc.recipientsOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!efc.successTitleOpen" ng-click="efc.successTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Success Title</li>
+                    <li ng-if="!efc.successTitleOpen && efc.successTitleChanged" ng-click="efc.cancelEdit('successTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="efc.successTitleOpen" ng-click="efc.saveEdit('successTitle')"><i class="fas fa-check"></i> Finish Editing Success Title</li>
+                    <li ng-if="efc.successTitleOpen" ng-click="efc.cancelEdit('successTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the title for the success page</div>
+                        <div class="toolbar-help-notify" ng-if="efc.successTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <span ng-if="!efc.successTitleOpen">{{efc.edited.success.title}}</span>
+                <input type="text" ng-model="efc.edited.success.title" ng-if="efc.successTitleOpen">
+
+                <ul class="toolbar">
+                    <li ng-if="!efc.successMessageOpen" ng-click="efc.successMessageOpen = true"><i class="fas fa-pencil-alt"></i> Edit Success Message</li>
+                    <li ng-if="!efc.successMessageOpen && efc.successTitleChanged" ng-click="efc.cancelEdit('successMessage')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="efc.successMessageOpen" ng-click="efc.saveEdit('successMessage')"><i class="fas fa-check"></i> Finish Editing Success Message</li>
+                    <li ng-if="efc.successMessageOpen" ng-click="efc.cancelEdit('successMessage')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify">This is the message for the success page</div>
+                        <div class="toolbar-help-notify" ng-if="efc.successMessageChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div ng-if="!efc.successMessageOpen" ng-bind-html="efc.edited.success.message"></div>
+                <ng-ckeditor ng-if="efc.successMessageOpen" ng-config="efc.ckeditorConfig" ng-model="efc.edited.success.message"></ng-ckeditor>
+            </div>
+
+            <div class="form" ng-if="efc.success">
+                <div class="form-header">
+                    <h1>{{efc.edited.success.title}}</h1>
+                </div>
+                <div class="form-body">
+                    {{efc.edited.success.message}}
+                </div>
+            </div>
+            <div class="form" ng-if="efc.error">
+                <div class="form-header">
+                    <h1>We're Sorry</h1>
+                </div>
+                <div class="form-body">
+                    {{efc.errorMessage}}
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="error-popup" ng-if="efc.deleteSectionPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the section: {{efc.deletedSection.title}}? This will delete the section and all fields included in that section.</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="efc.deleteSection()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="efc.cancelDeleteSection()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="efc.deleteFieldPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the field: {{efc.deletedField.title}}?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="efc.deleteField()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="efc.cancelDeleteField()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="efc.deleteItemPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Do you want to delete the item {{efc.deletedItem.title}}?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="efc.deleteItem()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="efc.cancelDeleteItem()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+    <div class="error-popup" ng-if="efc.responseErrorPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Uh Oh!</div>
+            <div class="error-popup-box-body">{{efc.responseError}}</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="efc.responseErrorPopup = false">Ok, I'll Fix It</button>
+            </div>
+        </div>
+    </div>
+    
+</div>

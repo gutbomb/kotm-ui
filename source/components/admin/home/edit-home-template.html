@@ -1,0 +1,111 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image hero-id="1"></hero-image>
+<div class="main-container home-page admin-page">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="ehpc.emergencyHeadlineChanged || ehpc.emergencyTextChanged || ehpc.metaDescriptionChanged || ehpc.metaTitleChanged || ehpc.metaKeywordsChanged" ng-click="ehpc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="ehpc.emergencyHeadlineChanged || ehpc.emergencyTextChanged || ehpc.metaDescriptionChanged || ehpc.metaTitleChanged || ehpc.metaKeywordsChanged" ng-click="ehpc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <div class="row flex-xl-nowrap">
+        <main class="col-12 bd-content" role="main">
+            <ul class="toolbar">
+                <li ng-if="!ehpc.emergencyHeadlineOpen" ng-click="ehpc.emergencyHeadlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Emergency Headline</li>
+                <li ng-if="!ehpc.emergencyHeadlineOpen && ehpc.emergencyHeadlineChanged" ng-click="ehpc.cancelEdit('emergencyHeadline')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="ehpc.emergencyHeadlineOpen" ng-click="ehpc.saveEdit('emergencyHeadline')"><i class="fas fa-check"></i> Finish Editing Emergency Headline</li>
+                <li ng-if="ehpc.emergencyHeadlineOpen" ng-click="ehpc.cancelEdit('emergencyHeadline')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">Leave this field blank to hide the emergency block</div>
+                    <div class="toolbar-help-notify" ng-if="ehpc.emergencyHeadlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="emergency-contact">
+                <h1 class="emergency-contact-header" ng-if="!ehpc.emergencyHeadlineOpen">{{ehpc.edited.emergencyHeadline}}</h1>
+                <input class="emergency-contact-header" type="text" ng-model="ehpc.edited.emergencyHeadline" ng-if="ehpc.emergencyHeadlineOpen">
+                <ul class="toolbar">
+                    <li ng-if="!ehpc.emergencyTextOpen" ng-click="ehpc.emergencyTextOpen = true"><i class="fas fa-pencil-alt"></i> Edit Emergency Text</li>
+                    <li ng-if="!ehpc.emergencyTextOpen && ehpc.emergencyTextChanged" ng-click="ehpc.cancelEdit('emergencyText')"><i class="fas fa-undo"></i> Undo Changes</li>
+                    <li ng-if="ehpc.emergencyTextOpen" ng-click="ehpc.saveEdit('emergencyText')"><i class="fas fa-check"></i> Finish Editing Emergency Text</li>
+                    <li ng-if="ehpc.emergencyTextOpen" ng-click="ehpc.cancelEdit('emergencyText')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                    <div class="toolbar-help">
+                        <div class="toolbar-help-notify"></div>
+                        <div class="toolbar-help-notify" ng-if="ehpc.emergencyTextChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                    </div>
+                </ul>
+                <div class="emergency-contact-content" ng-bind-html="ehpc.edited.emergencyText" ng-if="!ehpc.emergencyTextOpen"></div>
+                <div class="emergency-contact-content" ng-if="ehpc.emergencyTextOpen">
+                    <div class="ng-ckeditor-container"><ng-ckeditor ng-config="ehpc.ckeditorConfig" ng-model="ehpc.edited.emergencyText"></ng-ckeditor></div>
+                </div>
+            </div>
+            <h1>Our Programs</h1>
+            <div class="programs-grid">
+                <div class="programs-grid-item" ng-repeat="program in ehpc.programs" ng-class="{'active-program' : program.active}" ng-mouseenter="program.active = true" ng-mouseleave="program.active = false">
+                    <img ng-src="/images/{{program.homeImage}}">
+                    <span class="programs-grid-item-title" ng-class="'bg-' + program.color">{{program.name}}</span>
+                    <div class="programs-grid-item-content">
+                        <p>{{program.shortDescription}}</p>
+                        <a ng-href="/programs/{{program.link}}" class="btn" ng-class="'bg-' + program.color">Learn More</a> 
+                    </div>
+                </div>
+            </div>
+            <h1>News & Events</h1>
+            <div class="news-preview" ng-mouseenter="ehpc.mouseOnNews = true" ng-mouseleave="ehpc.mouseOnNews = false">
+                <div class="news-preview-inner" ng-repeat="news in ehpc.news" ng-show="news.active">
+                    <div class="news-preview-inner-image">
+                        <div class="img-wrap">
+                            <img ng-src="/images/{{news.image}}">
+                        </div>
+                        <!-- <div class="news-preview-inner-image-border"></div> -->
+                    </div>
+                    <div class="news-preview-inner-content">
+                        <span class="news-preview-inner-content-type">Featured Posts</span>
+                        <h2 class="news-preview-inner-content-headline">{{news.title}}</h2>
+                        <p class="news-preview-inner-content-text">{{news.description}}</p>
+                        <a ng-href="/article/{{news.url}}" class="btn bg-red">Read More</a>
+                    </div>
+                    <div class="news-preview-inner-content-controls">
+                        <a href="#" ng-click="ehpc.changeNews('previous')" class="btn bg-green"><i class="fas fa-arrow-left"></i> Previous</a>
+                        <a href="#" ng-click="ehpc.changeNews('next')" class="btn bg-green">Next <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="metaData">
+        <h2>Meta Data</h2>
+        <ul class="toolbar">
+            <li ng-if="!ehpc.metaDescriptionOpen" ng-click="ehpc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+            <li ng-if="!ehpc.metaDescriptionOpen && ehpc.metaDescriptionChanged" ng-click="ehpc.cancelEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+            <li ng-if="ehpc.metaDescriptionOpen" ng-click="ehpc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+            <li ng-if="ehpc.metaDescriptionOpen" ng-click="ehpc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                <div class="toolbar-help-notify" ng-if="ehpc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div ng-if="!ehpc.metaDescriptionOpen">{{ehpc.edited.meta.description}}</div>
+        <textarea ng-model="ehpc.edited.meta.description" ng-if="ehpc.metaDescriptionOpen"></textarea>
+        <ul class="toolbar">
+            <li ng-if="!ehpc.metaTitleOpen" ng-click="ehpc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+            <li ng-if="!ehpc.metaTitleOpen && ehpc.metaTitleChanged" ng-click="ehpc.cancelEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+            <li ng-if="ehpc.metaTitleOpen" ng-click="ehpc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+            <li ng-if="ehpc.metaTitleOpen" ng-click="ehpc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                <div class="toolbar-help-notify" ng-if="ehpc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div class="editUrl">Title: <span ng-if="!ehpc.metaTitleOpen">{{ehpc.edited.meta.title}}</span><input ng-if="ehpc.metaTitleOpen" type="text" ng-model="ehpc.edited.meta.title"></div>
+        <ul class="toolbar">
+            <li ng-if="!ehpc.metaKeywordsOpen" ng-click="ehpc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+            <li ng-if="!ehpc.metaKeywordsOpen && ehpc.metaKeywordsChanged" ng-click="ehpc.cancelEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+            <li ng-if="ehpc.metaKeywordsOpen" ng-click="ehpc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+            <li ng-if="ehpc.metaKeywordsOpen" ng-click="ehpc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                <div class="toolbar-help-notify" ng-if="ehpc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div class="editUrl">Keywords: <span ng-if="!ehpc.metaKeywordsOpen">{{ehpc.edited.meta.keywords}}</span><input ng-if="ehpc.metaKeywordsOpen" type="text" ng-model="ehpc.edited.meta.keywords"></div>        
+        
+    </div>
+</div>

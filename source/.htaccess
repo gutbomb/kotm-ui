@@ -1,0 +1,358 @@
+DirectoryIndex index.php index.html
+FallbackResource /index.html
+
+<IfModule mod_headers.c>
+    RequestHeader set X-Prerender-Token "CcwV5nqh45y1k3aRvJOi"
+    RequestHeader set X-Prerender-Version "prerender-apache@2.0.0"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    <IfModule mod_proxy_http.c>
+        RewriteCond %{HTTP_USER_AGENT} googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest\/0\.|pinterestbot|slackbot|vkShare|W3C_Validator|whatsapp|SkypeUriPreview [NC,OR]
+        RewriteCond %{QUERY_STRING} _escaped_fragment_
+        
+        # Only proxy the request to Prerender if it's a request for HTML
+        RewriteRule ^(?!.*?(\.js|\.css|\.xml|\.less|\.png|\.jpg|\.jpeg|\.gif|\.pdf|\.doc|\.txt|\.ico|\.rss|\.zip|\.mp3|\.rar|\.exe|\.wmv|\.doc|\.avi|\.ppt|\.mpg|\.mpeg|\.tif|\.wav|\.mov|\.psd|\.ai|\.xls|\.mp4|\.m4a|\.swf|\.dat|\.dmg|\.iso|\.flv|\.m4v|\.torrent|\.ttf|\.woff|\.svg))(.*) http://service.prerender.io/%{REQUEST_SCHEME}://%{HTTP_HOST}/$2 [P,L]
+    </IfModule>
+</IfModule>
+
+# BEGIN assessments-api
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule .? - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^assessments/api/ /assessments/api/index.php [L]
+</IfModule>
+# END assessments-api
+<FilesMatch "\.(css|html|js)#">
+    <IfModule mod_expires.c>
+        ExpiresActive Off
+    </IfModule>
+    <IfModule mod_headers.c>
+        FileETag None
+        Header unset ETag
+        Header unset Pragma
+        Header unset Cache-Control
+        Header unset Last-Modified
+        Header set Pragma "no-cache"
+        Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+        Header set Expires "Thu, 1 Jan 1970 00:00:00 GMT"
+    </IfModule>
+</FilesMatch>
+
+# Redirects
+<IfModule mod_rewrite.c>
+    RedirectMatch 301 ^/2011/? https://kotm.org/
+    RedirectMatch 301 ^/2014party/? https://kotm.org/
+    RedirectMatch 301 ^/2016party/? https://kotm.org/
+    RedirectMatch 301 ^/5-star-legacy-concert-neon-trees/? https://kotm.org/
+    RedirectMatch 301 ^/about.htm/? https://kotm.org/about
+    RedirectMatch 301 ^/about/boardandstaff.html/? https://kotm.org/about/board
+    RedirectMatch 301 ^/about/admin-staff-bo/? https://kotm.org/about/board
+    RedirectMatch 301 ^/about/admin-staff-board/? https://kotm.org/about/board
+    RedirectMatch 301 ^/about/bequest/? https://kotm.org/give
+    RedirectMatch 301 ^/about/employment.html/? https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/about/history.html/? https://kotm.org/about
+    RedirectMatch 301 ^/about/publications-archive/? https://kotm.org/media
+    RedirectMatch 301 ^/adobe/? https://kotm.org/
+    RedirectMatch 301 ^/adolescent-services/? https://kotm.org/programs/autism-center/teen-social-skills-(peers)
+    RedirectMatch 301 ^/alert-page/? https://kotm.org/article/covid-19-notice
+    RedirectMatch 301 ^/alumni/? https://kotm.org/
+    RedirectMatch 301 ^/applied-behavior-analysis-aba-therapy/? https://kotm.org/programs/autism-center/telehealth-services
+    RedirectMatch 301 ^/aquarium/? https://kotm.org/
+    RedirectMatch 301 ^/article/donate-to-mental-health https://kotm.org/
+    RedirectMatch 301 ^/author/? https://kotm.org/
+    RedirectMatch 301 ^/autism-application/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/autism-bridges/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/autism-center/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/autism-fall-enrollment/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/autism-telehealth/? https://kotm.org/programs/autism-center/aba-therapy
+    RedirectMatch 301 ^/barbara-quintana/? https://kotm.org/
+    RedirectMatch 301 ^/bash/? https://kotm.org/
+    RedirectMatch 301 ^/beard-bash-2014-photo-gallery/? https://kotm.org/
+    RedirectMatch 301 ^/beard-bash/? https://kotm.org/
+    RedirectMatch 301 ^/beardbash/? https://kotm.org/
+    RedirectMatch 301 ^/BeardBash/? https://kotm.org/
+    RedirectMatch 301 ^/bequest/? https://kotm.org/give
+    RedirectMatch 301 ^/blog/? https://kotm.org/
+    RedirectMatch 301 ^/bridges/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/bridges-application/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/bridges-fall-enrollment/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/brooklynn-gunnell/? https://kotm.org/
+    RedirectMatch 301 ^/careers/? https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/cassandra-casey-1/? https://kotm.org/
+    RedirectMatch 301 ^/category/autism-bridges/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/category/autism-center/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/category/blog/? https://kotm.org/
+    RedirectMatch 301 ^/category/bridges/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/category/early-head-start/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/category/early-intervention/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/category/ehs/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/category/events/? https://kotm.org/events
+    RedirectMatch 301 ^/category/mental-health/? https://kotm.org/
+    RedirectMatch 301 ^/category/noorda-resource-library/? https://kotm.org/article/noorda-resource-library
+    RedirectMatch 301 ^/category/uncategorized/? https://kotm.org/
+    RedirectMatch 301 ^/celebration-of-kids/? https://kotm.org/
+    RedirectMatch 301 ^/chrstinavarghese/? https://kotm.org/
+    RedirectMatch 301 ^/comments/? https://kotm.org/
+    RedirectMatch 301 ^/contact/thank-you/? https://kotm.org/
+    RedirectMatch 301 ^/contact-form/? https://kotm.org/contact
+    RedirectMatch 301 ^/contest-rules/? https://kotm.org/
+    RedirectMatch 301 ^/corporate-sports-thanks/? https://kotm.org/
+    RedirectMatch 301 ^/current-events/? https://kotm.org/events
+    RedirectMatch 301 ^/current-jobs-and-internships https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/damian-rodriguez/? https://kotm.org/
+    RedirectMatch 301 ^/disneyland-tickets-giveaway/? https://kotm.org/
+    RedirectMatch 301 ^/donate-materials/? https://kotm.org/article/donate-supplies
+    RedirectMatch 301 ^/donate-now/? https://kotm.org/donate
+    RedirectMatch 301 ^/donatetomentalhealth/? https://kotm.org/donate
+    RedirectMatch 301 ^/eagle-scout-projects/? https://kotm.org/give
+    RedirectMatch 301 ^/early-intervention-application/? https://kotm.org/form/early-intervention
+    RedirectMatch 301 ^/early-intervention-application/thank-you/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/early-intervention-utah/family-stories/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/early-intervention/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/early_intervention/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/ehs/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/ei/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/email-scout-coordinator/? https://kotm.org/
+    RedirectMatch 301 ^/employment/? https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/employment-2/? https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/events-2/? https://kotm.org/events
+    RedirectMatch 301 ^/event-slideshow-2/? https://kotm.org/events
+    RedirectMatch 301 ^/events-sidebar/? https://kotm.org/events
+    RedirectMatch 301 ^/excited-2/? https://kotm.org/
+    RedirectMatch 301 ^/excited/? https://kotm.org/
+    RedirectMatch 301 ^/facebookprofile1/? https://kotm.org/
+    RedirectMatch 301 ^/fall2014/? https://kotm.org/
+    RedirectMatch 301 ^/family-challenge-flyer/? https://kotm.org/
+    RedirectMatch 301 ^/family-challenge-photo/? https://kotm.org/
+    RedirectMatch 301 ^/family-stories/? https://kotm.org/
+    RedirectMatch 301 ^/form-thank-you/? https://kotm.org/
+    RedirectMatch 301 ^/FORM/STEP-FAMILIES/? https://kotm.org/form/step-families
+    RedirectMatch 301 ^/full-event-calendar/? https://kotm.org/events
+    RedirectMatch 301 ^/gala2015/? https://kotm.org/
+    RedirectMatch 301 ^/get-involved/monthly-donor-club/? https://kotm.org/article/monthly-donor-club
+    RedirectMatch 301 ^/get-involved/? https://kotm.org/give
+    RedirectMatch 301 ^/give-materials/? https://kotm.org/article/donate-supplies
+    RedirectMatch 301 ^/givingtuesday/? https://kotm.org/give
+    RedirectMatch 301 ^/harleyraffle/? https://kotm.org/
+    RedirectMatch 301 ^/HarleyRaffle/? https://kotm.org/
+    RedirectMatch 301 ^/head_start/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/help-me-grow/? https://kotm.org/
+    RedirectMatch 301 ^/heber-half/? https://kotm.org/article/new-run---kotm-run-for-autism-2022
+    RedirectMatch 301 ^/infant-massage-icon/? https://kotm.org/
+    RedirectMatch 301 ^/jobman_register/? https://kotm.org/
+    RedirectMatch 301 ^/jobs/? https://kotm.applicantpro.com/jobs/
+    RedirectMatch 301 ^/joint-projects/? https://kotm.org/article/community-partners
+    RedirectMatch 301 ^/katy-callor-video/? https://kotm.org/
+    RedirectMatch 301 ^/KhpYZ/? https://kotm.org/
+    RedirectMatch 301 ^/kida/? https://kotm.org/
+    RedirectMatch 301 ^/kindermusic-icon/? https://kotm.org/
+    RedirectMatch 301 ^/laura-21/? https://kotm.org/
+    RedirectMatch 301 ^/lead-form/? https://kotm.org/
+    RedirectMatch 301 ^/legal/? https://kotm.org/article/legal
+    RedirectMatch 301 ^/library/? https://kotm.org/article/noorda-resource-library
+    RedirectMatch 301 ^/list/classes/? https://kotm.org/programs/learning-opportunities
+    RedirectMatch 301 ^/list/past-events/? https://kotm.org/events
+    RedirectMatch 301 ^/logo/? https://kotm.org/
+    RedirectMatch 301 ^/lori-harmon-2/? https://kotm.org/
+    RedirectMatch 301 ^/mental-health-application/? https://kotm.org/
+    RedirectMatch 301 ^/monthly-donor-club/? https://kotm.org/article/monthly-donor-club
+    RedirectMatch 301 ^/morinda-giveaway/? https://kotm.org/
+    RedirectMatch 301 ^/newsletter-giveaway/? https://kotm.org/
+    RedirectMatch 301 ^/newsletter-sign-thank/? https://kotm.org/
+    RedirectMatch 301 ^/newsletter/? https://kotm.org/
+    RedirectMatch 301 ^/new/? https://kotm.org/
+    RedirectMatch 301 ^/ngg_tag/? https://kotm.org/
+    RedirectMatch 301 ^/noorda-resource-library/? https://kotm.org/article/noorda-resource-library
+    RedirectMatch 301 ^/ongoing-assessment-icon/? https://kotm.org/
+    RedirectMatch 301 ^/paris/? https://kotm.org/
+    RedirectMatch 301 ^/pay-child-care/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/peers/? https://kotm.org/programs/autism-center/teen-social-skills-(peers)
+    RedirectMatch 301 ^/photo-form/? https://kotm.org/
+    RedirectMatch 301 ^/photorules/? https://kotm.org/
+    RedirectMatch 301 ^/photo/? https://kotm.org/
+    RedirectMatch 301 ^/privacy-policy/? https://kotm.org/article/privacy-policy
+    RedirectMatch 301 ^/Produced/? https://kotm.org/
+    RedirectMatch 301 ^/programs/autism-center/aba-therapy/? https://kotm.org/programs/autism-center/telehealth-services
+    RedirectMatch 301 ^/programs/autism-center/applied-behavior-analysis-aba-therapy/? https://kotm.org/programs/autism-center/telehealth-services
+    RedirectMatch 301 ^/programs/autism-center/autism-contact-form/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/programs/autism-center/financial-resources-for-families/? https://kotm.org/programs/autism-center/additional-resources
+    RedirectMatch 301 ^/programs/autism-center/more-information/? https://kotm.org/programs/autism-center/additional-resources
+    RedirectMatch 301 ^/programs/autism-center/services/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/programs/autismcenter/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/programs/bridges/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/programs/child-care/child-care-application__trashed/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/programs/child-care/child-care-application/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/programs/child-care/staff/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/programs/child-care/family-stories/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/programs/child-family-mental-health/? https://kotm.org/
+    RedirectMatch 301 ^/programs/chlid-family-mental-health/? https://kotm.org/
+    RedirectMatch 301 ^/programs/community-classes/? https://kotm.org/programs/learning-opportunities
+    RedirectMatch 301 ^/programs/early-head-start-utah/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/early-head-start/apply-for-services/? https://kotm.org/form/early-head-start
+    RedirectMatch 301 ^/programs/early-head-start/family-stories/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/early-head-start/staff/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/early-head-start/services/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/early-intervention-utah/refer-a-child/? https://kotm.org/form/early-intervention
+    RedirectMatch 301 ^/programs/early-intervention-utah/services/? https://kotm.org/programs/early-intervention/our-services
+    RedirectMatch 301 ^/programs/early-intervention-utah/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/programs/early-intervention/family-stories/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/programs/early-intervention/refer-a-child/? https://kotm.org/form/early-intervention
+    RedirectMatch 301 ^/programs/early-intervention/services/? https://kotm.org/programs/early-intervention/our-services
+    RedirectMatch 301 ^/programs/early-intervention/staff/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/programs/ehs/apply-for-services/? https://kotm.org/form/early-head-start
+    RedirectMatch 301 ^/programs/ehs/family-stories/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/ehs/more-information/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/ehs/staff/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/ehs/services/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/ehs/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/programs/library/? https://kotm.org/article/noorda-resource-library
+    RedirectMatch 301 ^/programs/mental-health https://kotm.org/
+    RedirectMatch 301 ^/programs/open-public-programs/? https://kotm.org/
+    RedirectMatch 301 ^/programs/parenting-classes/? https://kotm.org/programs/learning-opportunities
+    RedirectMatch 301 ^/programs-slider/? https://kotm.org/
+    RedirectMatch 301 ^/publications/2005-feb-eagle-scout-project/? https://kotm.org/media/2005-Feb-Eagle-Scout-Project.pdf
+    RedirectMatch 301 ^/publications/2006-jul-noorda-family-resource-library/? https://kotm.org/media/2006-Jul-Noorda-Family-Resource-Library.pdf
+    RedirectMatch 301 ^/publications/2007-oct-fundraiser-st-george-marathon/? https://kotm.org/media/2007-Oct-Fundraiser-with-St.-George-Marathon.pdf
+    RedirectMatch 301 ^/publications/2008-nov-satellite-center-lehi/? https://kotm.org/media/2008-Nov-Satellite-Center-in-Lehi.pdf
+    RedirectMatch 301 ^/publications/2009-dec-ehs-expansion/? https://kotm.org/media/2009-Dec-EHS-Expansion.pdf
+    RedirectMatch 301 ^/publications/2010-jun-jan-mckelar-star-volunteer/? https://kotm.org/media/2010-Jun-Jan-McKelar-Star-Volunteer.pdf
+    RedirectMatch 301 ^/publications/2011-jul-new-autism-program/? https://kotm.org/media/2011-Jul-New-Autism-Program.pdf
+    RedirectMatch 301 ^/publications/2012-annual-report/? https://kotm.org/media/Annual-Report-rev2.04.pdf
+    RedirectMatch 301 ^/publications/2012-apr-autism-award-karen-f/? https://kotm.org/media/2012-Apr-Autism-Award-for-Karen-Fairchild.pdf
+    RedirectMatch 301 ^/publications/2013-community-assessment-2/? https://kotm.org/media/2013-Community-Assessment-FINAL2.pdf
+    RedirectMatch 301 ^/publications/2013-feb-medicaid-waiver/? https://kotm.org/media/2013-Feb-Medicaid-Waiver.pdf
+    RedirectMatch 301 ^/publications/2013-oct-scott-bean-new-ceo/? https://kotm.org/media/2013-Oct-Scott-Bean-New-CEO.pdf
+    RedirectMatch 301 ^/publications/2014-nov-haunted-half/? https://kotm.org/media/2014-Nov-Haunted-Half.pdf
+    RedirectMatch 301 ^/publications/2016-aug-30-anniversary/? https://kotm.org/media/2016-Aug-30-Anniversary.pdf
+    RedirectMatch 301 ^/publications/2017-annual-report/? https://kotm.org/media/Annual-Report-2017-PRINT-UPDATE-Sept-2018_small.pdf
+    RedirectMatch 301 ^/publications/2017-apr-byu-volunteers-find-love/? https://kotm.org/media/BYU-Students-Find-Love-at-Kids-On-The-Move-Respite-Center.pdf
+    RedirectMatch 301 ^/publications/2017-corporate-sports-challenge/? https://kotm.org/media/Businesses-Play-it-Forward-at-Kids-On-The-Move-Corporate-Sports-Challenge.pdf
+    RedirectMatch 301 ^/publications/2017-jul-peers-kotm/? https://kotm.org/media/2017-Jul-PEERS.pdf
+    RedirectMatch 301 ^/publications/2017-jul-selecthealth-grant/? https://kotm.org/media/2017-Jul-SelectHealth-Grant-1.pdf
+    RedirectMatch 301 ^/publications/2017-jul-tucanos-donation/? https://kotm.org/media/2017-Jul-Tucanos-Donation.pdf
+    RedirectMatch 301 ^/publications/2017-sep-day-caring-kotm/? https://kotm.org/media/2017-Sep-Day-of-Caring-KOTM.pdf
+    RedirectMatch 301 ^/publications/2017-sep-ehs-engagement-activity/? https://kotm.org/media/2017-Sep-EHS-Engagment-Activity.pdf
+    RedirectMatch 301 ^/publications/2017-sep-haunted-half/? https://kotm.org/media/2017-Sep-Haunted-Half.pdf
+    RedirectMatch 301 ^/publications/2018-annual-report/? https://kotm.org/media/Annual-Report-2018-small.pdf
+    RedirectMatch 301 ^/publications/2018-community-assessment/? https://kotm.org/media/2018-Utah-Community-Assessment.1.pdf
+    RedirectMatch 301 ^/publications/2018-mar-heber-half/? https://kotm.org/media/2018-Mar-Heber-Half-General.pdf
+    RedirectMatch 301 ^/publications/2018-mar-skyler-moore/? https://kotm.org/media/2018-Mar-Skyler-Moore.pdf
+    RedirectMatch 301 ^/publications/2019-annual-report/? https://kotm.org/media/Annual-Report-2019-small.pdf
+    RedirectMatch 301 ^/publications/2019-may-heber-half-run-for-autism/? https://kotm.org/media/Heber-Half-2019-Press-Release.pdf
+    RedirectMatch 301 ^/publications/52nd-nhsa-anniversary-mayor-brunst/? https://kotm.org/media/Mayor-Brunst-of-Orem-celebrates-Head-Start-52nd-anniversary-with-Kids-On-The-Move.pdf
+    RedirectMatch 301 ^/publications/a-month-to-be-grateful/? https://kotm.org/media/A-month-to-be-grateful-for-disabilities-and-Utahs-resources.pdf
+    RedirectMatch 301 ^/publications/abc-4-aggression-autism/? https://kotm.org/media/Feburary-16-Good4Utah-Autism-and-Agression.docx
+    RedirectMatch 301 ^/publications/abc-4-autism-wandering/? https://kotm.org/media/ABC4-Autism-and-Wandering-1.pdf
+    RedirectMatch 301 ^/publications/abc4-30th-anniversary/? https://kotm.org/media/ABC4-Segment-30th-Anniversary.docx
+    RedirectMatch 301 ^/publications/abc4-alumni-party/? https://kotm.org/media/Kids-On-The-Move-to-host...n-house-Good4Utah.pdf
+    RedirectMatch 301 ^/publications/abc4-beard-bash-raises-funds-for-kotm/? https://kotm.org/media/Beard-Bash-raises-funds-for-kids-with-disabilities.docx
+    RedirectMatch 301 ^/publications/abc4-beard-bash-to-benefit-kotm/? https://kotm.org/media/Beard-Bash-to-Benefit-Kids-On-The-Move.docx
+    RedirectMatch 301 ^/publications/abc4-empowering-families-and-children-through-reading/? https://kotm.org/media/2019-March-Empowering-families-and-children-through-reading.pdf
+    RedirectMatch 301 ^/publications/abc4-halloween-race-benefit-kids-move/? https://kotm.org/media/ABC4-Halloween-Race-to-Benefit-Kids-On-The-Move.docx
+    RedirectMatch 301 ^/publications/abc4-haunted-half-benefits-kotm/? https://kotm.org/media/Haunted-Half-to-Benefit-Kids-On-The-Move.docx
+    RedirectMatch 301 ^/publications/abc4-magic-of-storytelling/? https://kotm.org/media/2019-March-Magic-of-Storytelling.pdf
+    RedirectMatch 301 ^/publications/abc4-racing-for-autism-awareness/? https://kotm.org/media/2019-Apr-racing-for-autism-awareness.pdf
+    RedirectMatch 301 ^/publications/abc4-sherwin-williams-donation/? https://kotm.org/media/ABC-Orem-mayor-celebrates-Head-Starts-52nd-anniversary-with.pdf
+    RedirectMatch 301 ^/publications/autism-medical-waiver-increases-therapy-enrollment/? https://kotm.org/media/Autism-medical-waiver-increases-therapy-enrollment-_-Deseret-News.pdf
+    RedirectMatch 301 ^/publications/beard-bash-help-kids-move/? https://kotm.org/media/heraldextra.com-Beard_Bash_to_help_Kids_On_The_Move.pdf
+    RedirectMatch 301 ^/publications/brochure-2014/? https://kotm.org/media/KOTM-Brochure.pdf
+    RedirectMatch 301 ^/publications/byu-daily-universe/? https://kotm.org/media/Hometown-favorite-Neon-Trees-headlining-charity-concert-%E2%80%93-U-N-I-V-E-R-S-E
+    RedirectMatch 301 ^/publications/byu11-kotm-spot/? https://kotm.org/media/BYU-Community-Connections-interview.docx
+    RedirectMatch 301 ^/publications/celebration-living-planet-aquarium/? https://kotm.org/media/Kids-On-The-Move-celebrates-29-years-2300-alumni-at-Living-Planet-Aquarium.pdf
+    RedirectMatch 301 ^/publications/daily-herald-2018-budget-cuts/? https://kotm.org/media/Utah-County-cities-could-lose-significant-funding-if-HUD-takes-hit-in-2018-budget-_-Provo-News-_-heraldextra.pdf
+    RedirectMatch 301 ^/publications/daily-herald-30th-anniversary-celebration/? https://kotm.org/media/Kids-on-the-Move-celebrates-30-years-_-Orem-News-_-heraldextra.pdf
+    RedirectMatch 301 ^/publications/daily-herald-boy-scouts-lds-church/? https://kotm.org/media/Daily-Herald-Boy-Scouts.pdf
+    RedirectMatch 301 ^/publications/daily-herald-ehs-activity/? https://kotm.org/media/Daily-Herald-EHS-Engagement-Activity.pdf
+    RedirectMatch 301 ^/publications/daily-herald-heber-half-volunteers/? https://kotm.org/media/Daily-Herald-Heber-Half-Volunteers.pdf
+    RedirectMatch 301 ^/publications/daily-herald-kotm-alumni-celebrate/? https://kotm.org/media/Daily-Herald-KOTM-Alumni-Celebrate.pdf
+    RedirectMatch 301 ^/publications/daily-herald-kotm-gets-new-paint/? https://kotm.org/media/Daily-Herald-Kids-on-the-Move-gets-new-paint.pdf
+    RedirectMatch 301 ^/publications/daily-herald-mayor-brunst/? https://kotm.org/media/Daily-Herald-Mayor-Brunst.pdf
+    RedirectMatch 301 ^/publications/daily-herald-peers/? https://kotm.org/media/Daily-Herald-PEERS.pdf
+    RedirectMatch 301 ^/publications/daily-herald-select-25-grant/? https://kotm.org/media/Daily-Herald-Select-25-Grant.pdf
+    RedirectMatch 301 ^/publications/daily-herald-service-ideas-utah-county/? https://kotm.org/media/Daily-Herald-Service-Ideas-in-Utah-County.pdf
+    RedirectMatch 301 ^/publications/daily-herald-skyler-moore/? https://kotm.org/media/Daily-Herald-Skyler-Moore.pdf
+    RedirectMatch 301 ^/publications/daily-herald-special-needs-religion/? https://kotm.org/media/2019-Mar-daily-herald-special-needs-in-religion.pdf
+    RedirectMatch 301 ^/publications/daily-herald-sports-challenge-2017/? https://kotm.org/media/Daily-Herald-Sports-Challenge-2017.pdf
+    RedirectMatch 301 ^/publications/daily-herald-syndrome-second-easter/? https://kotm.org/media/Daily-Herald-Down-Syndrome-Easter.pdf
+    RedirectMatch 301 ^/publications/daily-herald-the-autism-puzzle/? https://kotm.org/media/The-Autism-Puzzle-4-3-16.docx
+    RedirectMatch 301 ^/publications/daily-herald-tucanos-donation/? https://kotm.org/media/Daily-Herlad-Tucanos-Donation.pdf
+    RedirectMatch 301 ^/publications/daily-herald-uccu-donations/? https://kotm.org/media/UCCU-celebrates-60-years-Foundation-seeks-entrepreneurs-for-franchising-competition-_-Local-Business-_-heraldextra.pdf
+    RedirectMatch 301 ^/publications/daily-herald-voice-2/? https://kotm.org/media/Daily-Herald-Their-Voice.pdf
+    RedirectMatch 301 ^/publications/daily-herald-voice/? https://kotm.org/media/Their-Voice_-Socialization-classes-coming-to-Kids-on-the-Move-_-Education-_-heraldextra.pdf
+    RedirectMatch 301 ^/publications/daily-herald-volunteers-needed-hh/? https://kotm.org/media/Daily-Herald-Volunteers-Needed-at-HH.pdf
+    RedirectMatch 301 ^/publications/daily-universe-neon-trees-headlining-charity-concert/? https://kotm.org/media/Hometown-favorite-Neon-Trees-headlining-charity-concert-%E2%80%93-U-N-I-V-E-R-S-E
+    RedirectMatch 301 ^/publications/deseret-news-disabilities-religious-settings/? https://kotm.org/media/Deseret-News-Disabilities-in-Religious-Settings.pdf
+    RedirectMatch 301 ^/publications/deseret-news-stepfamilies/? https://kotm.org/media/Having-trouble-meshing-your-stepfamily_-Utah-community-classes-offer-help-_-Deseret-News.pdf
+    RedirectMatch 301 ^/publications/finding-peace-parent-child-autism-daily-herald/? https://kotm.org/media/Finding-peace-as-a-parent-of-a-child-with-autism-heraldextra.pdf
+    RedirectMatch 301 ^/publications/good-4-utah-iron-county-school-district/? https://kotm.org/media/Good-4-Utah-Iron-County.pdf
+    RedirectMatch 301 ^/publications/herald-extra-their-voice-understanding-early-intervention-programs-in-utah-valley/? https://kotm.org/media/Daily-Herald-Their-Voice-1.pdf
+    RedirectMatch 301 ^/publications/herald-utah-valleys-biggest-businesses-compete-for-kotm/? https://kotm.org/media/Utah-Valleys-biggest-businesses-compete-for-Kids-on-the-Move.pdf
+    RedirectMatch 301 ^/publications/jan-2019-heber-half/? https://kotm.org/media/Heber-Half-2019-Press-Release.pdf
+    RedirectMatch 301 ^/publications/kids-move-annual-report-2016/? https://kotm.org/media/2016-Annual-Report.pdf
+    RedirectMatch 301 ^/publications/kids-on-the-move-annual-report-2013/? https://kotm.org/media/2013-Annual-Report.pdf
+    RedirectMatch 301 ^/publications/kotm-privacy-policy/? https://kotm.org/article/privacy-policy
+    RedirectMatch 301 ^/publications/kotm-receives-proceeds-haunted-half/? https://kotm.org/media/Runtastic-Press-Release.pdf
+    RedirectMatch 301 ^/publications/kutv-interview-marisa/? https://kotm.org/media/KUTV-Interview-with-Marisa.pdf
+    RedirectMatch 301 ^/publications/neon-trees-summer-bash-video/? https://kotm.org/media/5-Star-Legacy-Foundation-Neon-Trees-Summer-Bash-2015-Concert.docx
+    RedirectMatch 301 ^/publications/oct-2020-autism-center/? https://kotm.org/media/Autism-center-press-release.pdf
+    RedirectMatch 301 ^/publications/run-for-autism-returns-june-29/? https://kotm.org/media/2019-June-run-for-autism-returns-june-29.pdf
+    RedirectMatch 301 ^/publications/salt-lake-tribune-beard-bash/? https://kotm.org/media/Bash-Trib.pdf
+    RedirectMatch 301 ^/publications/serve-daily-30th-anniversary/? https://kotm.org/media/Kids-On-The-Move-celebrates-30th-anniversary-Serve-Daily.pdf
+    RedirectMatch 301 ^/publications/serve-daily-charity-contest-results/? https://kotm.org/media/Two-Utah-County-Nonprofits-Win-Charity-Voting-Contest-Serve-Daily.pdf
+    RedirectMatch 301 ^/publications/sherwin-williams-paint-donation/? https://kotm.org/media/ABC-Orem-mayor-celebrates-Head-Starts-52nd-anniversary-with.pdf
+    RedirectMatch 301 ^/publications/sports-challenge-raises-20k-for-autism-school/? https://kotm.org/media/Good4Utah-Segment.docx
+    RedirectMatch 301 ^/publications/utah-business-eric-rea/? https://kotm.org/media/Utah-Business-Eric-Rea_-Forty-Under-40-Utah-Business.1.pdf
+    RedirectMatch 301 ^/publications/utah-business-good-will-toward-men-nonprofits-inspire-empower/? https://kotm.org/media/Utah-Buisness-Four-nonprofits-that-inspire-and-empower.pdf
+    RedirectMatch 301 ^/publications/? https://kotm.org/media
+    RedirectMatch 301 ^/publication-category/? https://kotm.org/media
+    RedirectMatch 301 ^/put-your-logo-here/? https://kotm.org/
+    RedirectMatch 301 ^/red-slider/? https://kotm.org/
+    RedirectMatch 301 ^/religion/? https://kotm.org/
+    RedirectMatch 301 ^/respite-care-lehi/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-orem/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-salem/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-sf/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-springville/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-spanish-fork/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-st-george/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care-utah/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/respite-care/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/rsvp/? https://kotm.org/
+    RedirectMatch 301 ^/runforautism/? https://kotm.org/article/kotm-run-for-autism
+    RedirectMatch 301 ^/run/? https://kotm.org/article/kotm-run-for-autism
+    RedirectMatch 301 ^/sa/? https://kotm.org/
+    RedirectMatch 301 ^/sareg/? https://kotm.org/
+    RedirectMatch 301 ^/service-category/administrative-team/? https://kotm.org/about
+    RedirectMatch 301 ^/service-category/autism-center/? https://kotm.org/programs/autism-center
+    RedirectMatch 301 ^/service-category/child-care/? https://kotm.org/programs/child-care
+    RedirectMatch 301 ^/service-category/early-head-start/? https://kotm.org/programs/early-head-start
+    RedirectMatch 301 ^/service-category/early-intervention/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/service-category/executive-team/? https://kotm.org/about
+    RedirectMatch 301 ^/service-category/respite-care/? https://kotm.org/programs/respite-care
+    RedirectMatch 301 ^/share-your-story/? https://kotm.org/
+    RedirectMatch 301 ^/site-map/? https://kotm.org/
+    RedirectMatch 301 ^/slide-for-sports-challenge/? https://kotm.org/
+    RedirectMatch 301 ^/specialneedsinreligion/? https://kotm.org/
+    RedirectMatch 301 ^/sports-challenge/? https://kotm.org/
+    RedirectMatch 301 ^/staff/? https://kotm.org/about
+    RedirectMatch 301 ^/stepfamilies/? https://kotm.org/form/step-families
+    RedirectMatch 301 ^/stewart-reeve/? https://kotm.org/
+    RedirectMatch 301 ^/stock-events-2/? https://kotm.org/
+    RedirectMatch 301 ^/stock-involved-boy/? https://kotm.org/
+    RedirectMatch 301 ^/stock-legos/? https://kotm.org/
+    RedirectMatch 301 ^/stories/? https://kotm.org/
+    RedirectMatch 301 ^/surveys/? https://kotm.org/programs/early-intervention
+    RedirectMatch 301 ^/telehealth/? https://kotm.org/programs/autism-center/telehealth-services
+    RedirectMatch 301 ^/test-test-test/? https://kotm.org/donate
+    RedirectMatch 301 ^/thank/? https://kotm.org/
+    RedirectMatch 301 ^/trauma-therapy-treatment/? https://kotm.org/
+    RedirectMatch 301 ^/uncategorized/? https://kotm.org/
+    RedirectMatch 301 ^/wp-admin/? https://kotm.org/
+    RedirectMatch 301 ^/wp-content/? https://kotm.org/
+    RedirectMatch 301 ^/ZnKbZ/? https://kotm.org/
+</IfModule>

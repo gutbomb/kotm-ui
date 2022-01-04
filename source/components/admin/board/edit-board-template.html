@@ -1,0 +1,141 @@
+<script src="/lib/js/ckeditor/ckeditor.js"></script>
+<hero-image class="program" hero-id="26"></hero-image>
+<div class="main-container board-page admin-page">
+    <ul class="toolbar main-toolbar">
+        <span class="toolbar-help">Page last updated {{$root.meta.updated | amDateFormat: 'MMM D YYYY h:mm a'}} by {{$root.meta.firstName}} {{$root.meta.lastName}}</span>
+        <li ng-if="ebc.headlineChanged || ebc.descriptionChanged || ebc.membersChanged || ebc.metaDescriptionChanged || ebc.metaTitleChanged || ebc.metaKeywordsChanged" ng-click="ebc.init()"><i class="fas fa-ban"></i> Cancel Changes</li>
+        <li ng-if="ebc.headlineChanged || ebc.descriptionChanged || ebc.membersChanged || ebc.metaDescriptionChanged || ebc.metaTitleChanged || ebc.metaKeywordsChanged" ng-click="ebc.submitEdit()"><i class="fas fa-check"></i> Publish Changes</li>
+    </ul>
+    <main>
+        <ul class="toolbar">
+            <li ng-if="!ebc.headlineOpen" ng-click="ebc.headlineOpen = true"><i class="fas fa-pencil-alt"></i> Edit Headline</li>
+            <li ng-if="!ebc.headlineOpen && ebc.headlineChanged" ng-click="ebc.revertEdit('headline')"><i class="fas fa-undo"></i> Undo Changes</li>
+            <li ng-if="ebc.headlineOpen" ng-click="ebc.saveEdit('headline')"><i class="fas fa-check"></i> Finish Editing Headline</li>
+            <li ng-if="ebc.headlineOpen" ng-click="ebc.cancelEdit('headline')"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify" ng-if="ebc.headlineChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <h1 ng-if="!ebc.headlineOpen" class="color-green">{{ebc.edited.headline}}</h1>
+        <textarea ng-if="ebc.headlineOpen" ng-model="ebc.edited.headline" class="article-wrapper-headline"></textarea>
+        <ul class="toolbar">
+            <li ng-if="!ebc.descriptionOpen" ng-click="ebc.descriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+            <li ng-if="!ebc.descriptionOpen && ebc.descriptionChanged" ng-click="ebc.revertEdit('description')"><i class="fas fa-undo"></i> Undo Changes</li>
+            <li ng-if="ebc.descriptionOpen" ng-click="ebc.saveEdit('description')"><i class="fas fa-check"></i> Finish Editing Description</li>
+            <li ng-if="ebc.descriptionOpen" ng-click="ebc.cancelEdit('description')"><i class="fas fa-ban"></i> Cancel Editing</li>
+            <div class="toolbar-help">
+                <div class="toolbar-help-notify" ng-if="ebc.descriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+            </div>
+        </ul>
+        <div ng-if="!ebc.descriptionOpen" class="board-description" ng-bind-html="ebc.edited.description"></div>
+        <div class="ng-ckeditor-container"><ng-ckeditor ng-if="ebc.descriptionOpen" ng-config="ebc.ckeditorConfig" ng-model="ebc.edited.description"></ng-ckeditor></div>
+        <ul class="toolbar">
+            <li ng-click="ebc.addMember()"><i class="fas fa-plus-square"></i> Add New Member</li>
+        </ul>
+        <div class="members-container" ng-repeat="member in ebc.edited.members | orderBy:'boardOrder'" ng-if="!member.deleted">
+            <div class="row">
+                <ul class="toolbar">
+                    <li ng-hide="member.nameOpen || member.imageOpen || member.titleOpen || member.subtitleOpen || member.descriptionOpen" ng-click="ebc.deleteMemberWarning(member.id)"><i class="fas fa-trash"></i> Delete Member</li>
+                    <li ng-hide="member.nameOpen || member.imageOpen || member.titleOpen || member.subtitleOpen || member.descriptionOpen" ng-if="member.boardOrder !== 0" ng-click="ebc.moveMember('up', member.boardOrder, member.id)"><i class="fas fa-arrow-up"></i> Move Up</li>
+                    <li ng-hide="member.nameOpen || member.imageOpen || member.titleOpen || member.subtitleOpen || member.descriptionOpen" ng-if="member.boardOrder !== (ebc.edited.members.length - 1)" ng-click="ebc.moveMember('down', member.boardOrder, member.id)"><i class="fas fa-arrow-down"></i> Move Down</li>
+                    <li ng-hide="member.nameOpen || member.titleOpen || member.subtitleOpen || member.descriptionOpen" ng-click="ebc.openGallery(member.id)" ng-if="!member.nameOpen"><i class="fas fa-images"></i> Choose Image</li>
+                    <li ng-click="member.nameOpen = true" ng-if="!member.nameOpen" ng-hide="member.imageOpen || member.titleOpen || member.subtitleOpen || member.descriptionOpen"><i class="fas fa-pencil-alt"></i> Edit Name</li>
+                    <li ng-if="member.nameOpen" ng-click="ebc.saveEdit('name', member.id)"><i class="fas fa-check"></i> Finish Editing Name</li>
+                    <li ng-if="member.nameOpen" ng-click="ebc.cancelEdit('name', member.id)"><i class="fas fa-ban"></i> Cancel Editing Name</li>
+                    <li ng-click="member.titleOpen = true" ng-if="!member.titleOpen" ng-hide="member.nameOpen || member.imageOpen || member.subtitleOpen || member.descriptionOpen"><i class="fas fa-pencil-alt"></i> Edit Position</li>
+                    <li ng-if="member.titleOpen" ng-click="ebc.saveEdit('title', member.id)"><i class="fas fa-check"></i> Finish Editing Position</li>
+                    <li ng-if="member.titleOpen" ng-click="ebc.cancelEdit('title', member.id)"><i class="fas fa-ban"></i> Cancel Editing Position</li>
+                    <li ng-click="member.subtitleOpen = true" ng-if="!member.subtitleOpen" ng-hide="member.nameOpen || member.imageOpen || member.titleOpen || member.descriptionOpen"><i class="fas fa-pencil-alt"></i> Edit Job Title</li>
+                    <li ng-if="member.subtitleOpen" ng-click="ebc.saveEdit('subtitle', member.id)"><i class="fas fa-check"></i> Finish Editing Job Title</li>
+                    <li ng-if="member.subtitleOpen" ng-click="ebc.cancelEdit('subtitle', member.id)"><i class="fas fa-ban"></i> Cancel Editing Job Title</li>
+                    <li ng-click="member.descriptionOpen = true" ng-if="!member.descriptionOpen" ng-hide="member.nameOpen || member.imageOpen || member.titleOpen || member.subtitleOpen"><i class="fas fa-pencil-alt"></i> Edit Description</li>
+                    <li ng-if="member.descriptionOpen" ng-click="ebc.saveEdit('description', member.id)"><i class="fas fa-check"></i> Finish Editing Description</li>
+                    <li ng-if="member.descriptionOpen" ng-click="ebc.cancelEdit('description', member.id)"><i class="fas fa-ban"></i> Cancel Editing Description</li>
+                </ul>
+            </div>
+            <div ng-if="member.imageOpen" class="image-gallery">
+                <div class="row image-gallery-controls">
+                    <div class="col-2 image-gallery-controls-prev"><span ng-if="ebc.galleryPage !== 0" ng-click="ebc.changeGalleryPage('prev')"><i class="fas fa-arrow-left"></i> Previous</span></div>
+                    <div class="col-8 image-gallery-controls-page">Page: {{(ebc.galleryPage+30)/30}} of {{Math.ceil(filteredGallery.length/30)}}</div>
+                    <div class="col-2 image-gallery-controls-next"><span ng-hide="(ebc.galleryPage + 30) > filteredGallery.length" ng-click="ebc.changeGalleryPage('next')">Next <i class="fas fa-arrow-right"></i></span></div>
+                    <div class="col-12"><input type="text" ng-model="ebc.gallerySearchTerm" ng-change="ebc.gallerySearch()" placeholder="Search"></div>
+                </div>
+                <div class="row image-gallery-items">
+                    <div class="col-2 image-gallery-items-image" ng-repeat="image in (filteredGallery = (ebc.images | filter:ebc.gallerySearchTerm)) | limitTo: 30:ebc.galleryPage">
+                        <img class="img-fluid" ng-src="/thumbs/{{image.filename}}" ng-click="ebc.selectImage(member.id, image.filename)">
+                        <div class="image-gallery-items-image-filename">{{image.filename}}</div>
+                    </div>
+                </div>
+                <div class="row image-gallery-upload">
+                    Upload new file: <input type="file" media-upload="ebc.uploadFile"><i ng-if="ebc.uploadFile" class="fas fa-upload" ng-click="ebc.uploadImage(member.id)"></i>
+                    <div class="file-error" ng-if="ebc.fileError">{{ebc.fileError}}</div>
+                </div>
+            </div>
+            <div class="member">
+                <div class="member-image" ng-if="$index % 2 === 1">
+                    <img ng-src="/images/{{member.image}}" ng-if="member.image">
+                </div>
+                <div class="member-text" ng-class="$index % 2 ? 'left': 'right'">
+                    <h3 ng-if="!member.nameOpen">{{member.name}}</h3>
+                    <input ng-if="member.nameOpen" type="text" ng-model="member.name" class="member-edit-name">
+                    <span ng-if="!member.titleOpen && !member.subtitleOpen"><span class="member-text-title" ng-if="member.title">{{member.title}} - </span><span class="member-text-subtitle">{{member.subtitle}}</span></span>
+                    <input type="text" ng-model="member.title" ng-if="member.titleOpen" class="member-text-title">
+                    <input type="text" ng-model="member.subtitle" ng-if="member.subtitleOpen" class="member-text-subtitle">
+                    <div class="member-text-description" ng-bind-html="member.description" ng-if="!member.descriptionOpen"></div>
+                    <div class="ng-ckeditor-container"><ng-ckeditor ng-if="member.descriptionOpen" ng-config="ebc.ckeditorConfig" ng-model="member.description"></ng-ckeditor></div>
+                </div>
+                <div class="member-image" ng-if="$index % 2 !== 1">
+                    <img ng-src="/images/{{member.image}}" ng-if="member.image">
+                </div>
+            </div>
+        </div>
+        <div class="metaData">
+            <h2>Meta Data</h2>
+            <ul class="toolbar">
+                <li ng-if="!ebc.metaDescriptionOpen" ng-click="ebc.metaDescriptionOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Description</li>
+                <li ng-if="!ebc.metaDescriptionOpen && ebc.metaDescriptionChanged" ng-click="ebc.revertEdit('metaDescription')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="ebc.metaDescriptionOpen" ng-click="ebc.saveEdit('metaDescription')"><i class="fas fa-check"></i> Finish Editing Meta Description</li>
+                <li ng-if="ebc.metaDescriptionOpen" ng-click="ebc.cancelEdit('metaDescription')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This short descripton is used for search engine optimization and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="ebc.metaDescriptionChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div ng-if="!ebc.metaDescriptionOpen">{{ebc.edited.meta.description}}</div>
+            <textarea ng-model="ebc.edited.meta.description" ng-if="ebc.metaDescriptionOpen"></textarea>
+            <ul class="toolbar">
+                <li ng-if="!ebc.metaTitleOpen" ng-click="ebc.metaTitleOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Title</li>
+                <li ng-if="!ebc.metaTitleOpen && ebc.metaTitleChanged" ng-click="ebc.revertEdit('metaTitle')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="ebc.metaTitleOpen" ng-click="ebc.saveEdit('metaTitle')"><i class="fas fa-check"></i> Finish Editing Meta Title</li>
+                <li ng-if="ebc.metaTitleOpen" ng-click="ebc.cancelEdit('metaTitle')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is the title of the page that is displayed in the browser tab and is also displayed when the page is shared on social networks.</div>
+                    <div class="toolbar-help-notify" ng-if="ebc.metaTitleChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Title: <span ng-if="!ebc.metaTitleOpen">{{ebc.edited.meta.title}}</span><input ng-if="ebc.metaTitleOpen" type="text" ng-model="ebc.edited.meta.title"></div>
+            <ul class="toolbar">
+                <li ng-if="!ebc.metaKeywordsOpen" ng-click="ebc.metaKeywordsOpen = true"><i class="fas fa-pencil-alt"></i> Edit Meta Keywords</li>
+                <li ng-if="!ebc.metaKeywordsOpen && ebc.metaKeywordsChanged" ng-click="ebc.revertEdit('metaKeywords')"><i class="fas fa-undo"></i> Undo Changes</li>
+                <li ng-if="ebc.metaKeywordsOpen" ng-click="ebc.saveEdit('metaKeywords')"><i class="fas fa-check"></i> Finish Editing Meta Keywords</li>
+                <li ng-if="ebc.metaKeywordsOpen" ng-click="ebc.cancelEdit('metaKeywords')"><i class="fas fa-ban"></i> Cancel Editing</li>
+                <div class="toolbar-help">
+                    <div class="toolbar-help-notify">This is a list of keywords used to help find the page in the search function</div>
+                    <div class="toolbar-help-notify" ng-if="ebc.metaKeywordsChanged"><i class="fas fa-check"></i> Changes saved and ready to publish</div>
+                </div>
+            </ul>
+            <div class="editUrl">Keywords: <span ng-if="!ebc.metaKeywordsOpen">{{ebc.edited.meta.keywords}}</span><input ng-if="ebc.metaKeywordsOpen" type="text" ng-model="ebc.edited.meta.keywords"></div>        
+            
+        </div>
+    </main>
+    <div class="error-popup" ng-if="ebc.deleteMemberPopup">
+        <div class="error-popup-box">
+            <div class="error-popup-box-header"><i class="fas fa-exclamation-triangle"></i>Really?</div>
+            <div class="error-popup-box-body">Delete the Member<span ng-if="ebc.edited.members[ebc.deleteMemberIndex].name">: <strong>{{ebc.edited.members[ebc.deleteMemberIndex].name}}</strong></span>?</div>
+            <div class="error-popup-box-footer">
+                <button class="btn bg-red" ng-click="ebc.deleteMember()">Yes, Delete It</button>
+                <button class="btn bg-gray" ng-click="ebc.cancelDeleteMember()">No, Keep It</button>
+            </div>
+        </div>
+    </div>
+</div>
