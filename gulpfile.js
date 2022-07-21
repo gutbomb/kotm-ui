@@ -2,6 +2,7 @@ const gulp = require('gulp'),
       eslint = require('gulp-eslint'),
       del = require('del'),
       rename = require('gulp-rename'),
+      tap = require('gulp-tap'),
       browserSync = require('browser-sync').create(),
       sass = require('gulp-sass'),
       babelify = require('babelify'),
@@ -102,6 +103,7 @@ gulp.task('media', () => {
 gulp.task('thumbs', () => {
     return gulp.src(`${source}/images/**/*`)
         .pipe(newer(`${dest}/thumbs`))
+        .pipe(tap((file, t)=>{console.log(file.path)}))
         .pipe(resize({
             height: 150,
             crop: false,
@@ -118,6 +120,7 @@ gulp.task('thumbs', () => {
 gulp.task('images', () => {
     return gulp.src(`${source}/images/**/*`)
         .pipe(newer(`${dest}/images`))
+        .pipe(tap((file, t)=>{console.log(file.path)}))
         .pipe(resize({
             width: 1920,
             crop: false,
@@ -142,7 +145,8 @@ gulp.task('eslint', () => {
 gulp.task('browser-sync', () => {
     browserSync.init({
         files: `${dest}/css/*.css`,
-        proxy: 'localhost:8080'
+        host: 'jasonmac.local',
+        proxy: 'jasonmac.local:8080'
     });
 
     gulp.watch(`${source}/**/*.scss`, gulp.series('scss'));
