@@ -3,6 +3,7 @@ node_modules/
 package-lock.json
 source/assessments/api/config/database.php
 source/assessments/api/config/environment.php
+source/assessments/api/config/phpmailer.php
 source/images
 source/media
 **/.DS_Store
