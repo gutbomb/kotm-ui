@@ -145,8 +145,8 @@ gulp.task('eslint', () => {
 gulp.task('browser-sync', () => {
     browserSync.init({
         files: `${dest}/css/*.css`,
-        host: 'jasonmac.local',
-        proxy: 'jasonmac.local:8080'
+        host: 'localhost',
+        proxy: 'localhost:8080'
     });
 
     gulp.watch(`${source}/**/*.scss`, gulp.series('scss'));
